@@ -1,8 +1,20 @@
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
+import { ProtectedRoute } from "./routes/ProtectedRoute";
+import LoginPage from "./pages/Login/LoginPage";
+import DashboardPage from "./pages/Dashboard/DashboardPage";
+
 export default function App() {
   return (
-    <div style={{ padding: 24, fontFamily: "system-ui" }}>
-      <h1>JinjaMonogatari CMS</h1>
-      <p>Vite + React + TS is running.</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
+        
+        <Route element={<ProtectedRoute />}>
+          <Route path="/" element={<DashboardPage />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
