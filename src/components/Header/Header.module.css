@@ -1,0 +1,12 @@
+.header {
+  border-bottom: 1px solid #b8b7b7;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: row;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #111;
+}

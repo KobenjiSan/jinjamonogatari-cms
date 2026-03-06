@@ -1,0 +1,41 @@
+.sideNav {
+  width: 180px;
+  min-height: 100vh;
+  background: #1d1d1d;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: #ece9e2;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.link {
+  display: block;
+  border-radius: 2px;
+  text-decoration: none;
+  padding: 2px 6px;
+  color: #ece9e2;
+  font-size: 1.1rem;
+  font-weight: 500;
+  transition: background 0.18s ease;
+}
+
+.link:hover {
+  color: #ffffff80;
+}
+
+.active {
+  color: #fcfbf6;
+  font-weight: 600;
+}

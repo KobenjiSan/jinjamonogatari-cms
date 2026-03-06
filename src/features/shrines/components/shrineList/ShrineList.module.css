@@ -1,0 +1,66 @@
+.container {
+  display: grid;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1fr 1fr;
+  align-items: center;
+
+  padding: 0.5rem 1.25rem;
+
+  background: #f8f9fb;
+  border: 1px solid #dcdfe4;
+  border-bottom: none;
+
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #5f6b7a;
+  letter-spacing: 0.04em;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1fr 1fr;
+  align-items: center;
+
+  padding: 0.9rem 1.25rem;
+
+  background: #242423;
+  border-bottom: none;
+
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.shrine,
+.status,
+.location,
+.update,
+.ready,
+.action {
+  padding: 0 0.5rem;
+  white-space: nowrap;
+}
+
+.shrineItem{
+    display: flex;
+    flex-direction: column;
+}
+
+.locationItem{
+    display: flex;
+    flex-direction: column;
+}
+.coords{
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+}
+
