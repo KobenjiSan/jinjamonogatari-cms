@@ -9,6 +9,7 @@ import "@fontsource/noto-sans/600.css";
 
 import "@fontsource/noto-sans-jp/400.css";
 import "@fontsource/noto-sans-jp/500.css";
+import "./shared/styles/globals.css";
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

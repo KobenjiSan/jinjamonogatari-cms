@@ -4,7 +4,7 @@ import styles from "./SideNav.module.css";
 export default function SideNav() {
   return (
     <aside className={styles.sideNav}>
-      <div className={styles.brand}>CMS</div>
+      <div className="app-brand">CMS</div>
 
       <nav className={styles.nav}>
         <NavLink

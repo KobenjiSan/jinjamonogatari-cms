@@ -1,0 +1,224 @@
+/* ---------- APP ROOT ---------- */
+
+.app-shell {
+  min-height: 100vh;
+  background: var(--color-bg-app);
+  color: var(--color-text-primary);
+}
+
+.page-shell {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: var(--space-xl);
+}
+
+.page-section {
+  margin-bottom: var(--space-xl);
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-xl);
+}
+
+.page-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.page-title {
+  margin: 0;
+  font-size: var(--font-xxl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.page-subtitle {
+  margin: 0;
+  font-size: var(--font-md);
+  color: var(--color-text-secondary);
+}
+
+.app-brand {
+  font-size: var(--font-brand);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+/* ---------- APP LAYOUT ---------- */
+
+.app-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.app-sidebar {
+  border-right: var(--border-width) solid var(--color-border);
+  background: var(--color-bg-surface);
+}
+
+.app-main {
+  min-width: 0;
+  background: var(--color-bg-app);
+}
+
+.app-content {
+  padding: var(--space-xl);
+}
+
+/* ---------- FLEX UTILITIES ---------- */
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.row-center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.row-between {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fill {
+  flex: 1;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}
+
+.gap-xs {
+  gap: var(--space-xs);
+}
+
+.gap-sm {
+  gap: var(--space-sm);
+}
+
+.gap-md {
+  gap: var(--space-md);
+}
+
+.gap-lg {
+  gap: var(--space-lg);
+}
+
+.gap-xl {
+  gap: var(--space-xl);
+}
+
+/* ---------- GRID UTILITIES ---------- */
+
+.grid {
+  display: grid;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+/* ---------- WIDTH / CONTAINMENT ---------- */
+
+.w-full {
+  width: 100%;
+}
+
+.max-content {
+  max-width: var(--content-max-width);
+}
+
+/* ---------- SPACING UTILITIES ---------- */
+
+.p-xs {
+  padding: var(--space-xs);
+}
+
+.p-sm {
+  padding: var(--space-sm);
+}
+
+.p-md {
+  padding: var(--space-md);
+}
+
+.p-lg {
+  padding: var(--space-lg);
+}
+
+.p-xl {
+  padding: var(--space-xl);
+}
+
+.mb-xs {
+  margin-bottom: var(--space-xs);
+}
+
+.mb-sm {
+  margin-bottom: var(--space-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--space-md);
+}
+
+.mb-lg {
+  margin-bottom: var(--space-lg);
+}
+
+.mb-xl {
+  margin-bottom: var(--space-xl);
+}
+
+.mt-sm {
+  margin-top: var(--space-sm);
+}
+
+.mt-md {
+  margin-top: var(--space-md);
+}
+
+.mt-lg {
+  margin-top: var(--space-lg);
+}
+
+.hidden {
+  display: none;
+}

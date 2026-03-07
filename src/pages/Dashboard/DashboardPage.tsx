@@ -11,19 +11,39 @@ export default function DashboardPage() {
   }
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div className="page-shell">
+      <div className="page-header">
+        <div className="page-title-group">
+          <h1 className="page-title">Dashboard</h1>
+          <p className="page-subtitle">CMS overview and account access.</p>
+        </div>
+
+        <button
+          className="btn btn-outline"
+          onClick={handleLogout}
+          disabled={isLoading}
+        >
+          {isLoading ? "Logging out..." : "Logout"}
+        </button>
+      </div>
 
       {user && (
-        <div>
-          <p>Welcome, {user.username}</p>
-          <p>Email: {user.email}</p>
-        </div>
-      )}
+        <section className="card">
+          <div className="column gap-md">
+            <div>
+              <div className="text-sm text-secondary font-semibold">
+                Username
+              </div>
+              <div className="text-md text-primary">{user.username}</div>
+            </div>
 
-      <button onClick={handleLogout} disabled={isLoading}>
-        {isLoading ? "Logging out..." : "Logout"}
-      </button>
-    </div>
+            <div>
+              <div className="text-sm text-secondary font-semibold">Email</div>
+              <div className="text-md text-primary">{user.email}</div>
+            </div>
+          </div>
+        </section>
+      )}
+    </div> 
   );
 }

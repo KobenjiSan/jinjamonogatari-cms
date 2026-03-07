@@ -27,7 +27,7 @@ export default function LoginPage() {
     setSubmitted(true);
     setError(null);
 
-    if (!identifier.trim || !password.trim()) return;
+    if (!identifier.trim() || !password.trim()) return;
 
     try {
       await signIn(identifier, password);
@@ -40,59 +40,65 @@ export default function LoginPage() {
   return (
     <div className={styles.authPage}>
       <div className={styles.authContent}>
+        <div className={styles.authTitleGroup}>
+          <h1 className={styles.authTitle}>JinjaMonogatari</h1>
+          <p className={styles.authSubtitle}>Sign in to access the CMS.</p>
+        </div>
 
-      
-      <h1 className={styles.authTitle}>Login</h1>
-      <div className={styles.authCard}>
-        <form className={styles.authForm} onSubmit={handleSubmit}>
-          <div className={styles.inputDiv}>
-            <input
-              className={`${styles.authInput} ${
-                submitted && identifierInvalid ? styles.authInputInvalid : ""
-              }`}
-              type="text"
-              placeholder="Email or Username"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              autoComplete="username"
-            />
-            {submitted && identifierInvalid && (
-              <div className={styles.fieldError}>This field is required</div>
-            )}
-          </div>
-
-          <div className={styles.inputDiv}>
-            <input
-              className={`${styles.authInput} ${
-                submitted && passwordInvalid ? styles.authInputInvalid : ""
-              }`}
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              autoComplete="current-password"
-            />
-            {submitted && passwordInvalid && (
-              <div className={styles.fieldError}>This field is required</div>
-            )}
-          </div>
-
-          {error && (
-            <div className={styles.authError} role="alert">
-              <GoAlertFill />
-              {error}
+        <div className="card">
+          <form className={styles.authForm} onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label className="label" htmlFor="identifier">
+                Email or Username
+              </label>
+              <input
+                id="identifier"
+                className={`input ${
+                  submitted && identifierInvalid ? "input-error" : ""
+                }`}
+                type="text"
+                placeholder="Email or Username"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                autoComplete="username"
+              />
+              {submitted && identifierInvalid && (
+                <div className="text-sm text-issue">This field is required</div>
+              )}
             </div>
-          )}
 
-          <button
-            className={styles.authButton}
-            type="submit"
-            disabled={isLoading}
-          >
-            {isLoading ? "Signing in..." : "Sign In"}
-          </button>
-        </form>
-      </div>
+            <div className="form-group">
+              <label className="label" htmlFor="password">
+                Password
+              </label>
+              <input
+                id="password"
+                className={`input ${
+                  submitted && passwordInvalid ? "input-error" : ""
+                }`}
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+              />
+              {submitted && passwordInvalid && (
+                <div className="text-sm text-issue">This field is required</div>
+              )}
+            </div>
+
+            {error && (
+              <div className={styles.authError} role="alert">
+                <GoAlertFill />
+                <span>{error}</span>
+              </div>
+            )}
+
+            <button className="btn btn-primary" type="submit" disabled={isLoading}>
+              {isLoading ? "Signing in..." : "Sign In"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

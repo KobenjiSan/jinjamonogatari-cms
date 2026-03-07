@@ -1,40 +1,8 @@
 .header {
-  border-bottom: 1px solid #b8b7b7;
-  padding: 2px 14px;
+  border-bottom: var(--border-width) solid var(--color-border);
+  padding: var(--space-sm) var(--space-xl);
   display: flex;
   flex-direction: row;
-  display: flex;
-  justify-items: auto;
   align-items: center;
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #111;
-  
-  margin-right: auto;
-}
-
-.importButton {
-  padding: 4px 1rem;
-  border-radius: 6px;
-
-  background: #111;
-
-  color: #fff;
-  font-size: 18px;
-  font-weight: 500;
-
-  cursor: pointer;
-  transition: opacity 0.15s ease;
-}
-
-.importButton:hover {
-  opacity: 0.9;
-}
-
-.importButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+  justify-content: space-between;
 }
