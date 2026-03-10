@@ -2,6 +2,43 @@
   border-bottom: var(--border-width) solid var(--color-border);
   padding: var(--space-md) var(--space-xl);
   display: flex;
-  flex-direction: row;
   align-items: center;
+  justify-content: space-between;
+  background: var(--color-bg-surface);
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.backButton {
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.backButton:hover {
+  background: var(--color-bg-subtle);
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.separator {
+  color: var(--color-text-muted);
+  font-size: 14px;
 }

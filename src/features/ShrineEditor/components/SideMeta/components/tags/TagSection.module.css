@@ -1,0 +1,76 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.blockTitle {
+  margin: 0;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-subtle);
+}
+
+.tagChipButton {
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tagChipText {
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+}
+
+.tagRemove {
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.tagRemove:hover {
+  color: var(--color-text-primary);
+}
+
+.changedInput {
+  border: 1px solid #d6a84f !important;
+  background-color: rgba(214, 168, 79, 0.08) !important;
+  box-shadow: 0 0 0 1px rgba(214, 168, 79, 0.12);
+}
+
+.tagChipRemoved {
+  border: 1px solid #b94a48 !important;
+  background-color: rgba(185, 74, 72, 0.08) !important;
+  box-shadow: 0 0 0 1px rgba(185, 74, 72, 0.12);
+}
+
+.tagChipTextRemoved {
+  color: #b94a48;
+  text-decoration: line-through;
+}

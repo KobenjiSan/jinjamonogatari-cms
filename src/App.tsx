@@ -4,7 +4,7 @@ import LoginPage from "./pages/Login/LoginPage";
 import DashboardPage from "./pages/Dashboard/DashboardPage";
 import AppLayout from "./layouts/AppLayout";
 import ShrinesPage from "./pages/Shrines/ShrinesPage";
-import ShrineEditorLayout from "./features/ShrineEditor/layouts/ShrineEditorLayout";
+import ShrineEditorLayout from "./layouts/ShrineEditorLayout";
 import ShrineEditorPage from "./pages/ShrineEditor/ShrineEditorPage";
 
 export default function App() {
