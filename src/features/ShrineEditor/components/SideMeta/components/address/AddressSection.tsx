@@ -8,15 +8,28 @@ type AddressSectionProps = {
     field: K,
     value: ShrineMetaDto[K]
   ) => void;
-  formatAddress: (data?: ShrineMetaDto | null) => string;
 };
 
 export default function AddressSection({
   formData,
   isChanged,
   updateField,
-  formatAddress,
 }: AddressSectionProps) {
+
+  function formatAddress(data?: ShrineMetaDto | null) {
+    if (!data) return "—";
+
+    const line1Parts = [data.locality, data.ward].filter(Boolean);
+    const line2Parts = [data.city, data.prefecture].filter(Boolean);
+    const line3 = [data.postalCode, data.country].filter(Boolean).join(", ");
+
+    return (
+      [line1Parts.join(", "), line2Parts.join(", "), line3]
+        .filter(Boolean)
+        .join("\n") || "—"
+    );
+  }
+  
   return (
     <div className={styles.block}>
       <p className={styles.blockTitle}>Address</p>

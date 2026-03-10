@@ -179,7 +179,6 @@
 
 .label {
   display: inline-block;
-  margin-bottom: var(--space-sm);
   font-size: var(--font-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
@@ -193,7 +192,7 @@
   border-radius: var(--radius-sm);
   background: var(--color-input-editable-bg);
   color: var(--color-text-primary);
-  padding: 10px 12px;
+  padding: 4px 8px;
   font-size: var(--font-md);
   outline: none;
   transition:
@@ -222,13 +221,13 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
 }
 
 .form-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-lg);
+  gap: var(--space-sm);
 }
 
 /* ---------- TABLE / LIST ---------- */
@@ -340,6 +339,8 @@
   width: 100%;
   max-width: 640px;
   max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   background: var(--color-bg-surface);
   border: var(--border-width) solid var(--color-border-strong);
@@ -354,6 +355,7 @@
   gap: var(--space-md);
   padding: var(--space-sm) var(--space-lg);
   border-bottom: var(--border-width) solid var(--color-border);
+  flex-shrink: 0;
 }
 
 .modal-title {
@@ -364,6 +366,8 @@
 }
 
 .modal-body {
+  flex: 1;
+  min-height: 0;
   padding: var(--space-lg);
   overflow-y: auto;
 }
@@ -375,4 +379,5 @@
   padding: var(--space-sm) var(--space-lg);
   border-top: var(--border-width) solid var(--color-border);
   background: var(--color-bg-subtle);
+  flex-shrink: 0;
 }

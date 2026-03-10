@@ -1,7 +1,11 @@
 import styles from "./SideMeta.module.css";
 import { useEffect, useState } from "react";
-import { getShrineMetaById, type ShrineMetaDto } from "../../ShrineEditorApi";
-import { MdModeEdit } from "react-icons/md";
+import {
+  getShrineMetaById,
+  updateShrineMeta,
+  type ShrineMetaDto,
+  type UpdateShrineMetaRequest,
+} from "../../ShrineEditorApi";
 
 import SystemSection from "./components/system/SystemSection";
 import IdentitySection from "./components/identity/IdentitySection";
@@ -11,14 +15,24 @@ import ContactSection from "./components/contact/ContactSection";
 import TagsSection from "./components/tags/TagSection";
 import PublishingSection from "./components/publishing/PublishingSection";
 import TimestampsSection from "./components/timestamps/TimestampsSection";
+import HeroImageSection from "./components/image/HeroImageSection";
+import type { EditableTag } from "./components/tags/TagSection";
+import type { EditableHeroImage } from "./components/image/HeroImageSection";
+
+type EditableShrineMeta = Omit<ShrineMetaDto, "tags" | "image"> & {
+  tags: EditableTag[];
+  image: EditableHeroImage | null;
+};
 
 type SideMetaProps = {
   shrineId: number;
 };
 
 export default function SideMeta({ shrineId }: SideMetaProps) {
-  const [originalMeta, setOriginalMeta] = useState<ShrineMetaDto | null>(null);
-  const [formData, setFormData] = useState<ShrineMetaDto | null>(null);
+  const [originalMeta, setOriginalMeta] = useState<EditableShrineMeta | null>(
+    null,
+  );
+  const [formData, setFormData] = useState<EditableShrineMeta | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,8 +41,8 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
 
       try {
         const result = await getShrineMetaById(shrineId);
-        setOriginalMeta(result);
-        setFormData(result);
+        setOriginalMeta(structuredClone(result));
+        setFormData(structuredClone(result));
       } catch (err) {
         console.error("Failed to retreive shrine meta", err);
       } finally {
@@ -52,13 +66,24 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
     });
   }
 
-  function handleTagsChange(nextTags: ShrineMetaDto["tags"]) {
+  function handleTagsChange(nextTags: EditableTag[]) {
     setFormData((prev) => {
       if (!prev) return prev;
 
       return {
         ...prev,
         tags: nextTags,
+      };
+    });
+  }
+
+  function handleImageChange(nextImage: EditableHeroImage | null) {
+    setFormData((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        image: nextImage,
       };
     });
   }
@@ -70,21 +95,113 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
 
   function handleReset() {
     if (!originalMeta) return;
-    setFormData(originalMeta);
+    setFormData(structuredClone(originalMeta));
   }
 
-  function formatAddress(data?: ShrineMetaDto | null) {
-    if (!data) return "—";
+  async function handleSaveMeta() {
+    if (!formData) return;
 
-    const line1Parts = [data.locality, data.ward].filter(Boolean);
-    const line2Parts = [data.city, data.prefecture].filter(Boolean);
-    const line3 = [data.postalCode, data.country].filter(Boolean).join(", ");
+    const payload: UpdateShrineMetaRequest = {
+      basic: {
+        slug: formData.slug,
+        nameEn: formData.nameEn,
+        nameJp: formData.nameJp,
+        shrineDesc: formData.shrineDesc,
+        lat: formData.lat,
+        lon: formData.lon,
+        prefecture: formData.prefecture,
+        city: formData.city,
+        ward: formData.ward,
+        locality: formData.locality,
+        postalCode: formData.postalCode,
+        country: formData.country,
+        phoneNumber: formData.phoneNumber,
+        email: formData.email,
+        website: formData.website,
+      },
+      tags: {
+        create: formData.tags
+          .filter((tag) => tag.isNew && !tag.isMarkedForRemoval)
+          .map((tag) => ({
+            titleEn: tag.titleEn,
+            titleJp: tag.titleJp,
+          })),
 
-    return (
-      [line1Parts.join(", "), line2Parts.join(", "), line3]
-        .filter(Boolean)
-        .join("\n") || "—"
-    );
+        update: formData.tags
+          .filter(
+            (tag) => !tag.isNew && tag.isEdited && !tag.isMarkedForRemoval,
+          )
+          .map((tag) => ({
+            tagId: tag.tagId,
+            titleEn: tag.titleEn,
+            titleJp: tag.titleJp,
+          })),
+
+        delete: formData.tags
+          .filter((tag) => !tag.isNew && tag.isMarkedForRemoval)
+          .map((tag) => tag.tagId),
+      },
+      heroImage: formData.image
+        ? formData.image.isRemoved
+          ? {
+              action: "delete",
+              imgSource: null,
+              title: null,
+              desc: null,
+              citation: null,
+            }
+          : formData.image.isNew
+            ? {
+                action: "create",
+                imgSource: formData.image.imageUrl,
+                title: formData.image.title,
+                desc: formData.image.desc,
+                citation: formData.image.citation
+                  ? {
+                      title: formData.image.citation.title,
+                      author: formData.image.citation.author,
+                      url: formData.image.citation.url,
+                      year: formData.image.citation.year,
+                    }
+                  : null,
+              }
+            : formData.image.isEdited
+              ? {
+                  action: "update",
+                  imgSource: formData.image.imageUrl,
+                  title: formData.image.title,
+                  desc: formData.image.desc,
+                  citation: formData.image.citation
+                    ? {
+                        title: formData.image.citation.title,
+                        author: formData.image.citation.author,
+                        url: formData.image.citation.url,
+                        year: formData.image.citation.year,
+                      }
+                    : null,
+                }
+              : {
+                  action: "none",
+                  imgSource: null,
+                  title: null,
+                  desc: null,
+                  citation: null,
+                }
+        : {
+            action: "none",
+            imgSource: null,
+            title: null,
+            desc: null,
+            citation: null,
+          },
+    };
+
+    await updateShrineMeta(shrineId, payload);
+
+    const refreshed = await getShrineMetaById(shrineId);
+
+    setOriginalMeta(structuredClone(refreshed));
+    setFormData(structuredClone(refreshed));
   }
 
   if (loading) {
@@ -127,7 +244,6 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
               formData={formData}
               isChanged={isChanged}
               updateField={updateField}
-              formatAddress={formatAddress}
             />
 
             <div className={styles.divider} />
@@ -140,33 +256,10 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
 
             <div className={styles.divider} />
 
-            <div className={styles.block}>
-              <p className={styles.blockTitle}>Hero Image</p>
-
-              <div className={styles.imagePreview}>
-                {formData?.image?.imageUrl ? (
-                  <>
-                    <img
-                      src={formData.image.imageUrl}
-                      alt={formData.image.title ?? "Hero image"}
-                      className={styles.heroImage}
-                    />
-
-                    <button type="button" className={styles.imageAction}>
-                      <MdModeEdit />
-                    </button>
-                  </>
-                ) : (
-                  <span className="text-sm text-secondary">
-                    No hero image selected
-                  </span>
-                )}
-              </div>
-
-              <button type="button" className="btn btn-outline">
-                {formData?.image ? "Replace Hero Image" : "Add Hero Image"}
-              </button>
-            </div>
+            <HeroImageSection
+              image={formData?.image ?? null}
+              onChange={handleImageChange}
+            />
 
             <div className={styles.divider} />
 
@@ -197,7 +290,11 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
               >
                 Reset
               </button>
-              <button className="btn btn-primary" type="button">
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={handleSaveMeta}
+              >
                 Save Meta
               </button>
             </div>

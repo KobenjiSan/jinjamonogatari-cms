@@ -89,6 +89,14 @@ export default function TagsSection({ tags, onChange }: TagsSectionProps) {
   }
 
   function handleToggleRemoveTag(tagId: number) {
+    const tagToUpdate = tags.find((tag) => tag.tagId === tagId);
+    if (!tagToUpdate) return;
+
+    if (tagToUpdate.isNew) {
+      onChange(tags.filter((tag) => tag.tagId !== tagId));
+      return;
+    }
+
     onChange(
       tags.map((tag) =>
         tag.tagId === tagId
