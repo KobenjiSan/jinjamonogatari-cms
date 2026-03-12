@@ -1,8 +1,23 @@
+export type CitationCMSDto = {
+  citeId: number;
+  title: string | null;
+  author: string | null;
+  url: string | null;
+  year: number | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
 type CitationFormValues = {
   title: string;
   author: string;
   url: string;
   year: string;
+
+  // optional readonly CMS fields
+  citeId?: number;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 type CitationFormProps = {
@@ -75,6 +90,20 @@ export default function CitationForm({ values, onChange }: CitationFormProps) {
           placeholder="Enter publication year"
         />
       </div>
+
+      {values.citeId && (
+        <div className="text-xs text-secondary">
+          Citation ID: {values.citeId}
+        </div>
+      )}
+
+      {values.createdAt && values.updatedAt && (
+        <div className="text-xs text-secondary">
+          Created: {values.createdAt}
+          <br />
+          Updated: {values.updatedAt}
+        </div>
+      )}
     </div>
   );
 }

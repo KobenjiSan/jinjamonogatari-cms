@@ -1,5 +1,5 @@
-import styles from "../../SideMeta.module.css";
-import type { ShrineMetaDto } from "../../../../ShrineEditorApi";
+import styles from "../SideMeta.module.css";
+import type { ShrineMetaDto } from "../../../ShrineEditorApi";
 
 type LocationSectionProps = {
   formData: ShrineMetaDto | null;

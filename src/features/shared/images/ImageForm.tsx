@@ -6,6 +6,11 @@ type CitationFormValues = {
   author: string;
   url: string;
   year: string;
+
+  // readonly cms fields
+  citeId?: number;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 type ImageFormValues = {
@@ -13,6 +18,11 @@ type ImageFormValues = {
   title: string;
   desc: string;
   citation: CitationFormValues;
+
+  // readonly cms fields
+  imgId?: number;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 type ImageFormProps = {
@@ -29,7 +39,10 @@ export default function ImageForm({
   onFileChange,
 }: ImageFormProps) {
   function handleFieldChange(
-    field: keyof Omit<ImageFormValues, "citation">,
+    field: keyof Omit<
+      ImageFormValues,
+      "citation" | "imgId" | "createdAt" | "updatedAt"
+    >,
     value: string,
   ) {
     onChange({
@@ -80,6 +93,26 @@ export default function ImageForm({
               <span className="text-sm text-secondary">No image selected</span>
             )}
           </div>
+
+          {values.imgId !== undefined && (
+            <div className="text-xs text-secondary">
+              Image ID: {values.imgId}
+            </div>
+          )}
+
+          {values.imageUrl && (
+            <div className="text-xs text-secondary">
+              Source URL: {values.imageUrl}
+            </div>
+          )}
+
+          {values.createdAt && values.updatedAt && (
+            <div className="text-xs text-secondary">
+              Created: {values.createdAt}
+              <br />
+              Updated: {values.updatedAt}
+            </div>
+          )}
         </div>
 
         <div className={styles.detailsSection}>

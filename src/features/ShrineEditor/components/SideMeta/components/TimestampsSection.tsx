@@ -1,4 +1,4 @@
-import styles from "../../SideMeta.module.css";
+import styles from "../SideMeta.module.css";
 
 type TimestampsSectionProps = {
   createdAt?: string | null;

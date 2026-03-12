@@ -20,7 +20,7 @@ export default function ShrineEditorPage() {
         </div>
 
         <div style={{ flex: 8 }}>
-          <EditorArea />
+          <EditorArea shrineId={shrineIdNumber} />
         </div>
 
         <div style={{ flex: 2.5 }}>
