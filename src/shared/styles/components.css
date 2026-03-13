@@ -175,6 +175,31 @@
   border-color: transparent;
 }
 
+.btn-danger {
+  background: var(--color-issue);
+  border-color: var(--color-issue);
+  color: var(--color-white);
+}
+
+.btn-danger:hover {
+  filter: brightness(0.95);
+}
+
+.btn-success {
+  background: var(--color-confirm);
+  border-color: var(--color-confirm);
+  color: var(--color-white);
+}
+
+.btn-success:hover {
+  filter: brightness(0.95);
+}
+
+.btn-danger:disabled,
+.btn-success:disabled {
+  filter: none;
+}
+
 /* ---------- FORM ELEMENTS ---------- */
 
 .label {

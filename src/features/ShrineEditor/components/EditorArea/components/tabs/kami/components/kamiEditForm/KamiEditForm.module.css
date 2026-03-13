@@ -4,6 +4,10 @@
   gap: 16px;
 }
 
+.note{
+  color: var(--color-text-muted);
+}
+
 .section {
   display: flex;
   flex-direction: column;

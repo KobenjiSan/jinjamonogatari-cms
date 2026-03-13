@@ -11,7 +11,7 @@ type KamiListProps = {
   disabledIds?: number[];
   onEdit?: (kamiItem: KamiCMSDto) => void;
   onSelect?: (kamiItem: KamiCMSDto) => void;
-  onRemove?: (kamiId: number) => void;
+  onRemove: (kami: KamiCMSDto) => void;
   onLoaded?: (kami: KamiCMSDto[]) => void;
   reloadKey?: number;
 };
@@ -133,9 +133,9 @@ export default function KamiList({
                   <button
                     type="button"
                     className="btn btn-ghost"
-                    onClick={() => onRemove?.(k.kamiId)}
+                    onClick={() => onRemove?.(k)}
                   >
-                    Delete
+                    Remove
                   </button>
                 </div>
               ) : (

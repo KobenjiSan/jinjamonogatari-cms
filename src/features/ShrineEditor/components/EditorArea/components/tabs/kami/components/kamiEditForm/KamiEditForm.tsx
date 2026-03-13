@@ -124,6 +124,7 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
 
   return (
     <div className={styles.wrapper}>
+      <p className={styles.note}>Note: Changes here will update this Kami for all shrines it is linked with.</p>
       <KamiDetailsSection
         values={{
           nameEn: formValues.nameEn,
