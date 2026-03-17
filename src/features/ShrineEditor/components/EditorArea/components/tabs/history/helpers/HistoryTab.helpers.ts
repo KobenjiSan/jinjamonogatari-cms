@@ -2,22 +2,30 @@ import type {
   CitationListChangesRequest,
   CitationRequest,
   CreateCitationRequest,
+  CreateHistoryRequest,
   CreateImageRequest,
-  CreateKamiInShrineRequest,
+  HistoryCMSDto,
   ImageChangeRequest,
-  UpdateKamiRequest,
-  KamiCMSDto,
-} from "../kamiApi";
-import type { KamiFormValues } from "../components/kamiEditForm/helpers/KamiForm.types";
+  UpdateHistoryRequest,
+} from "../historyApi";
+import type { HistoryFormValues } from "../components/HistoryEditForm/helpers/HistoryForm.types";
 import type { CitationFormValues } from "../../../../../../../shared/citations/helpers/CitationSection.types";
 import type { ImageFormValues } from "../../../../../../../shared/images/helpers/ImageSection.types";
 
 function toNullableString(value: string): string | null {
-  const trimmed = value.trim();
-  return trimmed === "" ? null : trimmed;
+    const trimmed = value.trim();
+    return trimmed === "" ? null : trimmed;
 }
 
 function toNullableYear(value: string): number | null {
+    const trimmed = value.trim();
+    if(!trimmed) return null;
+
+    const parsed = Number(trimmed);
+    return Number.isNaN(parsed) ? null : parsed;
+}
+
+function toNullableNumber(value: string): number | null {
   const trimmed = value.trim();
   if (!trimmed) return null;
 
@@ -85,7 +93,7 @@ function mapImageFormToCreate(image: ImageFormValues): CreateImageRequest | null
 
 function mapImageFormToChange(
   image: ImageFormValues,
-  existingImage: KamiCMSDto["image"],
+  existingImage: HistoryCMSDto["image"],
 ): ImageChangeRequest {
   const formImageIsEmpty = isImageEmpty(image);
   const hasExistingImage = !!existingImage;
@@ -137,7 +145,7 @@ function mapImageFormToChange(
 
 function buildCitationChanges(
   formCitations: CitationFormValues[],
-  existingCitations: KamiCMSDto["citations"],
+  existingCitations: HistoryCMSDto["citations"],
 ): CitationListChangesRequest {
   const create: CreateCitationRequest[] = [];
   const update: CitationRequest[] = [];
@@ -167,13 +175,14 @@ function buildCitationChanges(
   };
 }
 
-export function buildCreateKamiPayload(
-  form: KamiFormValues,
-): CreateKamiInShrineRequest {
+export function buildCreateHistoryPayload(
+  form: HistoryFormValues,
+): CreateHistoryRequest {
   return {
-    nameEn: toNullableString(form.nameEn),
-    nameJp: toNullableString(form.nameJp),
-    desc: toNullableString(form.desc),
+    eventDate: toNullableString(form.eventDate),
+    sortOrder: toNullableNumber(form.sortOrder),
+    title: toNullableString(form.title),
+    information: toNullableString(form.information),
     image: mapImageFormToCreate(form.image),
     citations: form.citations
       .filter((citation) => !isCitationEmpty(citation))
@@ -181,17 +190,18 @@ export function buildCreateKamiPayload(
   };
 }
 
-export function buildUpdateKamiPayload(
-  form: KamiFormValues,
-  existingKami: KamiCMSDto,
-): UpdateKamiRequest {
+export function buildUpdateHistoryPayload(
+  form: HistoryFormValues,
+  existingHistory: HistoryCMSDto,
+): UpdateHistoryRequest {
   return {
     basic: {
-      nameEn: toNullableString(form.nameEn),
-      nameJp: toNullableString(form.nameJp),
-      desc: toNullableString(form.desc),
+      eventDate: toNullableString(form.eventDate),
+      sortOrder: toNullableNumber(form.sortOrder),
+      title: toNullableString(form.title),
+      information: toNullableString(form.information),
     },
-    image: mapImageFormToChange(form.image, existingKami.image),
-    citations: buildCitationChanges(form.citations, existingKami.citations),
+    image: mapImageFormToChange(form.image, existingHistory.image),
+    citations: buildCitationChanges(form.citations, existingHistory.citations),
   };
 }

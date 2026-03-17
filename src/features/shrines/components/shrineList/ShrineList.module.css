@@ -1,25 +1,19 @@
-.container {
+.wrapper {
   width: 100%;
 }
 
-.gridRow {
+.gridTable {
+  display: grid;
   grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1fr 120px;
 }
 
-.cell {
+.shrineCol,
+.statusCol,
+.locationCol,
+.updatedCol,
+.readinessCol,
+.actionsCol {
   min-width: 0;
-}
-
-.shrineItem {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.locationItem {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .coords {
@@ -28,22 +22,6 @@
   gap: var(--space-sm);
   font-size: var(--font-sm);
   color: var(--color-text-muted);
-}
-
-.primaryText,
-.secondaryText {
-  margin: 0;
-}
-
-.primaryText {
-  font-size: var(--font-md);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary);
-}
-
-.secondaryText {
-  font-size: var(--font-sm);
-  color: var(--color-text-secondary);
 }
 
 .paginationBar {

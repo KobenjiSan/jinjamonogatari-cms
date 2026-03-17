@@ -6,7 +6,7 @@ import {
   unlinkKamiFromShrine,
   updateKami,
 } from "./kamiApi";
-import styles from "./KamiTab.module.css";
+import mainStyles from "../../../EditorArea.module.css";
 import { IoSearchOutline } from "react-icons/io5";
 import { FiPlus } from "react-icons/fi";
 import BaseModal from "../../../../../../../shared/components/modal/BaseModal";
@@ -168,11 +168,11 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
 
   return (
     <>
-      <div className={styles.tabShell}>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Kami</h2>
+      <div className={mainStyles.tabShell}>
+        <div className={mainStyles.header}>
+          <h2 className={mainStyles.title}>Kami</h2>
 
-          <div className={styles.headerActions}>
+          <div className={mainStyles.headerActions}>
             <button
               type="button"
               className="icon-btn"
@@ -184,7 +184,7 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
 
             <button
               type="button"
-              className={`${styles.kamiActionButton} btn btn-outline`}
+              className={`${mainStyles.actionButton} btn btn-outline`}
               aria-label="Add kami"
               onClick={openAddKamiModal}
             >

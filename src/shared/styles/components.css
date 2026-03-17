@@ -257,14 +257,14 @@
 
 /* ---------- TABLE / LIST ---------- */
 
-.list-shell {
+.listShell {
   overflow: hidden;
   background: var(--color-bg-surface);
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius-xs);
 }
 
-.list-header {
+.listHeader {
   display: grid;
   align-items: center;
   min-height: 44px;
@@ -278,7 +278,7 @@
   letter-spacing: 0.02em;
 }
 
-.list-row {
+.listRow {
   display: grid;
   align-items: center;
   min-height: 52px;
@@ -287,12 +287,85 @@
   border-bottom: var(--border-width) solid var(--color-border);
 }
 
-.list-row:last-child {
+.listRow:last-child {
   border-bottom: none;
 }
 
-.list-row:hover {
+.listRow:hover {
   background: var(--color-bg-hover);
+}
+
+.headerCell {
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 var(--space-lg);
+  display: flex;
+  align-items: center;
+  background: var(--color-button-primary-bg);
+  border-bottom: var(--border-width) solid var(--color-border);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-button-primary-text);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.bodyCell {
+  min-width: 0;
+  min-height: 52px;
+  padding: var(--space-sm) var(--space-lg);
+  display: flex;
+  align-items: center;
+  background: var(--color-bg-surface);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.rowGroup {
+  display: contents;
+}
+
+.rowGroup:hover > .bodyCell {
+  background: var(--color-bg-hover);
+}
+
+.rowGroup:last-of-type > .bodyCell {
+  border-bottom: none;
+}
+
+.actionGroup {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.listStackSm {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statusBlock,
+.timeBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.primaryText,
+.metaText {
+  margin: 0;
+}
+
+.primaryText {
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.metaText {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
 }
 
 /* ---------- BADGES / PILLS ---------- */

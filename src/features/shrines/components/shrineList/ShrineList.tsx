@@ -3,6 +3,18 @@ import { getShrineList, type ShrineListDto } from "../../shrinesApi";
 import styles from "./ShrineList.module.css";
 import { useNavigate } from "react-router-dom";
 
+function formatUpdatedAt(dateString?: string | null) {
+  if (!dateString) return "-";
+
+  return new Date(dateString).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
 export default function ShrineList() {
   const navigate = useNavigate();
   const [shrines, setShrines] = useState<ShrineListDto[]>([]);
@@ -40,60 +52,65 @@ export default function ShrineList() {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={`list-header ${styles.gridRow}`}>
-        <div>Shrine</div>
-        <div>Status</div>
-        <div>Location</div>
-        <div>Last Updated</div>
-        <div>Readiness</div>
-        <div>Actions</div>
-      </div>
+    <div className={styles.wrapper}>
+      <div className={`listShell ${styles.gridTable}`}>
+        {/* Header */}
+        <div className={`headerCell ${styles.shrineCol}`}>Shrine</div>
+        <div className={`headerCell ${styles.statusCol}`}>Status</div>
+        <div className={`headerCell ${styles.locationCol}`}>Location</div>
+        <div className={`headerCell ${styles.updatedCol}`}>Last Updated</div>
+        <div className={`headerCell ${styles.readinessCol}`}>Readiness</div>
+        <div className={`headerCell ${styles.actionsCol}`}>Actions</div>
 
-      {shrines.map((s) => (
-        <div key={s.shrineId} className={`list-row ${styles.gridRow}`}>
-          <div className={styles.cell}>
-            <div className={styles.shrineItem}>
-              <p className={styles.primaryText}>{s.nameEn ?? "-"}</p>
-              <p className={styles.secondaryText}>{s.nameJp ?? "-"}</p>
+        {/* Rows */}
+        {shrines.map((s) => (
+          <div key={s.shrineId} className="rowGroup">
+            <div className={`bodyCell ${styles.shrineCol}`}>
+              <div className="listStackSm">
+                <p className="primaryText">{s.nameEn ?? "-"}</p>
+                <p className="metaText">{s.nameJp ?? "-"}</p>
+              </div>
             </div>
-          </div>
 
-          <div className={styles.cell}>
-            <span className="pill">{s.status ?? "-"}</span>
-          </div>
+            <div className={`bodyCell ${styles.statusCol}`}>
+              <span className="pill">{s.status ?? "-"}</span>
+            </div>
 
-          <div className={styles.cell}>
-            <div className={styles.locationItem}>
-              <p className={styles.primaryText}>{s.city ?? "-"}</p>
-              <div className={styles.coords}>
-                <span>Lat: {s.lat ?? "-"}</span>
-                <span>Lon: {s.lon ?? "-"}</span>
+            <div className={`bodyCell ${styles.locationCol}`}>
+              <div className="listStackSm">
+                <p className="primaryText">{s.city ?? "-"}</p>
+                <div className={styles.coords}>
+                  <span>Lat: {s.lat ?? "-"}</span>
+                  <span>Lon: {s.lon ?? "-"}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className={`bodyCell ${styles.updatedCol}`}>
+              <div className="timeBlock">
+                <p className="primaryText">{formatUpdatedAt(s.updatedAt)}</p>
+              </div>
+            </div>
+
+            <div className={`bodyCell ${styles.readinessCol}`}>
+              <span className="text-sm text-secondary">-</span>
+            </div>
+
+            <div className={`bodyCell ${styles.actionsCol}`}>
+              <div className="actionGroup">
+                <button
+                  type="button"
+                  className="btn btn-outline"
+                  onClick={() => navigate(`/shrines/${s.shrineId}`)}
+                >
+                  Edit
+                </button>
               </div>
             </div>
           </div>
+        ))}
+      </div>
 
-          <div className={styles.cell}>
-            <p className={styles.primaryText}>
-              {s.updatedAt ? new Date(s.updatedAt).toLocaleString() : "-"}
-            </p>
-          </div>
-
-          <div className={styles.cell}>
-            <span className="text-sm text-secondary">-</span>
-          </div>
-
-          <div className={styles.cell}>
-            <button 
-              className="btn btn-outline"
-              onClick={() => navigate(`/shrines/${s.shrineId}`)}
-            >
-              Edit
-            </button>
-          </div>
-        </div>
-      ))}
-      
       <div className={styles.paginationBar}>
         <div className={styles.paginationLeft}>
           <span className={styles.paginationLabel}>Rows per page</span>

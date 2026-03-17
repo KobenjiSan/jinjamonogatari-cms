@@ -1,17 +1,10 @@
-.gridRow {
+.listGrid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 2fr auto;
-  gap: 12px;
+  grid-template-columns: 2fr 2fr 3fr auto;
 }
 
-.actionGroup {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-}
-
-.cell {
-  min-width: 0;
+.disabledRow > .bodyCell {
+  opacity: 0.65;
 }
 
 .kamiItem {
@@ -20,17 +13,9 @@
   gap: 2px;
 }
 
-.primaryText,
 .secondaryText,
-.summaryText,
-.metaText {
+.summaryText {
   margin: 0;
-}
-
-.primaryText {
-  font-size: var(--font-md);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary);
 }
 
 .secondaryText {
@@ -46,16 +31,4 @@
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
-}
-
-.statusBlock,
-.timeBlock {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.metaText {
-  font-size: var(--font-sm);
-  color: var(--color-text-muted);
 }

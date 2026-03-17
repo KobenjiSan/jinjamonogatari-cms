@@ -72,92 +72,87 @@ export default function KamiList({
   }
 
   return (
-    <div className="list-shell">
-      <div className={`list-header ${styles.gridRow}`}>
-        <div>Kami</div>
-        <div>Summary</div>
-        <div>Status</div>
-        <div>Created / Updated</div>
-        <div>Actions</div>
+    <div className="listShell">
+      <div className={styles.listGrid}>
+        <div className="headerCell">Kami</div>
+        <div className="headerCell">Status</div>
+        <div className="headerCell">Created / Updated</div>
+        <div className="headerCell">Actions</div>
+
+        {kami.map((k) => {
+          const isDisabled = disabledIds.includes(k.kamiId);
+
+          return (
+            <div
+              key={k.kamiId}
+              className={`rowGroup ${isDisabled ? styles.disabledRow : ""}`}
+            >
+              <div className="bodyCell">
+                <div className={styles.kamiItem}>
+                  <p className="primaryText">{k.nameEn ?? "-"}</p>
+                  <p className={styles.secondaryText}>{k.nameJp ?? "-"}</p>
+                </div>
+              </div>
+
+              <div className="bodyCell">
+                <div className="listStackSm">
+                  <span className="pill">{k.status ?? "-"}</span>
+                </div>
+              </div>
+
+              <div className="bodyCell">
+                <div className="listStackSm">
+                  <p className="metaText">
+                    Created:{" "}
+                    {k.createdAt ? new Date(k.createdAt).toLocaleString() : "-"}
+                  </p>
+                  <p className="metaText">
+                    Updated:{" "}
+                    {k.updatedAt ? new Date(k.updatedAt).toLocaleString() : "-"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="bodyCell">
+                {id != null ? (
+                  <div className="actionGroup">
+                    <button
+                      type="button"
+                      className="btn btn-outline"
+                      onClick={() => onEdit?.(k)}
+                    >
+                      Edit
+                    </button>
+
+                    <button
+                      type="button"
+                      className="btn btn-ghost"
+                      onClick={() => onRemove(k)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : (
+                  <div className="actionGroup">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      disabled={isDisabled}
+                      onClick={() => {
+                        if (!isDisabled) {
+                          onSelect?.(k);
+                        }
+                      }}
+                    >
+                      Add
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
-
-      {kami.map((k) => {
-        const isDisabled = disabledIds.includes(k.kamiId);
-
-        return (
-          <div
-            key={k.kamiId}
-            className={`list-row ${styles.gridRow} ${isDisabled ? styles.disabledRow : ""}`}
-          >
-            <div className={styles.cell}>
-              <div className={styles.kamiItem}>
-                <p className={styles.primaryText}>{k.nameEn ?? "-"}</p>
-                <p className={styles.secondaryText}>{k.nameJp ?? "-"}</p>
-              </div>
-            </div>
-
-            <div className={styles.cell}>
-              <p className={styles.summaryText}>{k.desc ?? "-"}</p>
-            </div>
-
-            <div className={styles.cell}>
-              <div className={styles.statusBlock}>
-                <span className="pill">{k.status ?? "-"}</span>
-              </div>
-            </div>
-
-            <div className={styles.cell}>
-              <div className={styles.timeBlock}>
-                <p className={styles.metaText}>
-                  Created:{" "}
-                  {k.createdAt ? new Date(k.createdAt).toLocaleString() : "-"}
-                </p>
-                <p className={styles.metaText}>
-                  Updated:{" "}
-                  {k.updatedAt ? new Date(k.updatedAt).toLocaleString() : "-"}
-                </p>
-              </div>
-            </div>
-
-            <div className={styles.cell}>
-              {id != null ? (
-                <div className={styles.actionGroup}>
-                  <button
-                    type="button"
-                    className="btn btn-outline"
-                    onClick={() => onEdit?.(k)}
-                  >
-                    Edit
-                  </button>
-
-                  <button
-                    type="button"
-                    className="btn btn-ghost"
-                    onClick={() => onRemove?.(k)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              ) : (
-                <div className={styles.actionGroup}>
-                  <button
-                    type="button"
-                    className="btn btn-primary"
-                    disabled={isDisabled}
-                    onClick={() => {
-                      if (!isDisabled) {
-                        onSelect?.(k);
-                      }
-                    }}
-                  >
-                    Add
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 }

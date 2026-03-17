@@ -1,37 +1,39 @@
 import { useEffect, useMemo, useState } from "react";
-import type { KamiCMSDto } from "../../kamiApi";
-import styles from "./KamiEditForm.module.css";
+import type { HistoryCMSDto } from "../../historyApi";
+import styles from "./HistoryEditForm.module.css";
 import { emptyCitation } from "../../../../../../../../shared/citations/helpers/CitationSection.helper";
 import type { CitationFormValues } from "../../../../../../../../shared/citations/helpers/CitationSection.types";
 import type { ImageFormValues } from "../../../../../../../../shared/images/helpers/ImageSection.types";
 import {
-  emptyKamiForm,
-  mapKamiToForm,
-} from "./helpers/KamiForm.helper";
-import type { KamiFormValues } from "./helpers/KamiForm.types";
-import KamiDetailsSection from "./components/KamiDetailsSection";
-import KamiReadOnlySection from "./components/KamiReadOnlySection";
+  emptyHistoryForm,
+  mapHistoryToForm,
+} from "./helpers/HistoryForm.helper";
+import type { HistoryFormValues } from "./helpers/HistoryForm.types";
+import HistoryDetailsSection from "./components/HistoryDetailsSection";
+import HistoryReadOnlySection from "./components/HistoryReadOnlySection";
 import CitationSection from "../../../../../../../../shared/citations/citationSection/CitationSection";
 import ImageSection from "../../../../../../../../shared/images/imageSection/ImageSection";
 
-type KamiEditFormProps = {
-  kami: KamiCMSDto | null;
-  onChange?: (nextForm: KamiFormValues) => void;
+type HistoryEditFormProps = {
+  history: HistoryCMSDto | null;
+  onChange?: (nextForm: HistoryFormValues) => void;
 };
 
-export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
-  const [formValues, setFormValues] = useState<KamiFormValues>(emptyKamiForm);
+export default function HistoryEditForm({
+  history,
+  onChange,
+}: HistoryEditFormProps) {
+  const [formValues, setFormValues] =
+    useState<HistoryFormValues>(emptyHistoryForm);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  // Map elements to form
   useEffect(() => {
-    const mapped = mapKamiToForm(kami);
+    const mapped = mapHistoryToForm(history);
     setFormValues(mapped);
     setImageFile(null);
     onChange?.(mapped);
-  }, [kami, onChange]);
+  }, [history, onChange]);
 
-  // IMAGE PREVIEWING SETUP
   const previewUrl = useMemo(() => {
     if (imageFile) {
       return URL.createObjectURL(imageFile);
@@ -48,9 +50,11 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
     };
   }, [imageFile, previewUrl]);
 
-  // BASIC FIELD HANDLING
   function handleFieldChange(
-    field: keyof Pick<KamiFormValues, "nameEn" | "nameJp" | "desc">,
+    field: keyof Pick<
+      HistoryFormValues,
+      "eventDate" | "sortOrder" | "title" | "information"
+    >,
     value: string,
   ) {
     setFormValues((prev) => {
@@ -64,7 +68,6 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
     });
   }
 
-  // IMAGE HANDLING
   function handleImageChange(nextImage: ImageFormValues) {
     setFormValues((prev) => {
       const next = {
@@ -77,7 +80,6 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
     });
   }
 
-  // CITATION HANDLING
   function handleCitationChange(
     index: number,
     nextCitation: CitationFormValues,
@@ -122,12 +124,12 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
 
   return (
     <div className={styles.wrapper}>
-      <p className={styles.note}>Note: Changes here will update this Kami for all shrines it is linked with.</p>
-      <KamiDetailsSection
+      <HistoryDetailsSection
         values={{
-          nameEn: formValues.nameEn,
-          nameJp: formValues.nameJp,
-          desc: formValues.desc,
+          eventDate: formValues.eventDate,
+          sortOrder: formValues.sortOrder,
+          title: formValues.title,
+          information: formValues.information,
         }}
         onFieldChange={handleFieldChange}
       />
@@ -152,7 +154,7 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
 
       <div className={styles.divider} />
 
-      {kami && <KamiReadOnlySection kami={kami} />}
+      {history && <HistoryReadOnlySection history={history} />}
     </div>
   );
 }
