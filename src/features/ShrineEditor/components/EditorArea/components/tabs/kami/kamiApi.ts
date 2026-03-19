@@ -1,27 +1,17 @@
 // Handles api calls for shrine editor kami
 import { apiFetch } from "../../../../../../../api/apiClient";
+import type { 
+  CitationCMSDto,
+  CreateCitationRequest,
+  CitationListChangesRequest
+ } from "../../../../../../shared/citations/helpers/CitationApi.types";
+import type {
+  ImageCMSDto,
+  CreateImageRequest,
+  ImageChangeRequest
+} from "../../../../../../shared/images/helpers/ImageApi.types"
 
-// Helpers
-export type CitationCMSDto = {
-  citeId: number;
-  title: string | null;
-  author: string | null;
-  url: string | null;
-  year: number | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type ImageCMSDto = {
-  imgId: number;
-  imageUrl: string | null;
-  title: string | null;
-  desc: string | null;
-  citation: CitationCMSDto | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
+// GET Kami by shrine
 export type KamiCMSDto = {
   kamiId: number;
   nameEn: string | null;
@@ -35,58 +25,23 @@ export type KamiCMSDto = {
   citations: CitationCMSDto[];
 };
 
-export type CreateCitationRequest = {
-  title: string | null;
-  author: string | null;
-  url: string | null;
-  year: number | null;
-};
+// GET Kami by shrine
+export async function getShrineKamiById(id: number): Promise<KamiCMSDto[]> {
+  return await apiFetch<KamiCMSDto[]>(`/api/shrines/cms/${id}/kami`);
+}
 
-export type CitationRequest = {
-  citeId: number;
-  title: string | null;
-  author: string | null;
-  url: string | null;
-  year: number | null;
-};
+// GET all Kami
+export async function getAllShrineKamiList(): Promise<KamiCMSDto[]> {
+  return await apiFetch<KamiCMSDto[]>("/api/shrines/cms/kami");
+}
 
-export type CitationListChangesRequest = {
-  create: CreateCitationRequest[];
-  update: CitationRequest[];
-  delete: number[];
-};
-
-export type CreateImageRequest = {
-  imgSource: string | null;
-  title: string | null;
-  desc: string | null;
-  citation: CreateCitationRequest | null;
-};
-
-export type ImageChangeRequest = {
-  action: string;
-  imgSource: string | null;
-  title: string | null;
-  desc: string | null;
-  citation: CitationRequest | CreateCitationRequest | null;
-};
-
+// CREATE Kami
 export type CreateKamiInShrineRequest = {
   nameEn: string | null;
   nameJp: string | null;
   desc: string | null;
   image: CreateImageRequest | null;
   citations: CreateCitationRequest[];
-};
-
-export type UpdateKamiRequest = {
-  basic: {
-    nameEn: string | null;
-    nameJp: string | null;
-    desc: string | null;
-  };
-  image: ImageChangeRequest;
-  citations: CitationListChangesRequest;
 };
 
 export async function createKamiInShrine(
@@ -102,6 +57,17 @@ export async function createKamiInShrine(
   });
 }
 
+// UPDATE Kami
+export type UpdateKamiRequest = {
+  basic: {
+    nameEn: string | null;
+    nameJp: string | null;
+    desc: string | null;
+  };
+  image: ImageChangeRequest;
+  citations: CitationListChangesRequest;
+};
+
 export async function updateKami(
   kamiId: number,
   payload: UpdateKamiRequest,
@@ -115,6 +81,8 @@ export async function updateKami(
   });
 }
 
+
+// LINK Kami
 export async function linkKamiToShrine(
   shrineId: number,
   kamiId: number,
@@ -124,6 +92,7 @@ export async function linkKamiToShrine(
   });
 }
 
+// UNLINK Kami
 export async function unlinkKamiFromShrine(
   shrineId: number,
   kamiId: number,
@@ -131,14 +100,4 @@ export async function unlinkKamiFromShrine(
   await apiFetch<void>(`/api/shrines/cms/${shrineId}/kami/${kamiId}`, {
     method: "DELETE",
   });
-}
-
-// GET kami by shrine
-export async function getShrineKamiById(id: number): Promise<KamiCMSDto[]> {
-  return await apiFetch<KamiCMSDto[]>(`/api/shrines/cms/${id}/kami`);
-}
-
-// GET all kami in a list
-export async function getAllShrineKamiList(): Promise<KamiCMSDto[]> {
-  return await apiFetch<KamiCMSDto[]>("/api/shrines/cms/kami");
 }

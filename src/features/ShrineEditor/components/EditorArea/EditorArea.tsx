@@ -3,6 +3,7 @@ import EditorTabs, { type EditorTabKey } from "./components/EditorTabs/EditorTab
 import styles from "./EditorArea.module.css";
 import KamiTab from "./components/tabs/kami/KamiTab";
 import HistoryTab from "./components/tabs/history/HistoryTab";
+import FolkloreTab from "./components/tabs/folklore/FolkloreTab";
 
 type EditorAreaProps = {
   shrineId: number;
@@ -20,7 +21,7 @@ export default function EditorArea({shrineId}: EditorAreaProps) {
       case "history":
         return <HistoryTab shrineId={shrineId} />;
       case "folklore":
-        return <div>Folklore editor goes here</div>;
+        return <FolkloreTab shrineId={shrineId} />;
       case "gallery":
         return <div>Gallery editor goes here</div>;
       default:

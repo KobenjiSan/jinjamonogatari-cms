@@ -1,87 +1,27 @@
 import type {
-  CitationListChangesRequest,
-  CitationRequest,
-  CreateCitationRequest,
-  CreateImageRequest,
   CreateKamiInShrineRequest,
-  ImageChangeRequest,
   UpdateKamiRequest,
   KamiCMSDto,
 } from "../kamiApi";
+import type { 
+  CitationListChangesRequest,
+  CitationRequest,
+  CreateCitationRequest
+} from "../../../../../../../shared/citations/helpers/CitationApi.types";
+import type { 
+  ImageChangeRequest
+} from "../../../../../../../shared/images/helpers/ImageApi.types";
 import type { KamiFormValues } from "../components/kamiEditForm/helpers/KamiForm.types";
 import type { CitationFormValues } from "../../../../../../../shared/citations/helpers/CitationSection.types";
 import type { ImageFormValues } from "../../../../../../../shared/images/helpers/ImageSection.types";
-
-function toNullableString(value: string): string | null {
-  const trimmed = value.trim();
-  return trimmed === "" ? null : trimmed;
-}
-
-function toNullableYear(value: string): number | null {
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-
-  const parsed = Number(trimmed);
-  return Number.isNaN(parsed) ? null : parsed;
-}
-
-function isCitationEmpty(citation: CitationFormValues | null | undefined): boolean {
-  if (!citation) return true;
-
-  return (
-    citation.title.trim() === "" &&
-    citation.author.trim() === "" &&
-    citation.url.trim() === "" &&
-    citation.year.trim() === ""
-  );
-}
-
-function isImageEmpty(image: ImageFormValues | null | undefined): boolean {
-  if (!image) return true;
-
-  return (
-    image.imageUrl.trim() === "" &&
-    image.title.trim() === "" &&
-    image.desc.trim() === "" &&
-    isCitationEmpty(image.citation)
-  );
-}
-
-function mapCitationFormToCreate(
-  citation: CitationFormValues,
-): CreateCitationRequest {
-  return {
-    title: toNullableString(citation.title),
-    author: toNullableString(citation.author),
-    url: toNullableString(citation.url),
-    year: toNullableYear(citation.year),
-  };
-}
-
-function mapCitationFormToUpdate(
-  citation: CitationFormValues,
-): CitationRequest {
-  return {
-    citeId: citation.citeId!,
-    title: toNullableString(citation.title),
-    author: toNullableString(citation.author),
-    url: toNullableString(citation.url),
-    year: toNullableYear(citation.year),
-  };
-}
-
-function mapImageFormToCreate(image: ImageFormValues): CreateImageRequest | null {
-  if (isImageEmpty(image)) return null;
-
-  return {
-    imgSource: toNullableString(image.imageUrl),
-    title: toNullableString(image.title),
-    desc: toNullableString(image.desc),
-    citation: isCitationEmpty(image.citation)
-      ? null
-      : mapCitationFormToCreate(image.citation),
-  };
-}
+import {
+  isCitationEmpty,
+  isImageEmpty,
+  mapCitationFormToCreate,
+  mapCitationFormToUpdate,
+  mapImageFormToCreate,
+  toNullableString,
+} from "../../../../helpers/tab.helpers";
 
 function mapImageFormToChange(
   image: ImageFormValues,

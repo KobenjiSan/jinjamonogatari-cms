@@ -1,0 +1,17 @@
+.listGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 2fr auto;
+}
+
+.folkloreTitleCol,
+.statusCol,
+.timestampsCol,
+.actionsCol {
+  min-width: 0;
+}
+
+.folkloreItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}

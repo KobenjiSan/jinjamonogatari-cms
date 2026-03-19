@@ -132,11 +132,11 @@ export default function HistoryTab({ shrineId }: HistoryTabProps) {
             <button
               type="button"
               className={`${mainStyles.actionButton} btn btn-outline`}
-              aria-label="Add history"
+              aria-label="New history"
               onClick={openAddHistoryModal}
             >
               <FiPlus size={18} />
-              <span>Add History</span>
+              <span>New History</span>
             </button>
           </div>
         </div>

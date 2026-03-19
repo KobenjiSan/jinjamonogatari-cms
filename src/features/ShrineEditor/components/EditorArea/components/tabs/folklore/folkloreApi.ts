@@ -10,10 +10,9 @@ import type {
   ImageChangeRequest
 } from "../../../../../../shared/images/helpers/ImageApi.types"
 
-// GET History by shrine
-export type HistoryCMSDto = {
-  historyId: number;
-  eventDate: string | null;
+// GET Folklore by shrine
+export type FolkloreCMSDto = {
+  folkloreId: number;
   sortOrder: number | null;
   title: string | null;
   information: string | null;
@@ -25,13 +24,12 @@ export type HistoryCMSDto = {
   citations: CitationCMSDto[];
 };
 
-export async function getShrineHistoryById(id: number): Promise<HistoryCMSDto[]> {
-    return await apiFetch<HistoryCMSDto[]>(`/api/shrines/cms/${id}/history`);
+export async function getShrineFolkloreById(id: number): Promise<FolkloreCMSDto[]> {
+    return await apiFetch<FolkloreCMSDto[]>(`/api/shrines/cms/${id}/folklore`);
 }
 
-// CREATE History
-export type CreateHistoryRequest = {
-  eventDate: string | null;
+// CREATE Folklore
+export type CreateFolkloreRequest = {
   sortOrder: number | null;
   title: string | null;
   information: string | null;
@@ -39,11 +37,11 @@ export type CreateHistoryRequest = {
   citations: CreateCitationRequest[];
 };
 
-export async function createHistory(
+export async function createFolklore(
   shrineId: number,
-  payload: CreateHistoryRequest,
+  payload: CreateFolkloreRequest,
 ): Promise<void> {
-  await apiFetch<void>(`/api/shrines/cms/${shrineId}/history`, {
+  await apiFetch<void>(`/api/shrines/cms/${shrineId}/folklore`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -52,10 +50,9 @@ export async function createHistory(
   });
 }
 
-// UPDATE History
-export type UpdateHistoryRequest = {
+// UPDATE Folklore
+export type UpdateFolkloreRequest = {
   basic: {
-    eventDate: string | null;
     sortOrder: number | null;
     title: string | null;
     information: string | null;
@@ -64,11 +61,11 @@ export type UpdateHistoryRequest = {
   citations: CitationListChangesRequest;
 };
 
-export async function updateHistory(
-  historyId: number,
-  payload: UpdateHistoryRequest,
+export async function updateFolklore(
+  folkloreId: number,
+  payload: UpdateFolkloreRequest,
 ): Promise<void> {
-  await apiFetch<void>(`/api/shrines/cms/history/${historyId}`, {
+  await apiFetch<void>(`/api/shrines/cms/folklore/${folkloreId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -77,11 +74,11 @@ export async function updateHistory(
   });
 }
 
-// DELETE History
-export async function deleteHistory(
-  historyId: number,
+// DELETE Folklore
+export async function deleteFolklore(
+  folkloreId: number,
 ): Promise<void> {
-  await apiFetch<void>(`/api/shrines/cms/history/${historyId}`, {
+  await apiFetch<void>(`/api/shrines/cms/folklore/${folkloreId}`, {
     method: "DELETE",
   });
 }

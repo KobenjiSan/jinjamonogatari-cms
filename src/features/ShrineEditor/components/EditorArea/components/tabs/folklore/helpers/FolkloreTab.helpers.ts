@@ -1,15 +1,15 @@
-import type {
-  CreateHistoryRequest,
-  HistoryCMSDto,
-  UpdateHistoryRequest,
-} from "../historyApi";
+import type { 
+    FolkloreCMSDto,
+    CreateFolkloreRequest,
+    UpdateFolkloreRequest
+} from "../folkloreApi";
 import type {
   CitationListChangesRequest,
   CitationRequest,
   CreateCitationRequest,
 } from "../../../../../../../shared/citations/helpers/CitationApi.types";
 import type { ImageChangeRequest } from "../../../../../../../shared/images/helpers/ImageApi.types";
-import type { HistoryFormValues } from "../components/HistoryEditForm/helpers/HistoryForm.types";
+import type { FolkloreFormValues } from "../components/FolkloreEditForm/helpers/FolkloreForm.types";
 import type { CitationFormValues } from "../../../../../../../shared/citations/helpers/CitationSection.types";
 import type { ImageFormValues } from "../../../../../../../shared/images/helpers/ImageSection.types";
 import {
@@ -24,7 +24,7 @@ import {
 
 function mapImageFormToChange(
   image: ImageFormValues,
-  existingImage: HistoryCMSDto["image"],
+  existingImage: FolkloreCMSDto["image"],
 ): ImageChangeRequest {
   const formImageIsEmpty = isImageEmpty(image);
   const hasExistingImage = !!existingImage;
@@ -76,7 +76,7 @@ function mapImageFormToChange(
 
 function buildCitationChanges(
   formCitations: CitationFormValues[],
-  existingCitations: HistoryCMSDto["citations"],
+  existingCitations: FolkloreCMSDto["citations"],
 ): CitationListChangesRequest {
   const create: CreateCitationRequest[] = [];
   const update: CitationRequest[] = [];
@@ -106,11 +106,10 @@ function buildCitationChanges(
   };
 }
 
-export function buildCreateHistoryPayload(
-  form: HistoryFormValues,
-): CreateHistoryRequest {
+export function buildCreateFolklorePayload(
+  form: FolkloreFormValues,
+): CreateFolkloreRequest {
   return {
-    eventDate: toNullableString(form.eventDate),
     sortOrder: toNullableNumber(form.sortOrder),
     title: toNullableString(form.title),
     information: toNullableString(form.information),
@@ -121,18 +120,17 @@ export function buildCreateHistoryPayload(
   };
 }
 
-export function buildUpdateHistoryPayload(
-  form: HistoryFormValues,
-  existingHistory: HistoryCMSDto,
-): UpdateHistoryRequest {
+export function buildUpdateFolklorePayload(
+  form: FolkloreFormValues,
+  existingFolklore: FolkloreCMSDto,
+): UpdateFolkloreRequest {
   return {
     basic: {
-      eventDate: toNullableString(form.eventDate),
       sortOrder: toNullableNumber(form.sortOrder),
       title: toNullableString(form.title),
       information: toNullableString(form.information),
     },
-    image: mapImageFormToChange(form.image, existingHistory.image),
-    citations: buildCitationChanges(form.citations, existingHistory.citations),
+    image: mapImageFormToChange(form.image, existingFolklore.image),
+    citations: buildCitationChanges(form.citations, existingFolklore.citations),
   };
 }

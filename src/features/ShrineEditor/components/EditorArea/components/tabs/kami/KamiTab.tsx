@@ -175,21 +175,22 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
           <div className={mainStyles.headerActions}>
             <button
               type="button"
-              className="icon-btn"
+              className={`${mainStyles.actionButton} btn btn-outline`}
               aria-label="Search kami"
               onClick={openKamiSearchModal}
             >
               <IoSearchOutline size={18} />
+              <span>Find Kami</span>
             </button>
 
             <button
               type="button"
               className={`${mainStyles.actionButton} btn btn-outline`}
-              aria-label="Add kami"
+              aria-label="new kami"
               onClick={openAddKamiModal}
             >
               <FiPlus size={18} />
-              <span>Create Kami</span>
+              <span>New Kami</span>
             </button>
           </div>
         </div>
