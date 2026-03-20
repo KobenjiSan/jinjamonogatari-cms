@@ -29,3 +29,11 @@ export type ImageChangeRequest = {
   desc: string | null;
   citation: CitationRequest | CreateCitationRequest | null;
 };
+
+export type UpdateImageRequest = {
+  imgId: number;
+  imgUrl: string | null;
+  title: string | null;
+  desc: string | null;
+  citation: CitationRequest | CreateCitationRequest | null;
+};

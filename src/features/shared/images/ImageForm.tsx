@@ -1,29 +1,6 @@
 import CitationForm from "../citations/CitationForm";
 import styles from "./ImageForm.module.css";
-
-type CitationFormValues = {
-  title: string;
-  author: string;
-  url: string;
-  year: string;
-
-  // readonly cms fields
-  citeId?: number;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
-type ImageFormValues = {
-  imageUrl: string;
-  title: string;
-  desc: string;
-  citation: CitationFormValues;
-
-  // readonly cms fields
-  imgId?: number;
-  createdAt?: string;
-  updatedAt?: string;
-};
+import type { ImageFormValues } from "./helpers/ImageSection.types";
 
 type ImageFormProps = {
   values: ImageFormValues;
@@ -51,7 +28,7 @@ export default function ImageForm({
     });
   }
 
-  function handleCitationChange(nextCitation: CitationFormValues) {
+  function handleCitationChange(nextCitation: ImageFormValues["citation"]) {
     onChange({
       ...values,
       citation: nextCitation,

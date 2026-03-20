@@ -57,7 +57,7 @@ export async function logout(): Promise<void> {
   }
 
   try {
-    await apiFetch<void>("api/users/logout", {
+    await apiFetch<void>("/api/users/logout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refreshToken }),
