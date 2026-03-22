@@ -1,3 +1,4 @@
+import type { EntityAuditDto } from "../../../ShrineEditor/components/EditorArea/components/tabs/status/statusApi";
 import type { 
   CitationCMSDto,
   CreateCitationRequest,
@@ -13,6 +14,7 @@ export type ImageCMSDto = {
   citation: CitationCMSDto | null;
   createdAt: string;
   updatedAt: string;
+  audit: EntityAuditDto | null;
 };
 
 export type CreateImageRequest = {

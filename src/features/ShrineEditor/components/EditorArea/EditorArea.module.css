@@ -1,5 +1,39 @@
-.mainArea{
-    padding: 16px;
+.editorArea {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 70px);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding-bottom: 8px;
+}
+
+.mainArea {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+.mainArea::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mainArea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mainArea::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: 999px;
+}
+
+.mainArea::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
 }
 
 .tabShell {

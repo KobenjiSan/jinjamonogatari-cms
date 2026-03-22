@@ -5,6 +5,7 @@ import {
   type KamiCMSDto,
 } from "../../kamiApi";
 import styles from "./KamiList.module.css";
+import { FiCheckCircle } from "react-icons/fi";
 
 type KamiListProps = {
   id?: number;
@@ -73,20 +74,37 @@ export default function KamiList({
 
   return (
     <div className="listShell">
-      <div className={styles.listGrid}>
+      <div
+        className={styles.listGrid}
+        style={{
+          gridTemplateColumns:
+            id != null
+              ? "50px 2fr 1fr 2fr 1fr auto"
+              : "50px 2fr 1fr 1.5fr auto",
+        }}
+      >
+        <div className="headerCell">ID</div>
         <div className="headerCell">Kami</div>
         <div className="headerCell">Status</div>
         <div className="headerCell">Created / Updated</div>
+        {id != null && <div className="headerCell">Issues</div>}
         <div className="headerCell">Actions</div>
 
         {kami.map((k) => {
           const isDisabled = disabledIds.includes(k.kamiId);
+          const errorCount = k.audit?.errorCount ?? 0;
+          const warningCount = k.audit?.warningCount ?? 0;
+          const isClean = errorCount === 0 && warningCount === 0;
 
           return (
             <div
               key={k.kamiId}
               className={`rowGroup ${isDisabled ? styles.disabledRow : ""}`}
             >
+              <div className="bodyCell">
+                <span className="metaText">{k.kamiId}</span>
+              </div>
+
               <div className="bodyCell">
                 <div className={styles.kamiItem}>
                   <p className="primaryText">{k.nameEn ?? "-"}</p>
@@ -113,6 +131,31 @@ export default function KamiList({
                 </div>
               </div>
 
+              {id != null && (
+                <div className="bodyCell">
+                  {isClean ? (
+                    <div className={styles.auditOk}>
+                      <FiCheckCircle className={styles.auditOkIcon} />
+                      <span>All good</span>
+                    </div>
+                  ) : (
+                    <div className={styles.auditStack}>
+                      {errorCount > 0 && (
+                        <span className={styles.errorPill}>
+                          {errorCount} error{errorCount !== 1 ? "s" : ""}
+                        </span>
+                      )}
+
+                      {warningCount > 0 && (
+                        <span className={styles.warningPill}>
+                          {warningCount} warning{warningCount !== 1 ? "s" : ""}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className="bodyCell">
                 {id != null ? (
                   <div className="actionGroup">
@@ -126,7 +169,7 @@ export default function KamiList({
 
                     <button
                       type="button"
-                      className="btn btn-ghost"
+                      className="btn btn-outline-danger"
                       onClick={() => onRemove(k)}
                     >
                       Remove

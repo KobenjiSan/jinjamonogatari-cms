@@ -5,18 +5,19 @@ import KamiTab from "./components/tabs/kami/KamiTab";
 import HistoryTab from "./components/tabs/history/HistoryTab";
 import FolkloreTab from "./components/tabs/folklore/FolkloreTab";
 import GalleryTab from "./components/tabs/gallery/GalleryTab";
+import StatusTab from "./components/tabs/status/StatusTab";
 
 type EditorAreaProps = {
   shrineId: number;
 };
 
-export default function EditorArea({shrineId}: EditorAreaProps) {
+export default function EditorArea({ shrineId }: EditorAreaProps) {
   const [activeTab, setActiveTab] = useState<EditorTabKey>("status");
 
   function renderTabContent() {
     switch (activeTab) {
       case "status":
-        return <div>Status editor goes here</div>;
+        return <StatusTab shrineId={shrineId} />;
       case "kami":
         return <KamiTab shrineId={shrineId} />;
       case "history":
@@ -31,9 +32,11 @@ export default function EditorArea({shrineId}: EditorAreaProps) {
   }
 
   return (
-    <div>
+    <section className={styles.editorArea}>
       <EditorTabs activeTab={activeTab} onTabChange={setActiveTab} />
-      <div className={styles.mainArea}>{renderTabContent()}</div>
-    </div>
+      <div className={styles.mainArea}>
+        {renderTabContent()}
+      </div>
+    </section>
   );
 }

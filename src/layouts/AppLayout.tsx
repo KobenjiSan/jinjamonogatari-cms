@@ -7,7 +7,7 @@ export default function AppLayout() {
     <div style={{ display: "flex", minHeight: "100vh" }}>
       <SideNav />
 
-      <main style={{ flex: 1, background: "#f7f6f3" }}>
+      <main style={{ flex: 1 }}>
         <Header />
         <Outlet />
       </main>

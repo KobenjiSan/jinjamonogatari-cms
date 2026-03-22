@@ -1,0 +1,145 @@
+.sectionError {
+  border-left: 4px solid var(--color-issue);
+}
+
+.sectionWarning {
+  border-left: 4px solid #ffc107;
+}
+
+.sectionHeader {
+  margin-bottom: var(--space-md);
+}
+
+.sectionTitle {
+  margin: 0 0 var(--space-xs) 0;
+  font-size: var(--font-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.sectionMeta {
+  margin: 0;
+  font-size: var(--font-md);
+  color: var(--color-text-secondary);
+}
+
+.itemGroupList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.itemGroupCard {
+  border-radius: var(--radius-md);
+  padding: var(--space-md);
+  border: var(--border-width) solid transparent;
+  border-color: var(--color-gray-300);
+}
+
+.itemGroupHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.itemGroupTitle {
+  margin: 0;
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.itemGroupMeta {
+  margin: 0;
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  align-self: center;
+}
+
+.issueList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.issueRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  border: var(--border-width) solid transparent;
+}
+
+.issueRowError {
+  background: rgba(201, 74, 74, 0.12);
+  border-color: rgba(201, 74, 74, 0.35);
+}
+
+.issueRowWarning {
+  background: rgba(255, 193, 7, 0.12);
+  border-color: rgba(255, 193, 7, 0.45);
+}
+
+.issueRowLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.inlineSeverityError,
+.inlineSeverityWarning,
+.metaBadge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-md);
+  padding: 6px 10px;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  border: var(--border-width) solid transparent;
+}
+
+.inlineSeverityError {
+  background: rgba(201, 74, 74, 0.16);
+  color: var(--color-issue);
+  border-color: rgba(201, 74, 74, 0.32);
+}
+
+.inlineSeverityWarning {
+  background: rgba(255, 193, 7, 0.18);
+  color: #8a6300;
+  border-color: rgba(255, 193, 7, 0.4);
+}
+
+.metaBadge {
+  background: rgba(75, 75, 75, 0.12);
+  color: rgb(104, 104, 104);
+  border-color: rgba(99, 99, 99, 0.25);
+}
+
+.issueInlineMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.issueInlineTextError {
+  margin: 0;
+  color: var(--color-issue);
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+}
+
+.issueInlineTextWarning {
+  margin: 0;
+  color: #8a6300;
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+}

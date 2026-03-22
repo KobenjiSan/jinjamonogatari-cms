@@ -1,11 +1,12 @@
 .listGrid {
   display: grid;
-  grid-template-columns: 2fr 1fr 2fr auto;
+  grid-template-columns: 50px 2fr 1fr 2fr 1fr auto;
 }
 
 .folkloreTitleCol,
 .statusCol,
 .timestampsCol,
+.issuesCol,
 .actionsCol {
   min-width: 0;
 }
@@ -14,4 +15,71 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+
+.secondaryText,
+.summaryText {
+  margin: 0;
+}
+
+.secondaryText {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+.summaryText {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.auditStack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.auditOk {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: #15803d;
+}
+
+.auditOkIcon {
+  font-size: 16px;
+}
+
+.errorPill,
+.warningPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0px 10px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.errorPill {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.warningPill {
+  background: rgba(234, 179, 8, 0.14);
+  color: #ca8a04;
+  border: 1px solid rgba(234, 179, 8, 0.3);
 }

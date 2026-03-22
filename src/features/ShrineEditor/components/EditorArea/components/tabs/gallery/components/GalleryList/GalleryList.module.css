@@ -1,71 +1,112 @@
 .listGrid {
   display: grid;
-  grid-template-columns: 120px minmax(0, 1fr) 220px 120px;
+  grid-template-columns: 50px 92px 2.5fr 2fr 1fr auto;
 }
 
-.previewCol {
-  min-width: 0;
-}
-
-.infoCol {
-  min-width: 0;
-}
-
-.timestampsCol {
-  min-width: 0;
-}
-
+.previewCol,
+.infoCol,
+.timestampsCol,
+.issuesCol,
 .actionsCol {
   min-width: 0;
 }
 
 .previewWrap {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .previewImage {
-  width: 72px;
-  height: 72px;
+  width: 64px;
+  height: 64px;
   object-fit: cover;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-md);
   display: block;
+  border: 1px solid var(--color-border-primary);
+  background: var(--color-surface-secondary);
 }
 
 .previewPlaceholder {
-  width: 72px;
-  height: 72px;
-  border-radius: 0.5rem;
+  width: 64px;
+  height: 64px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 0.5rem;
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-  background: var(--surface-2);
-  border: 1px solid var(--border-subtle);
+  padding: 6px;
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+  background: var(--color-surface-secondary);
+  border: 1px solid var(--color-border-primary);
 }
 
 .infoBlock {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 4px;
+}
+
+.descText,
+.metaLine {
+  margin: 0;
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
 }
 
 .descText {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--text-secondary);
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
-.actionStack {
+.auditStack {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 6px;
+  align-items: flex-start;
+}
+
+.auditOk {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: #15803d;
+}
+
+.auditOkIcon {
+  font-size: 16px;
+}
+
+.errorPill,
+.warningPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0px 10px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.errorPill {
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.warningPill {
+  background: rgba(234, 179, 8, 0.14);
+  color: #ca8a04;
+  border: 1px solid rgba(234, 179, 8, 0.3);
 }

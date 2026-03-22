@@ -124,7 +124,7 @@ export default function ImageForm({
       </div>
 
       <div className={styles.citationSection}>
-        <p className={styles.sectionTitle}>Citation</p>
+        <p className={styles.sectionTitle}>Image Citation</p>
         <CitationForm
           values={values.citation}
           onChange={handleCitationChange}

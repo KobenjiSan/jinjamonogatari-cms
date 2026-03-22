@@ -10,6 +10,7 @@ import type {
   CreateImageRequest,
   ImageChangeRequest
 } from "../../../../../../shared/images/helpers/ImageApi.types"
+import type { EntityAuditDto } from "../status/statusApi";
 
 // GET Kami by shrine
 export type KamiCMSDto = {
@@ -23,7 +24,9 @@ export type KamiCMSDto = {
   updatedAt: string;
   image: ImageCMSDto | null;
   citations: CitationCMSDto[];
+  audit: EntityAuditDto;
 };
+
 
 // GET Kami by shrine
 export async function getShrineKamiById(id: number): Promise<KamiCMSDto[]> {

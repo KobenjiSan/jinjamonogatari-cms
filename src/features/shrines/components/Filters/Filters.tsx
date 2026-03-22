@@ -17,7 +17,7 @@ export default function Filters() {
         <option>Filter</option>
       </select>
 
-      <button className="btn btn-primary">
+      <button className="btn btn-outline">
         Apply
       </button>
     </div>

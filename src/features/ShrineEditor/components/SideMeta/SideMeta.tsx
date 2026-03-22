@@ -15,8 +15,8 @@ import TagsSection from "./components/tags/TagSection";
 import PublishingSection from "./components/PublishingSection";
 import TimestampsSection from "./components/TimestampsSection";
 import HeroImageSection from "./components/image/HeroImageSection";
-import type { EditableTag } from "./components/tags/TagSection";
-import type { EditableHeroImage } from "./components/image/HeroImageSection";
+import type { EditableTag } from "./components/tags/helpers/TagSection.types";
+import type { EditableHeroImage } from "./components/image/helpers/HeroImageSection.types";
 
 import type { EditableShrineMeta } from "./helpers/SideMeta.types";
 import {
@@ -101,13 +101,9 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
 
   async function handleSaveMeta() {
     if (!formData) return;
-
     const payload = buildUpdateShrineMetaPayload(formData);
-
     await updateShrineMeta(shrineId, payload);
-
     const refreshed = await getShrineMetaById(shrineId);
-
     setOriginalMeta(cloneShrineMeta(refreshed));
     setFormData(cloneShrineMeta(refreshed));
   }

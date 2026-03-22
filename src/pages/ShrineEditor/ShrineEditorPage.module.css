@@ -1,0 +1,26 @@
+.layout {
+  display: flex;
+  height: calc(100vh - 70px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.leftPane {
+  flex: 2.25;
+  min-width: 0;
+  min-height: 0;
+}
+
+.centerPane {
+  flex: 8;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rightPane {
+  flex: 2.5;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}

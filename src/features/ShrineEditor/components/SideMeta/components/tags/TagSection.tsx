@@ -3,33 +3,24 @@ import BaseModal from "../../../../../../shared/components/modal/BaseModal";
 import TagForm from "../../../../../shared/tags/TagForm";
 import styles from "./TagSection.module.css";
 
-import type { TagDto } from "../../../../ShrineEditorApi";
-
-type TagFormValues = {
-  titleEn: string;
-  titleJp: string;
-};
-
-export type EditableTag = TagDto & {
-  isNew?: boolean;
-  isEdited?: boolean;
-  isMarkedForRemoval?: boolean;
-};
-
-type TagsSectionProps = {
-  tags: EditableTag[];
-  onChange: (nextTags: EditableTag[]) => void;
-};
-
-const emptyTagForm: TagFormValues = {
-  titleEn: "",
-  titleJp: "",
-};
+import {
+  buildNewTag,
+  buildUpdatedTags,
+  getTagChipClassName,
+  mapTagToForm,
+  toggleRemoveTag,
+} from "./helpers/TagSection.helpers";
+import {
+  emptyTagForm,
+  type EditableTag,
+  type TagsSectionProps,
+} from "./helpers/TagSection.types";
+import { FiPlus } from "react-icons/fi";
 
 export default function TagsSection({ tags, onChange }: TagsSectionProps) {
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
   const [editingTagId, setEditingTagId] = useState<number | null>(null);
-  const [tagForm, setTagForm] = useState<TagFormValues>(emptyTagForm);
+  const [tagForm, setTagForm] = useState(emptyTagForm);
 
   function openCreateTagModal() {
     setEditingTagId(null);
@@ -39,10 +30,7 @@ export default function TagsSection({ tags, onChange }: TagsSectionProps) {
 
   function openEditTagModal(tag: EditableTag) {
     setEditingTagId(tag.tagId);
-    setTagForm({
-      titleEn: tag.titleEn ?? "",
-      titleJp: tag.titleJp ?? "",
-    });
+    setTagForm(mapTagToForm(tag));
     setIsTagModalOpen(true);
   }
 
@@ -53,72 +41,20 @@ export default function TagsSection({ tags, onChange }: TagsSectionProps) {
   }
 
   function handleSaveTag() {
-    const trimmedTitleEn = tagForm.titleEn.trim();
-    const trimmedTitleJp = tagForm.titleJp.trim();
-
-    if (!trimmedTitleEn) return;
-
     if (editingTagId === null) {
-      const newTag: EditableTag = {
-        tagId: Date.now(),
-        titleEn: trimmedTitleEn,
-        titleJp: trimmedTitleJp,
-        isNew: true,
-        isEdited: false,
-        isMarkedForRemoval: false,
-      };
+      const newTag = buildNewTag(tagForm);
+      if (!newTag) return;
 
       onChange([...tags, newTag]);
     } else {
-      onChange(
-        tags.map((tag) =>
-          tag.tagId === editingTagId
-            ? {
-                ...tag,
-                titleEn: trimmedTitleEn,
-                titleJp: trimmedTitleJp,
-                isEdited: !tag.isNew,
-                isMarkedForRemoval: false,
-              }
-            : tag
-        )
-      );
+      onChange(buildUpdatedTags(tags, editingTagId, tagForm));
     }
 
     closeTagModal();
   }
 
   function handleToggleRemoveTag(tagId: number) {
-    const tagToUpdate = tags.find((tag) => tag.tagId === tagId);
-    if (!tagToUpdate) return;
-
-    if (tagToUpdate.isNew) {
-      onChange(tags.filter((tag) => tag.tagId !== tagId));
-      return;
-    }
-
-    onChange(
-      tags.map((tag) =>
-        tag.tagId === tagId
-          ? {
-              ...tag,
-              isMarkedForRemoval: !tag.isMarkedForRemoval,
-            }
-          : tag
-      )
-    );
-  }
-
-  function getTagChipClassName(tag: EditableTag) {
-    if (tag.isMarkedForRemoval) {
-      return `${styles.tagChip} ${styles.tagChipRemoved}`;
-    }
-
-    if (tag.isNew || tag.isEdited) {
-      return `${styles.tagChip} ${styles.changedInput}`;
-    }
-
-    return styles.tagChip;
+    onChange(toggleRemoveTag(tags, tagId));
   }
 
   return (
@@ -129,7 +65,15 @@ export default function TagsSection({ tags, onChange }: TagsSectionProps) {
         <div className={styles.tagList}>
           {tags.length ? (
             tags.map((tag) => (
-              <div key={tag.tagId} className={getTagChipClassName(tag)}>
+              <div
+                key={tag.tagId}
+                className={getTagChipClassName(
+                  tag,
+                  styles.tagChip,
+                  styles.tagChipRemoved,
+                  styles.changedInput
+                )}
+              >
                 <button
                   type="button"
                   className={styles.tagChipButton}
@@ -169,7 +113,8 @@ export default function TagsSection({ tags, onChange }: TagsSectionProps) {
           className="btn btn-outline"
           onClick={openCreateTagModal}
         >
-          + Add Tag
+          <FiPlus size={16} />
+          <span className={styles.tagButtonText}>Add Tag</span>
         </button>
       </div>
 

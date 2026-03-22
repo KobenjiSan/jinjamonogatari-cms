@@ -1,74 +1,30 @@
 import { useEffect, useMemo, useState } from "react";
-import { MdModeEdit } from "react-icons/md";
 
 import BaseModal from "../../../../../../shared/components/modal/BaseModal";
 import ImageForm from "../../../../../shared/images/ImageForm";
+import { emptyImage, mapImageToForm } from "../../../../../shared/images/helpers/ImageSection.helper";
+import type { ImageFormValues } from "../../../../../shared/images/helpers/ImageSection.types";
 import styles from "./HeroImageSection.module.css";
 
-import type { ImageFullDto } from "../../../../ShrineEditorApi";
-
-type CitationFormValues = {
-  title: string;
-  author: string;
-  url: string;
-  year: string;
-};
-
-type ImageFormValues = {
-  imageUrl: string;
-  title: string;
-  desc: string;
-  citation: CitationFormValues;
-};
-
-export type EditableHeroImage = ImageFullDto & {
-  file?: File | null;
-  isNew?: boolean;
-  isEdited?: boolean;
-  isRemoved?: boolean;
-};
-
-type HeroImageSectionProps = {
-  image: EditableHeroImage | null;
-  onChange: (nextImage: EditableHeroImage | null) => void;
-};
-
-const emptyImageForm: ImageFormValues = {
-  imageUrl: "",
-  title: "",
-  desc: "",
-  citation: {
-    title: "",
-    author: "",
-    url: "",
-    year: "",
-  },
-};
-
-function mapImageToForm(image: ImageFullDto | null): ImageFormValues {
-  return {
-    imageUrl: image?.imageUrl ?? "",
-    title: image?.title ?? "",
-    desc: image?.desc ?? "",
-    citation: {
-      title: image?.citation?.title ?? "",
-      author: image?.citation?.author ?? "",
-      url: image?.citation?.url ?? "",
-      year: image?.citation?.year?.toString() ?? "",
-    },
-  };
-}
+import {
+  buildHeroImagePayload,
+  getImagePreviewClassName,
+} from "./helpers/HeroImageSection.helpers";
+import type {
+  HeroImageSectionProps,
+} from "./helpers/HeroImageSection.types";
 
 export default function HeroImageSection({
   image,
   onChange,
 }: HeroImageSectionProps) {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [imageForm, setImageForm] = useState<ImageFormValues>(emptyImageForm);
+  const [imageForm, setImageForm] = useState<ImageFormValues>(emptyImage);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const hasActiveImage = !!image && !image.isRemoved;
 
   function openAddImageModal() {
-    setImageForm(emptyImageForm);
+    setImageForm(emptyImage);
     setSelectedFile(null);
     setIsImageModalOpen(true);
   }
@@ -81,7 +37,7 @@ export default function HeroImageSection({
 
   function closeImageModal() {
     setIsImageModalOpen(false);
-    setImageForm(emptyImageForm);
+    setImageForm(emptyImage);
     setSelectedFile(null);
   }
 
@@ -93,14 +49,6 @@ export default function HeroImageSection({
     return imageForm.imageUrl || null;
   }, [selectedFile, imageForm.imageUrl]);
 
-  function getImagePreviewClassName() {
-    if (image?.isNew || image?.isEdited || image?.isRemoved) {
-      return `${styles.imagePreview} ${styles.changedInput}`;
-    }
-
-    return styles.imagePreview;
-  }
-
   useEffect(() => {
     return () => {
       if (selectedFile && previewUrl?.startsWith("blob:")) {
@@ -110,49 +58,7 @@ export default function HeroImageSection({
   }, [selectedFile, previewUrl]);
 
   function handleSaveImage() {
-    const trimmedTitle = imageForm.title.trim();
-    const trimmedDesc = imageForm.desc.trim();
-
-    const hasCitationChanges =
-      (image?.citation?.title ?? "") !==
-        (imageForm.citation.title.trim() || "") ||
-      (image?.citation?.author ?? "") !==
-        (imageForm.citation.author.trim() || "") ||
-      (image?.citation?.url ?? "") !== (imageForm.citation.url.trim() || "") ||
-      (image?.citation?.year?.toString() ?? "") !==
-        (imageForm.citation.year.trim() || "");
-
-    const hasImageChanges =
-      !!selectedFile ||
-      (image?.title ?? "") !== (trimmedTitle || "") ||
-      (image?.desc ?? "") !== (trimmedDesc || "") ||
-      hasCitationChanges;
-
-    const nextImage: EditableHeroImage = {
-      imgId: image?.imgId ?? Date.now(),
-      imageUrl: image?.imageUrl ?? null,
-      title: trimmedTitle || null,
-      desc: trimmedDesc || null,
-      citation:
-        imageForm.citation.title.trim() ||
-        imageForm.citation.author.trim() ||
-        imageForm.citation.url.trim() ||
-        imageForm.citation.year.trim()
-          ? {
-              citeId: image?.citation?.citeId ?? Date.now() + 1,
-              title: imageForm.citation.title.trim() || null,
-              author: imageForm.citation.author.trim() || null,
-              url: imageForm.citation.url.trim() || null,
-              year: imageForm.citation.year.trim()
-                ? Number(imageForm.citation.year)
-                : null,
-            }
-          : null,
-      file: selectedFile,
-      isNew: !image,
-      isEdited: !!image && hasImageChanges,
-    };
-
+    const nextImage = buildHeroImagePayload(image, imageForm, selectedFile);
     onChange(nextImage);
     closeImageModal();
   }
@@ -184,24 +90,18 @@ export default function HeroImageSection({
       <div className={styles.block}>
         <p className={styles.blockTitle}>Hero Image</p>
 
-        <div className={getImagePreviewClassName()}>
-          {image?.imageUrl && !image.isRemoved ? (
-            <>
-              <img
-                src={image.imageUrl}
-                alt={image.title ?? "Hero image"}
-                className={styles.heroImage}
-              />
-
-              <button
-                type="button"
-                className={styles.imageAction}
-                onClick={openEditImageModal}
-                aria-label="Edit hero image"
-              >
-                <MdModeEdit />
-              </button>
-            </>
+        <div className={getImagePreviewClassName(
+            image,
+            styles.imagePreview,
+            styles.changedInput
+          )}
+        >
+          {hasActiveImage && image?.imageUrl ?  (
+            <img
+              src={image.imageUrl}
+              alt={image.title ?? "Hero image"}
+              className={styles.heroImage}
+            />
           ) : (
             <span
               className={`text-sm text-secondary ${
@@ -218,44 +118,48 @@ export default function HeroImageSection({
         <button
           type="button"
           className="btn btn-outline"
-          onClick={openAddImageModal}
+          onClick={hasActiveImage ? openEditImageModal : openAddImageModal}
         >
-          {image && !image.isRemoved ? "Replace Hero Image" : "Add Hero Image"}
+          {hasActiveImage ? "Edit Hero Image" : "Add Hero Image"}
         </button>
       </div>
 
       <BaseModal
         isOpen={isImageModalOpen}
-        title={image ? "Edit Hero Image" : "Add Hero Image"}
+        title={hasActiveImage ? "Edit Hero Image" : "Add Hero Image"}
         onClose={closeImageModal}
         footer={
-          <>
-            {image ? (
+          <div className={styles.modalFooterArea}>
+            <div>
+              {hasActiveImage ? (
+                <button
+                  type="button"
+                  className="btn btn-outline-danger"
+                  onClick={handleRemoveImage}
+                >
+                  Remove Image
+                </button>
+              ) : null}
+            </div>
+
+            <div className={styles.modalFooterBasic}>
               <button
                 type="button"
-                className="btn btn-danger"
-                onClick={handleRemoveImage}
+                className="btn btn-ghost"
+                onClick={closeImageModal}
               >
-                Remove Image
+                Cancel
               </button>
-            ) : null}
 
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={closeImageModal}
-            >
-              Cancel
-            </button>
-
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSaveImage}
-            >
-              {image ? "Save Image" : "Add Image"}
-            </button>
-          </>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSaveImage}
+              >
+                {hasActiveImage ? "Save Image" : "Add Image"}
+              </button>
+            </div>
+          </div>
         }
       >
         <ImageForm

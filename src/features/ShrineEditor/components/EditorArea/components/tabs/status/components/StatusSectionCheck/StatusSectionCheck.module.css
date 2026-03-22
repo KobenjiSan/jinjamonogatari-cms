@@ -1,0 +1,72 @@
+.sectionHeader {
+  margin-bottom: var(--space-md);
+}
+
+.sectionTitle {
+  margin: 0 0 var(--space-xs) 0;
+  font-size: var(--font-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.sectionMeta {
+  margin: 0;
+  font-size: var(--font-md);
+  color: var(--color-text-secondary);
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.checklistRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: 6px 0;
+  border-bottom: var(--border-width) solid transparent;
+  border-color: rgba(85, 85, 85, 0.267);
+}
+
+.checklistLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checklistLabel {
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.checklistMeta {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+.checkOkIcon {
+  color: var(--color-confirm);
+  font-size: 18px;
+}
+
+.checkWarningIcon {
+  color: #ffc107;
+  font-size: 18px;
+}
+
+.checkErrorIcon {
+  color: var(--color-issue);
+  font-size: 18px;
+}
+
+.textError {
+  color: var(--color-issue);
+}
+
+.textWarning {
+  color: #8a6300;
+}

@@ -59,7 +59,7 @@ export default function ShrineList() {
         <div className={`headerCell ${styles.statusCol}`}>Status</div>
         <div className={`headerCell ${styles.locationCol}`}>Location</div>
         <div className={`headerCell ${styles.updatedCol}`}>Last Updated</div>
-        <div className={`headerCell ${styles.readinessCol}`}>Readiness</div>
+        <div className={`headerCell ${styles.readinessCol}`}>Issues</div>
         <div className={`headerCell ${styles.actionsCol}`}>Actions</div>
 
         {/* Rows */}

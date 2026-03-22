@@ -36,7 +36,7 @@ export default function CitationSection({
 
                 <button
                   type="button"
-                  className="btn btn-ghost"
+                  className="btn btn-ghost-danger"
                   onClick={() => onRemoveCitation(index)}
                 >
                   Remove

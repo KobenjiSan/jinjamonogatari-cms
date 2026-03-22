@@ -9,6 +9,7 @@ import type {
   CreateImageRequest,
   ImageChangeRequest
 } from "../../../../../../shared/images/helpers/ImageApi.types"
+import type { EntityAuditDto } from "../status/statusApi";
 
 // GET Folklore by shrine
 export type FolkloreCMSDto = {
@@ -22,6 +23,7 @@ export type FolkloreCMSDto = {
   updatedAt: string | null;
   image: ImageCMSDto | null;
   citations: CitationCMSDto[];
+  audit: EntityAuditDto;
 };
 
 export async function getShrineFolkloreById(id: number): Promise<FolkloreCMSDto[]> {

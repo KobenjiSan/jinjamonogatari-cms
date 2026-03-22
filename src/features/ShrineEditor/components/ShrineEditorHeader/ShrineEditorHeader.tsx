@@ -18,14 +18,14 @@ export default function ShrineEditorHeader() {
 
         <div className={styles.titleGroup}>
           <span className="text-xl font-bold text-primary">Shrine Editor</span>
-          <span className={styles.separator}>›</span>
-          <span className="text-md text-secondary">Fushimi Inari Taisha</span>
+          {/* <span className={styles.separator}>›</span>
+          <span className="text-md text-secondary">Fushimi Inari Taisha</span> */}
         </div>
       </div>
 
-      <button className="btn btn-outline" type="button">
+      {/* <button className="btn btn-outline" type="button">
         Submit for Review
-      </button>
+      </button> */}
     </header>
   );
 }

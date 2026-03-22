@@ -9,6 +9,7 @@ import type {
   CreateImageRequest,
   ImageChangeRequest
 } from "../../../../../../shared/images/helpers/ImageApi.types"
+import type { EntityAuditDto } from "../status/statusApi";
 
 // GET History by shrine
 export type HistoryCMSDto = {
@@ -23,6 +24,7 @@ export type HistoryCMSDto = {
   updatedAt: string | null;
   image: ImageCMSDto | null;
   citations: CitationCMSDto[];
+  audit: EntityAuditDto;
 };
 
 export async function getShrineHistoryById(id: number): Promise<HistoryCMSDto[]> {

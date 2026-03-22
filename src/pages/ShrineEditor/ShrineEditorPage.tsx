@@ -1,9 +1,8 @@
+import { useParams } from "react-router-dom";
 import EditorArea from "../../features/ShrineEditor/components/EditorArea/EditorArea";
 import EditorNotes from "../../features/ShrineEditor/components/EditorNotes/EditorNotes";
 import SideMeta from "../../features/ShrineEditor/components/SideMeta/SideMeta";
-
-import { useParams } from "react-router-dom";
-
+import styles from "./ShrineEditorPage.module.css";
 
 export default function ShrineEditorPage() {
   const { shrineId } = useParams();
@@ -14,18 +13,18 @@ export default function ShrineEditorPage() {
   }
 
   return (
-    <div style={{ display: "flex", background: "#f7f6f3"}}>
-        <div style={{ flex: 2.25 }}>
-          <SideMeta shrineId={shrineIdNumber} />
-        </div>
-
-        <div style={{ flex: 8 }}>
-          <EditorArea shrineId={shrineIdNumber} />
-        </div>
-
-        <div style={{ flex: 2.5 }}>
-          <EditorNotes />
-        </div>
+    <div className={styles.layout}>
+      <div className={styles.leftPane}>
+        <SideMeta shrineId={shrineIdNumber} />
       </div>
+
+      <div className={styles.centerPane}>
+        <EditorArea shrineId={shrineIdNumber} />
+      </div>
+
+      <div className={styles.rightPane}>
+        <EditorNotes />
+      </div>
+    </div>
   );
 }

@@ -1,0 +1,85 @@
+.statusHero {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  flex-wrap: wrap;
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  border: var(--border-width) solid transparent;
+}
+
+.statusHeroReady {
+  background: rgba(63, 166, 99, 0.12);
+  border-color: rgba(63, 166, 99, 0.28);
+}
+
+.statusHeroNotReady {
+  background: rgba(224, 52, 52, 0.267);
+  border-color: rgba(201, 74, 74, 0.28);
+}
+
+.statusHeroLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.statusIconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.55);
+  flex-shrink: 0;
+}
+
+.statusIcon {
+  font-size: 28px;
+}
+
+.statusHeroEyebrow {
+  margin: 0 0 4px 0;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.statusHeroTitle {
+  margin: 0 0 6px 0;
+  font-size: var(--font-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.statusHeroText {
+  margin: 0;
+  font-size: var(--font-md);
+  color: var(--color-text-secondary);
+}
+
+.statusHeroStats {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.heroStat {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-md);
+  padding: 8px 12px;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  background: rgba(255, 255, 255, 0.55);
+  border: var(--border-width) solid rgba(0, 0, 0, 0.08);
+  color: var(--color-text-primary);
+}
