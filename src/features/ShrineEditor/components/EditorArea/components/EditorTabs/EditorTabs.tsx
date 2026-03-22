@@ -5,7 +5,8 @@ export type EditorTabKey =
   | "kami"
   | "history"
   | "folklore"
-  | "gallery";
+  | "gallery"
+  | "citations";
 
 type EditorTabsProps = {
   activeTab: EditorTabKey;
@@ -64,6 +65,16 @@ export default function EditorTabs({
         onClick={() => onTabChange("gallery")}
       >
         Gallery
+      </button>
+
+      <button
+        type="button"
+        className={`${styles.tab} ${
+          activeTab === "citations" ? styles.active : ""
+        }`}
+        onClick={() => onTabChange("citations")}
+      >
+        Citations
       </button>
     </div>
   );

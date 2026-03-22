@@ -6,6 +6,7 @@ import HistoryTab from "./components/tabs/history/HistoryTab";
 import FolkloreTab from "./components/tabs/folklore/FolkloreTab";
 import GalleryTab from "./components/tabs/gallery/GalleryTab";
 import StatusTab from "./components/tabs/status/StatusTab";
+import CitationTab from "./components/tabs/citations/CitationTab";
 
 type EditorAreaProps = {
   shrineId: number;
@@ -26,6 +27,8 @@ export default function EditorArea({ shrineId }: EditorAreaProps) {
         return <FolkloreTab shrineId={shrineId} />;
       case "gallery":
         return <GalleryTab shrineId={shrineId} />;
+      case "citations":
+        return <CitationTab shrineId={shrineId} />;
       default:
         return null;
     }

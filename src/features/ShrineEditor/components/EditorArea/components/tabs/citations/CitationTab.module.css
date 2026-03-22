@@ -1,0 +1,61 @@
+.citationContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.summaryTitle {
+  margin: 0 0 var(--space-xs) 0;
+  font-size: var(--font-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.summaryText {
+  margin: 0;
+  font-size: var(--font-md);
+  color: var(--color-text-secondary);
+}
+
+.summaryStats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-top: var(--space-lg);
+}
+
+.summaryStat {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius-md);
+  padding: 10px 12px;
+  background: rgba(75, 75, 75, 0.08);
+  border: var(--border-width) solid rgba(99, 99, 99, 0.18);
+}
+
+.summaryStatValue {
+  font-size: var(--font-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  line-height: 1;
+}
+
+.summaryStatLabel {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.errorText {
+  margin: 0;
+  color: var(--color-issue);
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+}
