@@ -18,11 +18,12 @@
 }
 
 .page-header {
+  border-bottom: var(--border-width) solid var(--color-border);
+  padding: var(--space-sm) var(--space-xl);
   display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-lg);
-  margin-bottom: var(--space-xl);
 }
 
 .page-title-group {

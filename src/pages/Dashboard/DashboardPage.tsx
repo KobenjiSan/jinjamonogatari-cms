@@ -11,7 +11,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="page-shell">
+    <div>
       <div className="page-header">
         <div className="page-title-group">
           <h1 className="page-title">Dashboard</h1>
@@ -28,21 +28,28 @@ export default function DashboardPage() {
       </div>
 
       {user && (
-        <section className="card">
-          <div className="column gap-md">
-            <div>
-              <div className="text-sm text-secondary font-semibold">
-                Username
+        <div className="p-xl">
+          <section className="card">
+            <div className="column gap-md">
+              <div>
+                <div className="text-sm text-secondary font-semibold">
+                  Username
+                </div>
+                <div className="text-md text-primary">{user.username}</div>
               </div>
-              <div className="text-md text-primary">{user.username}</div>
-            </div>
 
-            <div>
-              <div className="text-sm text-secondary font-semibold">Email</div>
-              <div className="text-md text-primary">{user.email}</div>
+              <div>
+                <div className="text-sm text-secondary font-semibold">Email</div>
+                <div className="text-md text-primary">{user.email}</div>
+              </div>
+
+              <div>
+                <div className="text-sm text-secondary font-semibold">Role</div>
+                <div className="text-md text-primary">{user.role}</div>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       )}
     </div> 
   );

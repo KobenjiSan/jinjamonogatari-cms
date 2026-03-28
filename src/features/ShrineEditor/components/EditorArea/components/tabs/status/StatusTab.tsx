@@ -65,6 +65,8 @@ export default function StatusTab({ shrineId }: StatusTabProps) {
     };
   }, [shrineId]);
 
+  // Groups issues by section
+  // useMemo helps make sure this doesnt run every rerender if audit didnt change
   const groupedIssues = useMemo<GroupedIssues>(() => {
     if (!audit) return {};
 
@@ -77,7 +79,7 @@ export default function StatusTab({ shrineId }: StatusTabProps) {
 
       acc[sectionKey].push(issue);
       return acc;
-    }, {});
+    }, {}); // what acc (accumulator) starts at initally
   }, [audit]);
 
   const groupedIssuesByItem = useMemo<GroupedIssuesByItem>(() => {
@@ -107,9 +109,9 @@ export default function StatusTab({ shrineId }: StatusTabProps) {
     const existingSections = Object.keys(groupedIssues);
 
     return [
-      ...sectionOrder.filter((section) => existingSections.includes(section)),
-      ...existingSections
-        .filter((section) => !sectionOrder.includes(section))
+      ...sectionOrder.filter((section) => existingSections.includes(section)),  // Sort by my sectionOrder
+      ...existingSections                                                       // Sort what is left alphabetically in the back
+        .filter((section) => !sectionOrder.includes(section)) 
         .sort((a, b) => a.localeCompare(b)),
     ];
   }, [groupedIssues]);

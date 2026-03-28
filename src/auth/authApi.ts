@@ -11,6 +11,7 @@ export type LoginRequest = {
 export type LoginResult = {
   accessToken: string;
   refreshToken: string;
+  role: string;
 };
 
 export type MeResult = {
@@ -20,12 +21,13 @@ export type MeResult = {
   phone: string | null;
   firstName: string | null;
   lastName: string | null;
+  role: string;
 };
 
-// POST /api/users/login
+// POST /api/users/login/cms
 export async function login(req: LoginRequest): Promise<MeResult> {
   // Make call
-  const tokens = await apiFetch<LoginResult>("/api/users/login", {
+  const tokens = await apiFetch<LoginResult>("/api/users/login/cms", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

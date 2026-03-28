@@ -29,9 +29,7 @@ type SideMetaProps = {
 };
 
 export default function SideMeta({ shrineId }: SideMetaProps) {
-  const [originalMeta, setOriginalMeta] = useState<EditableShrineMeta | null>(
-    null,
-  );
+  const [originalMeta, setOriginalMeta] = useState<EditableShrineMeta | null>(null);
   const [formData, setFormData] = useState<EditableShrineMeta | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -41,6 +39,7 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
 
       try {
         const result = await getShrineMetaById(shrineId);
+        // cloning stops possible mutations from shared nested references (array or objects)
         setOriginalMeta(cloneShrineMeta(result));
         setFormData(cloneShrineMeta(result));
       } catch (err) {
