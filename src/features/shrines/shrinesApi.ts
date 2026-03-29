@@ -1,10 +1,10 @@
-// Handles api calls for shrines 
+// Handles api calls for shrines
 
 import { apiFetch } from "../../api/apiClient";
 
 export type ShrineListResult = {
- shrines: ShrineListDto[];
-}
+  shrines: ShrineListDto[];
+};
 
 export type ShrineListDto = {
   shrineId: number;
@@ -15,9 +15,10 @@ export type ShrineListDto = {
   lat: number | null;
   lon: number | null;
   updatedAt: string;
-}
+};
 
-// GET / api/shrines/cms/list
-export async function getShrineList(): Promise<ShrineListResult> {
-    return await apiFetch<ShrineListResult>("/api/shrines/cms/list");
+// GET / api/shrines/cms/list?status=...
+export async function getShrineList(status: string): Promise<ShrineListResult> {
+  const query = status ? `?status=${status}` : "";
+  return await apiFetch<ShrineListResult>(`/api/shrines/cms/list${query}`);
 }

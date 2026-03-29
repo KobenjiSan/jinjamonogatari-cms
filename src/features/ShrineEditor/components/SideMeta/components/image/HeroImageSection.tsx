@@ -2,7 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 
 import BaseModal from "../../../../../../shared/components/modal/BaseModal";
 import ImageForm from "../../../../../shared/images/ImageForm";
-import { emptyImage, mapImageToForm } from "../../../../../shared/images/helpers/ImageSection.helper";
+import {
+  emptyImage,
+  mapImageToForm,
+} from "../../../../../shared/images/helpers/ImageSection.helper";
 import type { ImageFormValues } from "../../../../../shared/images/helpers/ImageSection.types";
 import styles from "./HeroImageSection.module.css";
 
@@ -10,13 +13,12 @@ import {
   buildHeroImagePayload,
   getImagePreviewClassName,
 } from "./helpers/HeroImageSection.helpers";
-import type {
-  HeroImageSectionProps,
-} from "./helpers/HeroImageSection.types";
+import type { HeroImageSectionProps } from "./helpers/HeroImageSection.types";
 
 export default function HeroImageSection({
   image,
   onChange,
+  isReadOnly,
 }: HeroImageSectionProps) {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [imageForm, setImageForm] = useState<ImageFormValues>(emptyImage);
@@ -90,13 +92,14 @@ export default function HeroImageSection({
       <div className={styles.block}>
         <p className={styles.blockTitle}>Hero Image</p>
 
-        <div className={getImagePreviewClassName(
+        <div
+          className={getImagePreviewClassName(
             image,
             styles.imagePreview,
-            styles.changedInput
+            styles.changedInput,
           )}
         >
-          {hasActiveImage && image?.imageUrl ?  (
+          {hasActiveImage && image?.imageUrl ? (
             <img
               src={image.imageUrl}
               alt={image.title ?? "Hero image"}
@@ -120,7 +123,9 @@ export default function HeroImageSection({
           className="btn btn-outline"
           onClick={hasActiveImage ? openEditImageModal : openAddImageModal}
         >
-          {hasActiveImage ? "Edit Hero Image" : "Add Hero Image"}
+          {hasActiveImage
+            ? `${isReadOnly ? "View Hero Image" : "Edit Hero Image"}`
+            : "Add Hero Image"}
         </button>
       </div>
 
@@ -129,20 +134,8 @@ export default function HeroImageSection({
         title={hasActiveImage ? "Edit Hero Image" : "Add Hero Image"}
         onClose={closeImageModal}
         footer={
-          <div className={styles.modalFooterArea}>
-            <div>
-              {hasActiveImage ? (
-                <button
-                  type="button"
-                  className="btn btn-outline-danger"
-                  onClick={handleRemoveImage}
-                >
-                  Remove Image
-                </button>
-              ) : null}
-            </div>
-
-            <div className={styles.modalFooterBasic}>
+          isReadOnly ? (
+            <>
               <button
                 type="button"
                 className="btn btn-ghost"
@@ -150,16 +143,40 @@ export default function HeroImageSection({
               >
                 Cancel
               </button>
+            </>
+          ) : (
+            <div className={styles.modalFooterArea}>
+              <div>
+                {hasActiveImage ? (
+                  <button
+                    type="button"
+                    className="btn btn-outline-danger"
+                    onClick={handleRemoveImage}
+                  >
+                    Remove Image
+                  </button>
+                ) : null}
+              </div>
 
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleSaveImage}
-              >
-                {hasActiveImage ? "Save Image" : "Add Image"}
-              </button>
+              <div className={styles.modalFooterBasic}>
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={closeImageModal}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handleSaveImage}
+                >
+                  {hasActiveImage ? "Save Image" : "Add Image"}
+                </button>
+              </div>
             </div>
-          </div>
+          )
         }
       >
         <ImageForm
@@ -167,6 +184,7 @@ export default function HeroImageSection({
           previewUrl={previewUrl}
           onChange={setImageForm}
           onFileChange={setSelectedFile}
+          isReadOnly={isReadOnly}
         />
       </BaseModal>
     </>

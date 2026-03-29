@@ -17,11 +17,13 @@ import ImageSection from "../../../../../../../../shared/images/imageSection/Ima
 type HistoryEditFormProps = {
   history: HistoryCMSDto | null;
   onChange?: (nextForm: HistoryFormValues) => void;
+  isReadOnly: boolean;
 };
 
 export default function HistoryEditForm({
   history,
   onChange,
+  isReadOnly,
 }: HistoryEditFormProps) {
   const [formValues, setFormValues] =
     useState<HistoryFormValues>(emptyHistoryForm);
@@ -132,6 +134,7 @@ export default function HistoryEditForm({
           information: formValues.information,
         }}
         onFieldChange={handleFieldChange}
+        isReadOnly={isReadOnly}
       />
 
       <div className={styles.divider} />
@@ -141,6 +144,7 @@ export default function HistoryEditForm({
         previewUrl={previewUrl}
         onImageChange={handleImageChange}
         onFileChange={setImageFile}
+        isReadOnly={isReadOnly}
       />
 
       <div className={styles.divider} />
@@ -150,6 +154,7 @@ export default function HistoryEditForm({
         onCitationChange={handleCitationChange}
         onAddCitation={addCitation}
         onRemoveCitation={removeCitation}
+        isReadOnly={isReadOnly}
       />
 
       <div className={styles.divider} />

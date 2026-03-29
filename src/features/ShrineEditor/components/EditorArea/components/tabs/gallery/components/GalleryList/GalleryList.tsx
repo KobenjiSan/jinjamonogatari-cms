@@ -10,6 +10,7 @@ type GalleryListProps = {
   onRemove: (imageItem: ImageCMSDto) => void;
   onLoaded?: (imageItems: ImageCMSDto[]) => void;
   reloadKey?: number;
+  isReadOnly: boolean;
 };
 
 export default function GalleryList({
@@ -18,6 +19,7 @@ export default function GalleryList({
   onRemove,
   onLoaded,
   reloadKey,
+  isReadOnly,
 }: GalleryListProps) {
   const [imageItems, setImageItems] = useState<ImageCMSDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -152,16 +154,18 @@ export default function GalleryList({
                     className="btn btn-outline"
                     onClick={() => onEdit?.(item)}
                   >
-                    Edit
+                    {!isReadOnly ? "Edit" : "View"}
                   </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger"
-                    onClick={() => onRemove(item)}
-                  >
-                    Remove
-                  </button>
+                  {!isReadOnly && (
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger"
+                      onClick={() => onRemove(item)}
+                    >
+                      Remove
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

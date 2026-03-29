@@ -13,11 +13,13 @@ type HistoryDetailsSectionProps = {
     >,
     value: string,
   ) => void;
+  isReadOnly: boolean;
 };
 
 export default function HistoryDetailsSection({
   values,
   onFieldChange,
+  isReadOnly,
 }: HistoryDetailsSectionProps) {
   return (
     <div className={styles.section}>
@@ -33,6 +35,7 @@ export default function HistoryDetailsSection({
           type="date"
           value={values.eventDate}
           onChange={(e) => onFieldChange("eventDate", e.target.value)}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -46,7 +49,8 @@ export default function HistoryDetailsSection({
           type="number"
           value={values.sortOrder}
           onChange={(e) => onFieldChange("sortOrder", e.target.value)}
-          placeholder="Enter sort order"
+          placeholder={isReadOnly ? "null" : "Enter sort order"}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -61,6 +65,7 @@ export default function HistoryDetailsSection({
           value={values.title}
           onChange={(e) => onFieldChange("title", e.target.value)}
           placeholder="Enter history title"
+          disabled={isReadOnly}
         />
       </div>
 
@@ -75,6 +80,7 @@ export default function HistoryDetailsSection({
           value={values.information}
           onChange={(e) => onFieldChange("information", e.target.value)}
           placeholder="Enter history information"
+          disabled={isReadOnly}
         />
       </div>
     </div>

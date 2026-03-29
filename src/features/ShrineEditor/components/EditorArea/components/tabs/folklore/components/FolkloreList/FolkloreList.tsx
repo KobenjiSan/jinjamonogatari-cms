@@ -9,6 +9,7 @@ type FolkloreListProps = {
   onRemove: (folkloreItem: FolkloreCMSDto) => void;
   onLoaded?: (folkloreItems: FolkloreCMSDto[]) => void;
   reloadKey?: number;
+  isReadOnly: boolean;
 };
 
 export default function FolkloreList({
@@ -17,6 +18,7 @@ export default function FolkloreList({
   onRemove,
   onLoaded,
   reloadKey,
+  isReadOnly,
 }: FolkloreListProps) {
   const [folkloreItems, setFolkloreItems] = useState<FolkloreCMSDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,7 +65,9 @@ export default function FolkloreList({
         <div className="headerCell">ID</div>
         <div className={`headerCell ${styles.folkloreTitleCol}`}>Folklore</div>
         <div className={`headerCell ${styles.statusCol}`}>Status</div>
-        <div className={`headerCell ${styles.timestampsCol}`}>Created / Updated</div>
+        <div className={`headerCell ${styles.timestampsCol}`}>
+          Created / Updated
+        </div>
         <div className={`headerCell ${styles.issuesCol}`}>Issues</div>
         <div className={`headerCell ${styles.actionsCol}`}>Actions</div>
 
@@ -137,16 +141,18 @@ export default function FolkloreList({
                     className="btn btn-outline"
                     onClick={() => onEdit?.(item)}
                   >
-                    Edit
+                    {!isReadOnly ? "Edit" : "View"}
                   </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger"
-                    onClick={() => onRemove(item)}
-                  >
-                    Remove
-                  </button>
+                  {!isReadOnly && (
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger"
+                      onClick={() => onRemove(item)}
+                    >
+                      Remove
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

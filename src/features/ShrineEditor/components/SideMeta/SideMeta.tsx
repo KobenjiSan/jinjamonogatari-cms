@@ -26,9 +26,17 @@ import {
 
 type SideMetaProps = {
   shrineId: number;
+  onStatusChange?: (status: string) => void;
+  onShrineNameChange?: (shrineName: string) => void;
+  isReadOnly: boolean;
 };
 
-export default function SideMeta({ shrineId }: SideMetaProps) {
+export default function SideMeta({
+  shrineId,
+  onStatusChange,
+  onShrineNameChange,
+  isReadOnly,
+}: SideMetaProps) {
   const [originalMeta, setOriginalMeta] = useState<EditableShrineMeta | null>(null);
   const [formData, setFormData] = useState<EditableShrineMeta | null>(null);
   const [loading, setLoading] = useState(true);
@@ -42,6 +50,13 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
         // cloning stops possible mutations from shared nested references (array or objects)
         setOriginalMeta(cloneShrineMeta(result));
         setFormData(cloneShrineMeta(result));
+
+        if (result.status) {
+          onStatusChange?.(result.status);
+        }
+        if (result.nameEn) {
+          onShrineNameChange?.(result.nameEn);
+        }
       } catch (err) {
         console.error("Failed to retreive shrine meta", err);
       } finally {
@@ -99,12 +114,17 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
   }
 
   async function handleSaveMeta() {
+    if (isReadOnly) return; // block API calls in read-only mode
     if (!formData) return;
     const payload = buildUpdateShrineMetaPayload(formData);
     await updateShrineMeta(shrineId, payload);
     const refreshed = await getShrineMetaById(shrineId);
     setOriginalMeta(cloneShrineMeta(refreshed));
     setFormData(cloneShrineMeta(refreshed));
+
+    if (refreshed.nameEn) {
+      onShrineNameChange?.(refreshed.nameEn);
+    }
   }
 
   if (loading) {
@@ -131,6 +151,7 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
               formData={formData}
               isChanged={isChanged}
               updateField={updateField}
+              isReadOnly={isReadOnly}
             />
 
             <div className={styles.divider} />
@@ -139,6 +160,7 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
               formData={formData}
               isChanged={isChanged}
               updateField={updateField}
+              isReadOnly={isReadOnly}
             />
 
             <div className={styles.divider} />
@@ -147,6 +169,7 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
               formData={formData}
               isChanged={isChanged}
               updateField={updateField}
+              isReadOnly={isReadOnly}
             />
 
             <div className={styles.divider} />
@@ -155,6 +178,7 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
               formData={formData}
               isChanged={isChanged}
               updateField={updateField}
+              isReadOnly={isReadOnly}
             />
 
             <div className={styles.divider} />
@@ -162,6 +186,7 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
             <HeroImageSection
               image={formData?.image ?? null}
               onChange={handleImageChange}
+              isReadOnly={isReadOnly}
             />
 
             <div className={styles.divider} />
@@ -169,6 +194,7 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
             <TagsSection
               tags={formData?.tags ?? []}
               onChange={handleTagsChange}
+              isReadOnly={isReadOnly}
             />
 
             <div className={styles.divider} />
@@ -185,23 +211,25 @@ export default function SideMeta({ shrineId }: SideMetaProps) {
               updatedAt={originalMeta?.updatedAt}
             />
 
-            <div className={styles.footerActions}>
-              <button
-                className="btn btn-outline"
-                type="button"
-                onClick={handleReset}
-              >
-                Reset
-              </button>
+            {!isReadOnly && (
+              <div className={styles.footerActions}>
+                <button
+                  className="btn btn-outline"
+                  type="button"
+                  onClick={handleReset}
+                >
+                  Reset
+                </button>
 
-              <button
-                className="btn btn-primary"
-                type="button"
-                onClick={handleSaveMeta}
-              >
-                Save Meta
-              </button>
-            </div>
+                <button
+                  className="btn btn-primary"
+                  type="button"
+                  onClick={handleSaveMeta}
+                >
+                  Save Meta
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

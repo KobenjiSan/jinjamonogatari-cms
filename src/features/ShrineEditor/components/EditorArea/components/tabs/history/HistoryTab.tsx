@@ -4,11 +4,7 @@ import mainStyles from "../../../EditorArea.module.css";
 import BaseModal from "../../../../../../../shared/components/modal/BaseModal";
 import ConfirmationModal from "../../../../../../../shared/components/confirmationModal/ConfirmationModal";
 
-import {
-  createHistory,
-  deleteHistory,
-  updateHistory,
-} from "./historyApi";
+import { createHistory, deleteHistory, updateHistory } from "./historyApi";
 import type { HistoryCMSDto } from "./historyApi";
 
 import HistoryList from "./components/HistoryList/HistoryList";
@@ -23,20 +19,26 @@ import {
 
 type HistoryTabProps = {
   shrineId: number;
+  isReadOnly: boolean;
 };
 
-export default function HistoryTab({ shrineId }: HistoryTabProps) {
+export default function HistoryTab({ shrineId, isReadOnly }: HistoryTabProps) {
   const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
-  const [selectedHistory, setSelectedHistory] = useState<HistoryCMSDto | null>(null);
+  const [selectedHistory, setSelectedHistory] = useState<HistoryCMSDto | null>(
+    null,
+  );
 
   const [historyListReloadKey, setHistoryListReloadKey] = useState(0);
-  const [historyDraft, setHistoryDraft] = useState<HistoryFormValues>(emptyHistoryForm);
+  const [historyDraft, setHistoryDraft] =
+    useState<HistoryFormValues>(emptyHistoryForm);
 
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isConfirmSaveOpen, setIsConfirmSaveOpen] = useState(false);
-  const [pendingDeleteHistory, setPendingDeleteHistory] = useState<HistoryCMSDto | null>(null);
+  const [pendingDeleteHistory, setPendingDeleteHistory] =
+    useState<HistoryCMSDto | null>(null);
 
-  const isDraftEmpty = JSON.stringify(historyDraft) === JSON.stringify(emptyHistoryForm);
+  const isDraftEmpty =
+    JSON.stringify(historyDraft) === JSON.stringify(emptyHistoryForm);
 
   function reloadHistoryList() {
     setHistoryListReloadKey((prev) => prev + 1);
@@ -65,6 +67,8 @@ export default function HistoryTab({ shrineId }: HistoryTabProps) {
   }
 
   async function confirmRemoveHistory() {
+    if (isReadOnly) return; // block API calls in read-only mode
+
     if (!pendingDeleteHistory) return;
 
     try {
@@ -89,6 +93,8 @@ export default function HistoryTab({ shrineId }: HistoryTabProps) {
   }
 
   async function confirmSaveHistory() {
+    if (isReadOnly) return; // block API calls in read-only mode
+
     try {
       if (selectedHistory) {
         const payload = buildUpdateHistoryPayload(
@@ -97,8 +103,8 @@ export default function HistoryTab({ shrineId }: HistoryTabProps) {
         );
         await updateHistory(selectedHistory.historyId, payload);
       } else {
-         const payload = buildCreateHistoryPayload(historyDraft);
-         await createHistory(shrineId, payload);
+        const payload = buildCreateHistoryPayload(historyDraft);
+        await createHistory(shrineId, payload);
       }
 
       reloadHistoryList();
@@ -114,13 +120,9 @@ export default function HistoryTab({ shrineId }: HistoryTabProps) {
   }
 
   const saveSubjectName =
-    selectedHistory?.title ||
-    historyDraft.title ||
-    "this history entry";
+    selectedHistory?.title || historyDraft.title || "this history entry";
 
-  const deleteSubjectName =
-    pendingDeleteHistory?.title ||
-    "this history entry";
+  const deleteSubjectName = pendingDeleteHistory?.title || "this history entry";
 
   return (
     <>
@@ -128,17 +130,19 @@ export default function HistoryTab({ shrineId }: HistoryTabProps) {
         <div className={mainStyles.header}>
           <h2 className={mainStyles.title}>History</h2>
 
-          <div className={mainStyles.headerActions}>
-            <button
-              type="button"
-              className={`${mainStyles.actionButton} btn btn-outline`}
-              aria-label="New history"
-              onClick={openAddHistoryModal}
-            >
-              <FiPlus size={18} />
-              <span>New History</span>
-            </button>
-          </div>
+          {!isReadOnly && (
+            <div className={mainStyles.headerActions}>
+              <button
+                type="button"
+                className={`${mainStyles.actionButton} btn btn-outline`}
+                aria-label="New history"
+                onClick={openAddHistoryModal}
+              >
+                <FiPlus size={18} />
+                <span>New History</span>
+              </button>
+            </div>
+          )}
         </div>
 
         <HistoryList
@@ -146,6 +150,7 @@ export default function HistoryTab({ shrineId }: HistoryTabProps) {
           reloadKey={historyListReloadKey}
           onEdit={openEditHistoryModal}
           onRemove={handleRemoveHistory}
+          isReadOnly={isReadOnly}
         />
       </div>
 
@@ -163,20 +168,23 @@ export default function HistoryTab({ shrineId }: HistoryTabProps) {
               Cancel
             </button>
 
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSaveHistory}
-              disabled={isDraftEmpty}
-            >
-              {selectedHistory ? "Save History" : "Add History"}
-            </button>
+            {!isReadOnly && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSaveHistory}
+                disabled={isDraftEmpty}
+              >
+                {selectedHistory ? "Save History" : "Add History"}
+              </button>
+            )}
           </>
         }
       >
         <HistoryEditForm
           history={selectedHistory}
           onChange={setHistoryDraft}
+          isReadOnly={isReadOnly}
         />
       </BaseModal>
 

@@ -15,6 +15,7 @@ type KamiListProps = {
   onRemove: (kami: KamiCMSDto) => void;
   onLoaded?: (kami: KamiCMSDto[]) => void;
   reloadKey?: number;
+  isReadOnly: boolean;
 };
 
 export default function KamiList({
@@ -25,6 +26,7 @@ export default function KamiList({
   onRemove,
   onLoaded,
   reloadKey,
+  isReadOnly,
 }: KamiListProps) {
   const [kami, setKami] = useState<KamiCMSDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -164,16 +166,18 @@ export default function KamiList({
                       className="btn btn-outline"
                       onClick={() => onEdit?.(k)}
                     >
-                      Edit
+                      {!isReadOnly ? "Edit" : "View"}
                     </button>
 
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger"
-                      onClick={() => onRemove(k)}
-                    >
-                      Remove
-                    </button>
+                    {!isReadOnly && (
+                      <button
+                        type="button"
+                        className="btn btn-outline-danger"
+                        onClick={() => onRemove(k)}
+                      >
+                        Remove
+                      </button>
+                    )}
                   </div>
                 ) : (
                   <div className="actionGroup">

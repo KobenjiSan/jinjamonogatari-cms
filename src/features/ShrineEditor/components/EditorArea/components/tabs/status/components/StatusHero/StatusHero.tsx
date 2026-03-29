@@ -6,6 +6,8 @@ type StatusHeroProps = {
   errorCount: number;
   warningCount: number;
   totalIssues: number;
+  isReadOnly: boolean;
+  shrineStatus: string;
 };
 
 export default function StatusHero({
@@ -13,6 +15,8 @@ export default function StatusHero({
   errorCount,
   warningCount,
   totalIssues,
+  isReadOnly,
+  shrineStatus,
 }: StatusHeroProps) {
   return (
     <div
@@ -29,17 +33,50 @@ export default function StatusHero({
           )}
         </div>
 
-        <div>
-          <p className={styles.statusHeroEyebrow}>Submission Status</p>
-          <h3 className={styles.statusHeroTitle}>
-            {isSubmittable ? "Ready for Submission" : "Not Ready for Submission"}
-          </h3>
-          <p className={styles.statusHeroText}>
-            {isSubmittable
-              ? "All blocking issues are resolved. This shrine can be submitted for review."
-              : "This shrine still has blocking issues that must be fixed before submission."}
-          </p>
-        </div>
+        {!isReadOnly ? (
+          <div>
+            <p className={styles.statusHeroEyebrow}>Submission Status</p>
+
+            {shrineStatus === "review" ? (
+              <>
+                <h3 className={styles.statusHeroTitle}>
+                  Currently Under Review
+                </h3>
+                <p className={styles.statusHeroText}>
+                  This shrine has been submitted and is under review. Admins can
+                  still make edits during review.
+                </p>
+              </>
+            ) : (
+              <>
+                <h3 className={styles.statusHeroTitle}>
+                  {isSubmittable
+                    ? "Ready for Submission"
+                    : "Not Ready for Submission"}
+                </h3>
+                <p className={styles.statusHeroText}>
+                  {isSubmittable
+                    ? "All blocking issues are resolved. This shrine can be submitted for review."
+                    : "This shrine still has blocking issues that must be fixed before submission."}
+                </p>
+              </>
+            )}
+          </div>
+        ) : (
+          <div>
+            <p className={styles.statusHeroEyebrow}>Submission Results</p>
+            <h3 className={styles.statusHeroTitle}>
+              {shrineStatus === "review"
+                ? "Currently Under Review"
+                : "Published"}
+            </h3>
+            <p className={styles.statusHeroText}>
+              {shrineStatus === "review"
+                ? "This shrine is under review and is currently in view-only mode."
+                : "This shrine has been published and is currently in view-only mode."}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className={styles.statusHeroStats}>

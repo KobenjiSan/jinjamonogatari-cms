@@ -17,7 +17,11 @@ import {
 } from "./helpers/TagSection.types";
 import { FiPlus } from "react-icons/fi";
 
-export default function TagsSection({ tags, onChange }: TagsSectionProps) {
+export default function TagsSection({
+  tags,
+  onChange,
+  isReadOnly,
+}: TagsSectionProps) {
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
   const [editingTagId, setEditingTagId] = useState<number | null>(null);
   const [tagForm, setTagForm] = useState(emptyTagForm);
@@ -71,13 +75,14 @@ export default function TagsSection({ tags, onChange }: TagsSectionProps) {
                   tag,
                   styles.tagChip,
                   styles.tagChipRemoved,
-                  styles.changedInput
+                  styles.changedInput,
                 )}
               >
                 <button
                   type="button"
                   className={styles.tagChipButton}
                   onClick={() => openEditTagModal(tag)}
+                  disabled={isReadOnly}
                 >
                   <span
                     className={`${styles.tagChipText} ${
@@ -89,18 +94,20 @@ export default function TagsSection({ tags, onChange }: TagsSectionProps) {
                   </span>
                 </button>
 
-                <button
-                  type="button"
-                  className={styles.tagRemove}
-                  onClick={() => handleToggleRemoveTag(tag.tagId)}
-                  aria-label={
-                    tag.isMarkedForRemoval
-                      ? `Restore ${tag.titleEn}`
-                      : `Mark ${tag.titleEn} for removal`
-                  }
-                >
-                  ×
-                </button>
+                {!isReadOnly && (
+                  <button
+                    type="button"
+                    className={styles.tagRemove}
+                    onClick={() => handleToggleRemoveTag(tag.tagId)}
+                    aria-label={
+                      tag.isMarkedForRemoval
+                        ? `Restore ${tag.titleEn}`
+                        : `Mark ${tag.titleEn} for removal`
+                    }
+                  >
+                    ×
+                  </button>
+                )}
               </div>
             ))
           ) : (
@@ -108,14 +115,16 @@ export default function TagsSection({ tags, onChange }: TagsSectionProps) {
           )}
         </div>
 
-        <button
-          type="button"
-          className="btn btn-outline"
-          onClick={openCreateTagModal}
-        >
-          <FiPlus size={16} />
-          <span className={styles.tagButtonText}>Add Tag</span>
-        </button>
+        {!isReadOnly && (
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={openCreateTagModal}
+          >
+            <FiPlus size={16} />
+            <span className={styles.tagButtonText}>Add Tag</span>
+          </button>
+        )}
       </div>
 
       <BaseModal

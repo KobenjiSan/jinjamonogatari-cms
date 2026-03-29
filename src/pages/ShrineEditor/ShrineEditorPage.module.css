@@ -24,3 +24,16 @@
   min-height: 0;
   overflow: hidden;
 }
+
+.readOnlyWarningCard {
+  background: rgba(255, 193, 7, 0.18);
+  border: var(--border-width) solid transparent;
+  border-radius: var(--radius-md);
+  color: #8a6300;
+  border-color: rgba(255, 193, 7, 0.4);
+  margin-left: var(--space-sm);
+  margin-right: var(--space-sm);
+  margin-top: var(--space-sm);
+  text-align: center;
+  padding: var(--space-sm);
+}

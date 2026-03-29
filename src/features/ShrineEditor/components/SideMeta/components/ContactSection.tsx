@@ -6,14 +6,16 @@ type ContactSectionProps = {
   isChanged: <K extends keyof ShrineMetaDto>(field: K) => boolean;
   updateField: <K extends keyof ShrineMetaDto>(
     field: K,
-    value: ShrineMetaDto[K]
+    value: ShrineMetaDto[K],
   ) => void;
+  isReadOnly: boolean;
 };
 
 export default function ContactSection({
   formData,
   isChanged,
   updateField,
+  isReadOnly,
 }: ContactSectionProps) {
   return (
     <div className={styles.block}>
@@ -27,9 +29,10 @@ export default function ContactSection({
           id="phoneNumber"
           className={`input ${isChanged("phoneNumber") ? styles.changedInput : ""}`}
           type="text"
-          placeholder="+81 ..."
+          placeholder={isReadOnly ? "null" : "+81 ..."}
           value={formData?.phoneNumber ?? ""}
           onChange={(e) => updateField("phoneNumber", e.target.value)}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -41,9 +44,10 @@ export default function ContactSection({
           id="email"
           className={`input ${isChanged("email") ? styles.changedInput : ""}`}
           type="email"
-          placeholder="contact@example.jp"
+          placeholder={isReadOnly ? "null" : "contact@example.jp"}
           value={formData?.email ?? ""}
           onChange={(e) => updateField("email", e.target.value)}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -55,9 +59,10 @@ export default function ContactSection({
           id="website"
           className={`input ${isChanged("website") ? styles.changedInput : ""}`}
           type="url"
-          placeholder="https://..."
+          placeholder={isReadOnly ? "null" : "https://..."}
           value={formData?.website ?? ""}
           onChange={(e) => updateField("website", e.target.value)}
+          disabled={isReadOnly}
         />
       </div>
     </div>

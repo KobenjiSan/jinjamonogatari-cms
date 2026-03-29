@@ -4,7 +4,6 @@
 
 .gridTable {
   display: grid;
-  grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1fr 120px;
 }
 
 .shrineCol,
@@ -99,4 +98,10 @@
 
 .pageNumber {
   font-weight: var(--font-weight-semibold);
+}
+
+.actionGroup {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-md);
 }

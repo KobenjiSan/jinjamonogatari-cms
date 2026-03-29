@@ -10,19 +10,22 @@ export default function CitationSection({
   onCitationChange,
   onAddCitation,
   onRemoveCitation,
+  isReadOnly,
 }: CitationSectionProps) {
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>
         <p className={styles.sectionTitle}>{title}</p>
 
-        <button
-          type="button"
-          className="btn btn-outline"
-          onClick={onAddCitation}
-        >
-          {addLabel}
-        </button>
+        {!isReadOnly && (
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={onAddCitation}
+          >
+            {addLabel}
+          </button>
+        )}
       </div>
 
       {citations.length === 0 ? (
@@ -34,18 +37,21 @@ export default function CitationSection({
               <div className={styles.citationHeader}>
                 <p className={styles.citationTitle}>Citation {index + 1}</p>
 
-                <button
-                  type="button"
-                  className="btn btn-ghost-danger"
-                  onClick={() => onRemoveCitation(index)}
-                >
-                  Remove
-                </button>
+                {!isReadOnly && (
+                  <button
+                    type="button"
+                    className="btn btn-ghost-danger"
+                    onClick={() => onRemoveCitation(index)}
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
 
               <CitationForm
                 values={citation}
                 onChange={(next) => onCitationChange(index, next)}
+                isReadOnly={isReadOnly}
               />
             </div>
           ))}

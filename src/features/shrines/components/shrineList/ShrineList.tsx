@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getShrineList, type ShrineListDto } from "../../shrinesApi";
 import styles from "./ShrineList.module.css";
 import { useNavigate } from "react-router-dom";
+import type { StatusTabKey } from "../statusTab/StatusTabs";
+import { useAuth } from "../../../../auth/AuthProvider";
 
 function formatUpdatedAt(dateString?: string | null) {
   if (!dateString) return "-";
@@ -15,7 +17,12 @@ function formatUpdatedAt(dateString?: string | null) {
   });
 }
 
-export default function ShrineList() {
+type ShrineListProps = {
+  activeTab: StatusTabKey;
+};
+
+export default function ShrineList({ activeTab }: ShrineListProps) {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [shrines, setShrines] = useState<ShrineListDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,7 +30,7 @@ export default function ShrineList() {
   useEffect(() => {
     async function loadShrines() {
       try {
-        const result = await getShrineList();
+        const result = await getShrineList(activeTab);
         setShrines(result.shrines);
       } catch (err) {
         console.error("Failed to load shrines", err);
@@ -33,7 +40,18 @@ export default function ShrineList() {
     }
 
     loadShrines();
-  }, []);
+  }, [activeTab]);
+
+  function getReadOnly(): boolean {
+    const isEditor = user?.role === "Editor";
+    const isAdmin = user?.role === "Admin";
+    if (isEditor) {
+      return activeTab === "review" || activeTab === "published";
+    } else if (isAdmin) {
+      return activeTab === "published";
+    }
+    return false;
+  }
 
   if (loading) {
     return (
@@ -53,7 +71,15 @@ export default function ShrineList() {
 
   return (
     <div className={styles.wrapper}>
-      <div className={`listShell ${styles.gridTable}`}>
+      <div
+        className={`listShell ${styles.gridTable}`}
+        style={{
+          gridTemplateColumns:
+            user?.role != "Admin"
+              ? "2fr 1fr 1.5fr 1.5fr 1fr 120px"
+              : "2fr 1fr 1.5fr 1.5fr 1fr 200px",
+        }}
+      >
         {/* Header */}
         <div className={`headerCell ${styles.shrineCol}`}>Shrine</div>
         <div className={`headerCell ${styles.statusCol}`}>Status</div>
@@ -97,14 +123,20 @@ export default function ShrineList() {
             </div>
 
             <div className={`bodyCell ${styles.actionsCol}`}>
-              <div className="actionGroup">
+              <div className={`${styles.actionGroup}`}>
                 <button
                   type="button"
                   className="btn btn-outline"
                   onClick={() => navigate(`/shrines/${s.shrineId}`)}
                 >
-                  Edit
+                  {getReadOnly() ? "View" : "Edit"}
                 </button>
+
+                {user?.role === "Admin" && (
+                  <button type="button" className="btn btn-outline-danger">
+                    Remove
+                  </button>
+                )}
               </div>
             </div>
           </div>

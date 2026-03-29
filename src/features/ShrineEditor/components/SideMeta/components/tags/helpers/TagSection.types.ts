@@ -14,6 +14,7 @@ export type EditableTag = TagDto & {
 export type TagsSectionProps = {
   tags: EditableTag[];
   onChange: (nextTags: EditableTag[]) => void;
+  isReadOnly: boolean;
 };
 
 export const emptyTagForm: TagFormValues = {

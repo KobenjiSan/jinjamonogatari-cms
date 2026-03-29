@@ -4,20 +4,32 @@ import mainStyles from "../../../EditorArea.module.css";
 import BaseModal from "../../../../../../../shared/components/modal/BaseModal";
 import ConfirmationModal from "../../../../../../../shared/components/confirmationModal/ConfirmationModal";
 
-import { createFolklore, deleteFolklore, updateFolklore, type FolkloreCMSDto } from "./folkloreApi";
+import {
+  createFolklore,
+  deleteFolklore,
+  updateFolklore,
+  type FolkloreCMSDto,
+} from "./folkloreApi";
 
 import FolkloreList from "./components/FolkloreList/FolkloreList";
 import FolkloreEditForm from "./components/FolkloreEditForm/FolkloreEditForm";
 
 import type { FolkloreFormValues } from "./components/FolkloreEditForm/helpers/FolkloreForm.types";
 import { emptyFolkloreForm } from "./components/FolkloreEditForm/helpers/FolkloreForm.helper";
-import { buildCreateFolklorePayload, buildUpdateFolklorePayload } from "./helpers/FolkloreTab.helpers";
+import {
+  buildCreateFolklorePayload,
+  buildUpdateFolklorePayload,
+} from "./helpers/FolkloreTab.helpers";
 
 type FolkloreTabProps = {
   shrineId: number;
+  isReadOnly: boolean;
 };
 
-export default function FolkloreTab({ shrineId }: FolkloreTabProps) {
+export default function FolkloreTab({
+  shrineId,
+  isReadOnly,
+}: FolkloreTabProps) {
   const [isFolkloreModalOpen, setIsFolkloreModalOpen] = useState(false);
   const [selectedFolklore, setSelectedFolklore] =
     useState<FolkloreCMSDto | null>(null);
@@ -61,11 +73,12 @@ export default function FolkloreTab({ shrineId }: FolkloreTabProps) {
   }
 
   async function confirmRemoveFolklore() {
+    if (isReadOnly) return; // block API calls in read-only mode
     if (!pendingDeleteFolklore) return;
 
     try {
       // Delete folklore in API (DELETE)
-        await deleteFolklore(pendingDeleteFolklore.folkloreId);
+      await deleteFolklore(pendingDeleteFolklore.folkloreId);
 
       reloadFolkloreList();
       setIsConfirmDeleteOpen(false);
@@ -85,16 +98,17 @@ export default function FolkloreTab({ shrineId }: FolkloreTabProps) {
   }
 
   async function confirmSaveFolklore() {
+    if (isReadOnly) return; // block API calls in read-only mode
     try {
       if (selectedFolklore) {
         // API for existing folklore (PUT)
         const payload = buildUpdateFolklorePayload(
-            folkloreDraft,
-            selectedFolklore,
+          folkloreDraft,
+          selectedFolklore,
         );
         await updateFolklore(selectedFolklore.folkloreId, payload);
       } else {
-        // API for new folklore (PUT)
+        // API for new folklore (POST)
         const payload = buildCreateFolklorePayload(folkloreDraft);
         await createFolklore(shrineId, payload);
       }
@@ -123,24 +137,27 @@ export default function FolkloreTab({ shrineId }: FolkloreTabProps) {
         <div className={mainStyles.header}>
           <h2 className={mainStyles.title}>Folklore</h2>
 
-          <div className={mainStyles.headerActions}>
-            <button
-              type="button"
-              className={`${mainStyles.actionButton} btn btn-outline`}
-              aria-label="New Folklore"
-              onClick={openAddFolkloreModal}
-            >
-              <FiPlus size={18} />
-              <span>New Folklore</span>
-            </button>
-          </div>
+          {!isReadOnly && (
+            <div className={mainStyles.headerActions}>
+              <button
+                type="button"
+                className={`${mainStyles.actionButton} btn btn-outline`}
+                aria-label="New Folklore"
+                onClick={openAddFolkloreModal}
+              >
+                <FiPlus size={18} />
+                <span>New Folklore</span>
+              </button>
+            </div>
+          )}
         </div>
 
-        <FolkloreList 
-            shrineId={shrineId} 
-            reloadKey={folkloreListReloadKey}
-            onEdit={openEditFolkloreModal}
-            onRemove={handleRemoveFolklore}
+        <FolkloreList
+          shrineId={shrineId}
+          reloadKey={folkloreListReloadKey}
+          onEdit={openEditFolkloreModal}
+          onRemove={handleRemoveFolklore}
+          isReadOnly={isReadOnly}
         />
       </div>
 
@@ -158,20 +175,23 @@ export default function FolkloreTab({ shrineId }: FolkloreTabProps) {
               Cancel
             </button>
 
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSaveFolklore}
-              disabled={isDraftEmpty}
-            >
-              {selectedFolklore ? "Save Folklore" : "Add Folklore"}
-            </button>
+            {!isReadOnly && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSaveFolklore}
+                disabled={isDraftEmpty}
+              >
+                {selectedFolklore ? "Save Folklore" : "Add Folklore"}
+              </button>
+            )}
           </>
         }
       >
         <FolkloreEditForm
           folklore={selectedFolklore}
           onChange={setFolkloreDraft}
+          isReadOnly={isReadOnly}
         />
       </BaseModal>
 

@@ -11,14 +11,22 @@ import {
   emptyImage,
   mapImageToForm,
 } from "../../../../../../shared/images/helpers/ImageSection.helper";
-import { createGalleryImage, deleteGalleryImage, updateGalleryImage } from "./galleryApi";
-import { buildCreateGalleryImagePayload, buildUpdateGalleryImagePayload } from "./helpers/GalleryTab.helpers";
+import {
+  createGalleryImage,
+  deleteGalleryImage,
+  updateGalleryImage,
+} from "./galleryApi";
+import {
+  buildCreateGalleryImagePayload,
+  buildUpdateGalleryImagePayload,
+} from "./helpers/GalleryTab.helpers";
 
 type GalleryTabProps = {
   shrineId: number;
+  isReadOnly: boolean;
 };
 
-export default function GalleryTab({ shrineId }: GalleryTabProps) {
+export default function GalleryTab({ shrineId, isReadOnly }: GalleryTabProps) {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<ImageCMSDto | null>(null);
 
@@ -73,6 +81,7 @@ export default function GalleryTab({ shrineId }: GalleryTabProps) {
   }
 
   async function confirmRemoveImage() {
+    if (isReadOnly) return; // block API calls in read-only mode
     if (!pendingDeleteImage) return;
 
     try {
@@ -97,6 +106,8 @@ export default function GalleryTab({ shrineId }: GalleryTabProps) {
   }
 
   async function confirmSaveImage() {
+    if (isReadOnly) return; // block API calls in read-only mode
+
     try {
       if (selectedImage) {
         // PUT existing image API here
@@ -127,8 +138,7 @@ export default function GalleryTab({ shrineId }: GalleryTabProps) {
   const saveSubjectName =
     selectedImage?.title || imageDraft.title || "this image entry";
 
-  const deleteSubjectName =
-    pendingDeleteImage?.title || "this image entry";
+  const deleteSubjectName = pendingDeleteImage?.title || "this image entry";
 
   return (
     <>
@@ -136,17 +146,19 @@ export default function GalleryTab({ shrineId }: GalleryTabProps) {
         <div className={mainStyles.header}>
           <h2 className={mainStyles.title}>Gallery</h2>
 
-          <div className={mainStyles.headerActions}>
-            <button
-              type="button"
-              className={`${mainStyles.actionButton} btn btn-outline`}
-              aria-label="New Image"
-              onClick={openAddImageModal}
-            >
-              <FiPlus size={18} />
-              <span>New Image</span>
-            </button>
-          </div>
+          {!isReadOnly && (
+            <div className={mainStyles.headerActions}>
+              <button
+                type="button"
+                className={`${mainStyles.actionButton} btn btn-outline`}
+                aria-label="New Image"
+                onClick={openAddImageModal}
+              >
+                <FiPlus size={18} />
+                <span>New Image</span>
+              </button>
+            </div>
+          )}
         </div>
 
         <GalleryList
@@ -154,6 +166,7 @@ export default function GalleryTab({ shrineId }: GalleryTabProps) {
           reloadKey={imageListReloadKey}
           onEdit={openEditImageModal}
           onRemove={handleRemoveImage}
+          isReadOnly={isReadOnly}
         />
       </div>
 
@@ -171,14 +184,16 @@ export default function GalleryTab({ shrineId }: GalleryTabProps) {
               Cancel
             </button>
 
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSaveImage}
-              disabled={!selectedImage && isDraftEmpty && !selectedFile}
-            >
-              {selectedImage ? "Save Image" : "Add Image"}
-            </button>
+            {!isReadOnly && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSaveImage}
+                disabled={!selectedImage && isDraftEmpty && !selectedFile}
+              >
+                {selectedImage ? "Save Image" : "Add Image"}
+              </button>
+            )}
           </>
         }
       >
@@ -187,6 +202,7 @@ export default function GalleryTab({ shrineId }: GalleryTabProps) {
           previewUrl={previewUrl}
           onChange={setImageDraft}
           onFileChange={handleFileChange}
+          isReadOnly={isReadOnly}
         />
       </BaseModal>
 

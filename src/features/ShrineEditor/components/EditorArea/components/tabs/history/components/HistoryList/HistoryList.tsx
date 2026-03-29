@@ -9,6 +9,7 @@ type HistoryListProps = {
   onRemove: (historyItem: HistoryCMSDto) => void;
   onLoaded?: (historyItems: HistoryCMSDto[]) => void;
   reloadKey?: number;
+  isReadOnly: boolean;
 };
 
 export default function HistoryList({
@@ -17,6 +18,7 @@ export default function HistoryList({
   onRemove,
   onLoaded,
   reloadKey,
+  isReadOnly,
 }: HistoryListProps) {
   const [historyItems, setHistoryItems] = useState<HistoryCMSDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,7 +74,9 @@ export default function HistoryList({
         <div className="headerCell">ID</div>
         <div className={`headerCell ${styles.eventDateCol}`}>Event</div>
         <div className={`headerCell ${styles.statusCol}`}>Status</div>
-        <div className={`headerCell ${styles.timestampsCol}`}>Created / Updated</div>
+        <div className={`headerCell ${styles.timestampsCol}`}>
+          Created / Updated
+        </div>
         <div className={`headerCell ${styles.issuesCol}`}>Issues</div>
         <div className={`headerCell ${styles.actionsCol}`}>Actions</div>
 
@@ -92,7 +96,6 @@ export default function HistoryList({
                   {item.eventDate ? formatHistoryDate(item.eventDate) : "-"}
                   <p className={styles.secondaryText}>{item.title ?? "-"}</p>
                 </p>
-                  
               </div>
 
               <div className={`bodyCell ${styles.statusCol}`}>
@@ -148,16 +151,18 @@ export default function HistoryList({
                     className="btn btn-outline"
                     onClick={() => onEdit?.(item)}
                   >
-                    Edit
+                    {!isReadOnly ? "Edit" : "View"}
                   </button>
 
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger"
-                    onClick={() => onRemove(item)}
-                  >
-                    Remove
-                  </button>
+                  {!isReadOnly && (
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger"
+                      onClick={() => onRemove(item)}
+                    >
+                      Remove
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

@@ -12,10 +12,15 @@ import StatusSectionCard from "./components/StatusSectionCard/StatusSectionCard"
 
 type StatusTabProps = {
   shrineId: number;
+  isReadOnly: boolean;
+  shrineStatus: string;
 };
 
 export type GroupedIssues = Record<string, AuditIssueDto[]>;
-export type GroupedIssuesByItem = Record<string, Record<string, AuditIssueDto[]>>;
+export type GroupedIssuesByItem = Record<
+  string,
+  Record<string, AuditIssueDto[]>
+>;
 
 export type SectionSummaryItem = {
   label: string;
@@ -24,15 +29,13 @@ export type SectionSummaryItem = {
   warningCount: number;
 };
 
-const sectionOrder = [
-  "ShrineMeta",
-  "Kami",
-  "History",
-  "Folklore",
-  "Gallery",
-];
+const sectionOrder = ["ShrineMeta", "Kami", "History", "Folklore", "Gallery"];
 
-export default function StatusTab({ shrineId }: StatusTabProps) {
+export default function StatusTab({
+  shrineId,
+  isReadOnly,
+  shrineStatus,
+}: StatusTabProps) {
   const [audit, setAudit] = useState<ShrineAuditDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -109,9 +112,9 @@ export default function StatusTab({ shrineId }: StatusTabProps) {
     const existingSections = Object.keys(groupedIssues);
 
     return [
-      ...sectionOrder.filter((section) => existingSections.includes(section)),  // Sort by my sectionOrder
-      ...existingSections                                                       // Sort what is left alphabetically in the back
-        .filter((section) => !sectionOrder.includes(section)) 
+      ...sectionOrder.filter((section) => existingSections.includes(section)), // Sort by my sectionOrder
+      ...existingSections // Sort what is left alphabetically in the back
+        .filter((section) => !sectionOrder.includes(section))
         .sort((a, b) => a.localeCompare(b)),
     ];
   }, [groupedIssues]);
@@ -121,7 +124,9 @@ export default function StatusTab({ shrineId }: StatusTabProps) {
       const issues = groupedIssues[section] ?? [];
 
       const errorCount = issues.filter((i) => i.severity === "Error").length;
-      const warningCount = issues.filter((i) => i.severity === "Warning").length;
+      const warningCount = issues.filter(
+        (i) => i.severity === "Warning",
+      ).length;
 
       return {
         label: section,
@@ -137,22 +142,54 @@ export default function StatusTab({ shrineId }: StatusTabProps) {
       <div className={mainStyles.header}>
         <h2 className={mainStyles.title}>Shrine Review</h2>
 
-        <div className={mainStyles.headerActions}>
-          <button
-            type="button"
-            className={`${mainStyles.actionButton} btn btn-outline`}
-            aria-label="Submit for Review"
-            onClick={() => {}}
-            disabled={!audit?.isSubmittable}
-            title={
-              audit?.isSubmittable
-                ? "Shrine is ready to submit"
-                : "Resolve all errors before submitting"
-            }
-          >
-            <span>Submit for Review</span>
-          </button>
-        </div>
+        {!isReadOnly && (
+          <div className={mainStyles.headerActions}>
+            {shrineStatus === "review" ? (
+              <>
+                <button
+                  type="button"
+                  className={`${mainStyles.actionButton} btn btn-outline`}
+                  aria-label="Publish"
+                  onClick={() => {}}
+                  disabled={!audit?.isSubmittable}
+                  title={
+                    audit?.isSubmittable
+                      ? "Shrine is ready for publishing"
+                      : "Resolve all errors before publishing"
+                  }
+                >
+                  <span>Publish</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`${mainStyles.actionButton} btn btn-outline`}
+                  aria-label="reject"
+                  onClick={() => {}}
+                  disabled={!audit?.isSubmittable}
+                  title="Submit Rejection"
+                >
+                  <span>Reject</span>
+                </button>
+              </>
+            ) : (
+              <button
+                type="button"
+                className={`${mainStyles.actionButton} btn btn-outline`}
+                aria-label="Submit for Review"
+                onClick={() => {}}
+                disabled={!audit?.isSubmittable}
+                title={
+                  audit?.isSubmittable
+                    ? "Shrine is ready to submit"
+                    : "Resolve all errors before submitting"
+                }
+              >
+                <span>Submit for Review</span>
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {isLoading && (
@@ -174,6 +211,8 @@ export default function StatusTab({ shrineId }: StatusTabProps) {
             errorCount={audit.errorCount}
             warningCount={audit.warningCount}
             totalIssues={audit.issues.length}
+            isReadOnly={isReadOnly}
+            shrineStatus={shrineStatus}
           />
 
           <div className="card">

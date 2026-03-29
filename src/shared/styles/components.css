@@ -277,6 +277,24 @@
   gap: var(--space-sm);
 }
 
+textarea:disabled,
+input:disabled {
+  outline: none !important;
+  border: none;
+  padding: 0;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 0.80;
+}
+
+:disabled:focus,
+:disabled:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none;
+  padding: 0;
+}
+
 /* ---------- TABLE / LIST ---------- */
 
 .listShell {

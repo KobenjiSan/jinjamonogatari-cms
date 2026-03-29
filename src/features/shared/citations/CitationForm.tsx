@@ -23,9 +23,14 @@ type CitationFormValues = {
 type CitationFormProps = {
   values: CitationFormValues;
   onChange: (next: CitationFormValues) => void;
+  isReadOnly: boolean;
 };
 
-export default function CitationForm({ values, onChange }: CitationFormProps) {
+export default function CitationForm({
+  values,
+  onChange,
+  isReadOnly,
+}: CitationFormProps) {
   function handleFieldChange(field: keyof CitationFormValues, value: string) {
     onChange({
       ...values,
@@ -45,7 +50,8 @@ export default function CitationForm({ values, onChange }: CitationFormProps) {
           type="text"
           value={values.title}
           onChange={(e) => handleFieldChange("title", e.target.value)}
-          placeholder="Enter citation title"
+          placeholder={isReadOnly ? "null" : "Enter citation title"}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -59,7 +65,8 @@ export default function CitationForm({ values, onChange }: CitationFormProps) {
           type="text"
           value={values.author}
           onChange={(e) => handleFieldChange("author", e.target.value)}
-          placeholder="Enter author name"
+          placeholder={isReadOnly ? "null" : "Enter author name"}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -73,7 +80,8 @@ export default function CitationForm({ values, onChange }: CitationFormProps) {
           type="text"
           value={values.url}
           onChange={(e) => handleFieldChange("url", e.target.value)}
-          placeholder="Enter source URL"
+          placeholder={isReadOnly ? "null" : "Enter source URL"}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -87,7 +95,8 @@ export default function CitationForm({ values, onChange }: CitationFormProps) {
           type="number"
           value={values.year}
           onChange={(e) => handleFieldChange("year", e.target.value)}
-          placeholder="Enter publication year"
+          placeholder={isReadOnly ? "null" : "Enter publication year"}
+          disabled={isReadOnly}
         />
       </div>
 

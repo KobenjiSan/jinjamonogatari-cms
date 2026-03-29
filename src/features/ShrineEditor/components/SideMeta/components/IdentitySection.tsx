@@ -6,14 +6,16 @@ type IdentitySectionProps = {
   isChanged: <K extends keyof ShrineMetaDto>(field: K) => boolean;
   updateField: <K extends keyof ShrineMetaDto>(
     field: K,
-    value: ShrineMetaDto[K]
+    value: ShrineMetaDto[K],
   ) => void;
+  isReadOnly: boolean;
 };
 
 export default function IdentitySection({
   formData,
   isChanged,
   updateField,
+  isReadOnly,
 }: IdentitySectionProps) {
   return (
     <div className={styles.block}>
@@ -30,6 +32,7 @@ export default function IdentitySection({
           placeholder="fushimi-inari-taisha"
           value={formData?.slug ?? ""}
           onChange={(e) => updateField("slug", e.target.value)}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -44,6 +47,7 @@ export default function IdentitySection({
           placeholder="Fushimi Inari Taisha"
           value={formData?.nameEn ?? ""}
           onChange={(e) => updateField("nameEn", e.target.value)}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -58,6 +62,7 @@ export default function IdentitySection({
           placeholder="伏見稲荷大社"
           value={formData?.nameJp ?? ""}
           onChange={(e) => updateField("nameJp", e.target.value)}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -72,6 +77,7 @@ export default function IdentitySection({
           placeholder="Short shrine description..."
           value={formData?.shrineDesc ?? ""}
           onChange={(e) => updateField("shrineDesc", e.target.value)}
+          disabled={isReadOnly}
         />
       </div>
     </div>

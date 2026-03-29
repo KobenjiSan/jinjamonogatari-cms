@@ -7,11 +7,13 @@ type KamiDetailsSectionProps = {
     field: keyof Pick<KamiFormValues, "nameEn" | "nameJp" | "desc">,
     value: string,
   ) => void;
+  isReadOnly: boolean;
 };
 
 export default function KamiDetailsSection({
   values,
   onFieldChange,
+  isReadOnly,
 }: KamiDetailsSectionProps) {
   return (
     <div className={styles.section}>
@@ -28,6 +30,7 @@ export default function KamiDetailsSection({
           value={values.nameEn}
           onChange={(e) => onFieldChange("nameEn", e.target.value)}
           placeholder="Enter English name"
+          disabled={isReadOnly}
         />
       </div>
 
@@ -42,6 +45,7 @@ export default function KamiDetailsSection({
           value={values.nameJp}
           onChange={(e) => onFieldChange("nameJp", e.target.value)}
           placeholder="Enter Japanese name"
+          disabled={isReadOnly}
         />
       </div>
 
@@ -56,6 +60,7 @@ export default function KamiDetailsSection({
           value={values.desc}
           onChange={(e) => onFieldChange("desc", e.target.value)}
           placeholder="Enter kami description"
+          disabled={isReadOnly}
         />
       </div>
     </div>

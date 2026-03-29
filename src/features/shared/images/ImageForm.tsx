@@ -7,6 +7,7 @@ type ImageFormProps = {
   previewUrl?: string | null;
   onChange: (next: ImageFormValues) => void;
   onFileChange: (file: File | null) => void;
+  isReadOnly: boolean;
 };
 
 export default function ImageForm({
@@ -14,6 +15,7 @@ export default function ImageForm({
   previewUrl,
   onChange,
   onFileChange,
+  isReadOnly,
 }: ImageFormProps) {
   function handleFieldChange(
     field: keyof Omit<
@@ -42,18 +44,20 @@ export default function ImageForm({
 
   return (
     <div className={styles.wrapper}>
-      <div className="form-group">
-        <label htmlFor="image-upload" className="label">
-          Upload Image
-        </label>
-        <input
-          id="image-upload"
-          className="input"
-          type="file"
-          accept="image/*"
-          onChange={handleImageFileChange}
-        />
-      </div>
+      {!isReadOnly && (
+        <div className="form-group">
+          <label htmlFor="image-upload" className="label">
+            Upload Image
+          </label>
+          <input
+            id="image-upload"
+            className="input"
+            type="file"
+            accept="image/*"
+            onChange={handleImageFileChange}
+          />
+        </div>
+      )}
 
       <div className={styles.mainRow}>
         <div className={styles.previewSection}>
@@ -103,7 +107,8 @@ export default function ImageForm({
               type="text"
               value={values.title}
               onChange={(e) => handleFieldChange("title", e.target.value)}
-              placeholder="Enter image title"
+              placeholder={isReadOnly ? "null" : "Enter image title"}
+              disabled={isReadOnly}
             />
           </div>
 
@@ -116,8 +121,9 @@ export default function ImageForm({
               className={`input ${styles.textarea}`}
               value={values.desc}
               onChange={(e) => handleFieldChange("desc", e.target.value)}
-              placeholder="Enter image description"
+              placeholder={isReadOnly ? "null" : "Enter image description"}
               rows={6}
+              disabled={isReadOnly}
             />
           </div>
         </div>
@@ -128,6 +134,7 @@ export default function ImageForm({
         <CitationForm
           values={values.citation}
           onChange={handleCitationChange}
+          isReadOnly={isReadOnly}
         />
       </div>
     </div>

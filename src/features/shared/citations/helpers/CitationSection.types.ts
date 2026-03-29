@@ -17,4 +17,5 @@ export type CitationSectionProps = {
   onCitationChange: (index: number, nextCitation: CitationFormValues) => void;
   onAddCitation: () => void;
   onRemoveCitation: (index: number) => void;
+  isReadOnly: boolean;
 };

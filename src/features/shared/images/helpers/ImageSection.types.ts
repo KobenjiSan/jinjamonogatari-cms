@@ -17,4 +17,5 @@ export type ImageSectionProps = {
   previewUrl?: string | null;
   onImageChange: (nextImage: ImageFormValues) => void;
   onFileChange: (file: File | null) => void;
+  isReadOnly: boolean;
 };

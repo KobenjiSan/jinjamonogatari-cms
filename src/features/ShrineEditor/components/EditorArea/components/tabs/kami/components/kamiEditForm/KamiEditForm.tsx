@@ -4,10 +4,7 @@ import styles from "./KamiEditForm.module.css";
 import { emptyCitation } from "../../../../../../../../shared/citations/helpers/CitationSection.helper";
 import type { CitationFormValues } from "../../../../../../../../shared/citations/helpers/CitationSection.types";
 import type { ImageFormValues } from "../../../../../../../../shared/images/helpers/ImageSection.types";
-import {
-  emptyKamiForm,
-  mapKamiToForm,
-} from "./helpers/KamiForm.helper";
+import { emptyKamiForm, mapKamiToForm } from "./helpers/KamiForm.helper";
 import type { KamiFormValues } from "./helpers/KamiForm.types";
 import KamiDetailsSection from "./components/KamiDetailsSection";
 import KamiReadOnlySection from "./components/KamiReadOnlySection";
@@ -17,9 +14,14 @@ import ImageSection from "../../../../../../../../shared/images/imageSection/Ima
 type KamiEditFormProps = {
   kami: KamiCMSDto | null;
   onChange?: (nextForm: KamiFormValues) => void;
+  isReadOnly: boolean;
 };
 
-export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
+export default function KamiEditForm({
+  kami,
+  onChange,
+  isReadOnly,
+}: KamiEditFormProps) {
   const [formValues, setFormValues] = useState<KamiFormValues>(emptyKamiForm);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -122,7 +124,10 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
 
   return (
     <div className={styles.wrapper}>
-      <p className={styles.note}>Note: Changes here will update this Kami for all shrines it is linked with.</p>
+      <p className={styles.note}>
+        Note: Changes here will update this Kami for all shrines it is linked
+        with.
+      </p>
       <KamiDetailsSection
         values={{
           nameEn: formValues.nameEn,
@@ -130,6 +135,7 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
           desc: formValues.desc,
         }}
         onFieldChange={handleFieldChange}
+        isReadOnly={isReadOnly}
       />
 
       <div className={styles.divider} />
@@ -139,6 +145,7 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
         previewUrl={previewUrl}
         onImageChange={handleImageChange}
         onFileChange={setImageFile}
+        isReadOnly={isReadOnly}
       />
 
       <div className={styles.divider} />
@@ -148,6 +155,7 @@ export default function KamiEditForm({ kami, onChange }: KamiEditFormProps) {
         onCitationChange={handleCitationChange}
         onAddCitation={addCitation}
         onRemoveCitation={removeCitation}
+        isReadOnly={isReadOnly}
       />
 
       <div className={styles.divider} />

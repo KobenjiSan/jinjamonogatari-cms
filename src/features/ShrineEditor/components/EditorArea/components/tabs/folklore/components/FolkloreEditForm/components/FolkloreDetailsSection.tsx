@@ -2,10 +2,7 @@ import styles from "../FolkloreEditForm.module.css";
 import type { FolkloreFormValues } from "../helpers/FolkloreForm.types";
 
 type FolkloreDetailsSectionProps = {
-  values: Pick<
-    FolkloreFormValues,
-    "sortOrder" | "title" | "information"
-  >;
+  values: Pick<FolkloreFormValues, "sortOrder" | "title" | "information">;
   onFieldChange: (
     field: keyof Pick<
       FolkloreFormValues,
@@ -13,11 +10,13 @@ type FolkloreDetailsSectionProps = {
     >,
     value: string,
   ) => void;
+  isReadOnly: boolean;
 };
 
 export default function FolkloreDetailsSection({
   values,
   onFieldChange,
+  isReadOnly,
 }: FolkloreDetailsSectionProps) {
   return (
     <div className={styles.section}>
@@ -33,7 +32,8 @@ export default function FolkloreDetailsSection({
           type="number"
           value={values.sortOrder}
           onChange={(e) => onFieldChange("sortOrder", e.target.value)}
-          placeholder="Enter sort order"
+          placeholder={isReadOnly ? "null" : "Enter sort order"}
+          disabled={isReadOnly}
         />
       </div>
 
@@ -48,6 +48,7 @@ export default function FolkloreDetailsSection({
           value={values.title}
           onChange={(e) => onFieldChange("title", e.target.value)}
           placeholder="Enter folklore title"
+          disabled={isReadOnly}
         />
       </div>
 
@@ -62,6 +63,7 @@ export default function FolkloreDetailsSection({
           value={values.information}
           onChange={(e) => onFieldChange("information", e.target.value)}
           placeholder="Enter folklore information"
+          disabled={isReadOnly}
         />
       </div>
     </div>

@@ -14,9 +14,7 @@ import KamiEditForm from "./components/kamiEditForm/KamiEditForm";
 import KamiSearchForm from "./components/kamiSearchForm/KamiSearchForm";
 import KamiList from "./components/kamiList/KamiList";
 import type { KamiFormValues } from "./components/kamiEditForm/helpers/KamiForm.types";
-import {
-  emptyKamiForm
-} from "./components/kamiEditForm/helpers/KamiForm.helper";
+import { emptyKamiForm } from "./components/kamiEditForm/helpers/KamiForm.helper";
 import ConfirmationModal from "../../../../../../../shared/components/confirmationModal/ConfirmationModal";
 import {
   buildCreateKamiPayload,
@@ -25,22 +23,28 @@ import {
 
 type KamiTabProps = {
   shrineId: number;
+  isReadOnly: boolean;
 };
 
-export default function KamiTab({ shrineId }: KamiTabProps) {
+export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
   const [isKamiModalOpen, setIsKamiModalOpen] = useState(false);
   const [selectedKami, setSelectedKami] = useState<KamiCMSDto | null>(null);
   const [isKamiSearchModalOpen, setIsKamiSearchModalOpen] = useState(false);
   const [currentKamiIds, setCurrentKamiIds] = useState<number[]>([]);
   const [kamiListReloadKey, setKamiListReloadKey] = useState(0);
-  const [selectedSearchKami, setSelectedSearchKami] = useState<KamiCMSDto[]>([]);
+  const [selectedSearchKami, setSelectedSearchKami] = useState<KamiCMSDto[]>(
+    [],
+  );
   const [kamiDraft, setKamiDraft] = useState<KamiFormValues>(emptyKamiForm);
 
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isConfirmSaveOpen, setIsConfirmSaveOpen] = useState(false);
-  const [pendingDeleteKami, setPendingDeleteKami] = useState<KamiCMSDto | null>(null);
+  const [pendingDeleteKami, setPendingDeleteKami] = useState<KamiCMSDto | null>(
+    null,
+  );
 
-  const isDraftEmpty = JSON.stringify(kamiDraft) === JSON.stringify(emptyKamiForm);
+  const isDraftEmpty =
+    JSON.stringify(kamiDraft) === JSON.stringify(emptyKamiForm);
 
   // Initial setting of Kami from KamiList
   function handleKamiListLoaded(kamiItems: KamiCMSDto[]) {
@@ -89,9 +93,13 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
 
   // Call API to add selected Kami from Search Modal
   async function handleAddSelectedKami() {
+    if (isReadOnly) return; // block API calls in read-only mode
+
     try {
       await Promise.all(
-        selectedSearchKami.map((kami) => linkKamiToShrine(shrineId, kami.kamiId)),
+        selectedSearchKami.map((kami) =>
+          linkKamiToShrine(shrineId, kami.kamiId),
+        ),
       );
 
       reloadKamiList();
@@ -109,6 +117,8 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
 
   // Actually delete after confirmation
   async function confirmRemoveKami() {
+    if (isReadOnly) return; // block API calls in read-only mode
+
     if (!pendingDeleteKami) return;
 
     try {
@@ -134,6 +144,8 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
 
   // Actually save after confirmation
   async function confirmSaveKami() {
+    if (isReadOnly) return; // block API calls in read-only mode
+
     try {
       if (selectedKami) {
         const payload = buildUpdateKamiPayload(kamiDraft, selectedKami);
@@ -156,15 +168,10 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
   }
 
   const saveSubjectName =
-    selectedKami?.nameEn ||
-    kamiDraft.nameEn ||
-    kamiDraft.nameJp ||
-    "this kami";
+    selectedKami?.nameEn || kamiDraft.nameEn || kamiDraft.nameJp || "this kami";
 
   const deleteSubjectName =
-    pendingDeleteKami?.nameEn ||
-    pendingDeleteKami?.nameJp ||
-    "this kami";
+    pendingDeleteKami?.nameEn || pendingDeleteKami?.nameJp || "this kami";
 
   return (
     <>
@@ -172,27 +179,29 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
         <div className={mainStyles.header}>
           <h2 className={mainStyles.title}>Kami</h2>
 
-          <div className={mainStyles.headerActions}>
-            <button
-              type="button"
-              className={`${mainStyles.actionButton} btn btn-outline`}
-              aria-label="Search kami"
-              onClick={openKamiSearchModal}
-            >
-              <IoSearchOutline size={18} />
-              <span>Find Kami</span>
-            </button>
+          {!isReadOnly && (
+            <div className={mainStyles.headerActions}>
+              <button
+                type="button"
+                className={`${mainStyles.actionButton} btn btn-outline`}
+                aria-label="Search kami"
+                onClick={openKamiSearchModal}
+              >
+                <IoSearchOutline size={18} />
+                <span>Find Kami</span>
+              </button>
 
-            <button
-              type="button"
-              className={`${mainStyles.actionButton} btn btn-outline`}
-              aria-label="new kami"
-              onClick={openAddKamiModal}
-            >
-              <FiPlus size={18} />
-              <span>New Kami</span>
-            </button>
-          </div>
+              <button
+                type="button"
+                className={`${mainStyles.actionButton} btn btn-outline`}
+                aria-label="new kami"
+                onClick={openAddKamiModal}
+              >
+                <FiPlus size={18} />
+                <span>New Kami</span>
+              </button>
+            </div>
+          )}
         </div>
 
         <KamiList
@@ -201,6 +210,7 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
           onLoaded={handleKamiListLoaded}
           onEdit={openEditKamiModal}
           onRemove={handleRemoveKami}
+          isReadOnly={isReadOnly}
         />
       </div>
 
@@ -220,19 +230,25 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
             </button>
 
             {/* Saves or Adds Kami to be updated / created in DB */}
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handleSaveKami}
-              disabled={isDraftEmpty}
-            >
-              {selectedKami ? "Save Kami" : "Add Kami"}
-            </button>
+            {!isReadOnly && (
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleSaveKami}
+                disabled={isDraftEmpty}
+              >
+                {selectedKami ? "Save Kami" : "Add Kami"}
+              </button>
+            )}
           </>
         }
       >
         {/* Optionally: Takes selected Kami */}
-        <KamiEditForm kami={selectedKami} onChange={setKamiDraft} />
+        <KamiEditForm
+          kami={selectedKami}
+          onChange={setKamiDraft}
+          isReadOnly={isReadOnly}
+        />
       </BaseModal>
 
       {/* Search Global Kami Modal */}
@@ -263,8 +279,8 @@ export default function KamiTab({ shrineId }: KamiTabProps) {
         }
       >
         {/* Takes current kami and returns list of added Kami */}
-        <KamiSearchForm 
-          existingKamiIds={currentKamiIds} 
+        <KamiSearchForm
+          existingKamiIds={currentKamiIds}
           onSelectionChange={handleSearchSelectionChange}
         />
       </BaseModal>

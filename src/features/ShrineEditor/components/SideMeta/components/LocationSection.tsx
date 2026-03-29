@@ -6,14 +6,16 @@ type LocationSectionProps = {
   isChanged: <K extends keyof ShrineMetaDto>(field: K) => boolean;
   updateField: <K extends keyof ShrineMetaDto>(
     field: K,
-    value: ShrineMetaDto[K]
+    value: ShrineMetaDto[K],
   ) => void;
+  isReadOnly: boolean;
 };
 
 export default function LocationSection({
   formData,
   isChanged,
   updateField,
+  isReadOnly,
 }: LocationSectionProps) {
   return (
     <div className={styles.block}>
@@ -34,9 +36,10 @@ export default function LocationSection({
             onChange={(e) =>
               updateField(
                 "lat",
-                e.target.value === "" ? null : Number(e.target.value)
+                e.target.value === "" ? null : Number(e.target.value),
               )
             }
+            disabled={isReadOnly}
           />
         </div>
 
@@ -54,9 +57,10 @@ export default function LocationSection({
             onChange={(e) =>
               updateField(
                 "lon",
-                e.target.value === "" ? null : Number(e.target.value)
+                e.target.value === "" ? null : Number(e.target.value),
               )
             }
+            disabled={isReadOnly}
           />
         </div>
       </div>

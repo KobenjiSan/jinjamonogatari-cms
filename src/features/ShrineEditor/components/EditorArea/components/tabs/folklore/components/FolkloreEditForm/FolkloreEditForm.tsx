@@ -17,11 +17,13 @@ import ImageSection from "../../../../../../../../shared/images/imageSection/Ima
 type FolkloreEditFormProps = {
   folklore: FolkloreCMSDto | null;
   onChange?: (nextForm: FolkloreFormValues) => void;
+  isReadOnly: boolean;
 };
 
 export default function FolkloreEditForm({
   folklore,
   onChange,
+  isReadOnly,
 }: FolkloreEditFormProps) {
   const [formValues, setFormValues] =
     useState<FolkloreFormValues>(emptyFolkloreForm);
@@ -131,6 +133,7 @@ export default function FolkloreEditForm({
           information: formValues.information,
         }}
         onFieldChange={handleFieldChange}
+        isReadOnly={isReadOnly}
       />
 
       <div className={styles.divider} />
@@ -140,6 +143,7 @@ export default function FolkloreEditForm({
         previewUrl={previewUrl}
         onImageChange={handleImageChange}
         onFileChange={setImageFile}
+        isReadOnly={isReadOnly}
       />
 
       <div className={styles.divider} />
@@ -149,6 +153,7 @@ export default function FolkloreEditForm({
         onCitationChange={handleCitationChange}
         onAddCitation={addCitation}
         onRemoveCitation={removeCitation}
+        isReadOnly={isReadOnly}
       />
 
       <div className={styles.divider} />

@@ -8,6 +8,7 @@ export default function ImageSection({
   previewUrl,
   onImageChange,
   onFileChange,
+  isReadOnly,
 }: ImageSectionProps) {
   return (
     <div className={styles.section}>
@@ -18,6 +19,7 @@ export default function ImageSection({
         previewUrl={previewUrl}
         onChange={onImageChange}
         onFileChange={onFileChange}
+        isReadOnly={isReadOnly}
       />
     </div>
   );

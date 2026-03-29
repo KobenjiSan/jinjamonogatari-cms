@@ -10,4 +10,5 @@ export type EditableHeroImage = ImageFullDto & {
 export type HeroImageSectionProps = {
   image: EditableHeroImage | null;
   onChange: (nextImage: EditableHeroImage | null) => void;
+  isReadOnly: boolean;
 };
