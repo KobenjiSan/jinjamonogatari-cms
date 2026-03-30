@@ -6,3 +6,9 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.actionButtons{
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-md);
+}
