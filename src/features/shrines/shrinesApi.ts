@@ -95,3 +95,10 @@ export async function createShrine(body: CreateShrineRequest): Promise<void> {
     body: JSON.stringify(body),
   });
 }
+
+// DELETE /api/shrines/cms/delete/{shrineId}
+export async function deleteShrine(shrineId: number): Promise<void> {
+  await apiFetch<void>(`/api/shrines/cms/delete/${shrineId}`, {
+    method: "DELETE",
+  });
+}

@@ -47,6 +47,15 @@ export default function SideNav() {
           Kami
         </NavLink>
 
+        <NavLink
+          to="/tags" // Update later
+          className={({ isActive }) =>
+            `${styles.link} ${isActive ? styles.active : ""}`
+          }
+        >
+          Tags
+        </NavLink>
+
         {user!.role == "Admin" && (
           <>
             <hr />

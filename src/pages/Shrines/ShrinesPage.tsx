@@ -1,6 +1,8 @@
 // import styles from "./ShrinesPage.module.css";
 import { useState } from "react";
-import Filters, {type ShrineSearchFilters } from "../../features/shrines/components/Filters/Filters";
+import Filters, {
+  type ShrineSearchFilters,
+} from "../../features/shrines/components/Filters/Filters";
 import ShrineHeader from "../../features/shrines/components/header/ShrineHeader";
 import ShrineList from "../../features/shrines/components/shrineList/ShrineList";
 import StatusTabs, {
@@ -8,7 +10,15 @@ import StatusTabs, {
 } from "../../features/shrines/components/statusTab/StatusTabs";
 import BaseModal from "../../shared/components/modal/BaseModal";
 import ImportForm from "../../features/shrines/components/ImportForm/ImportForm";
-import { createShrine, importShrines, type ShrineListDto, type CreateShrineRequest, type ImportPreviewItemDto, type ImportShrinesRequest } from "../../features/shrines/shrinesApi";
+import {
+  createShrine,
+  importShrines,
+  type ShrineListDto,
+  type CreateShrineRequest,
+  type ImportPreviewItemDto,
+  type ImportShrinesRequest,
+  deleteShrine,
+} from "../../features/shrines/shrinesApi";
 import ConfirmationModal from "../../shared/components/confirmationModal/ConfirmationModal";
 import CreateShrineForm from "../../features/shrines/components/CreateShrineForm/CreateShrineForm";
 
@@ -18,27 +28,50 @@ export default function ShrinesPage() {
 
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isImportReady, setIsImportReady] = useState(false);
-  const [previewList, setPreviewList] = useState<ImportPreviewItemDto[] | null>(null);
+  const [previewList, setPreviewList] = useState<ImportPreviewItemDto[] | null>(
+    null,
+  );
   const [isConfirmImportOpen, setIsConfirmImportOpen] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [requestPing, setRequestPing] = useState(0);
-  const [pendingContent, setPendingContent] = useState<CreateShrineRequest | null>(null);
+  const [pendingContent, setPendingContent] =
+    useState<CreateShrineRequest | null>(null);
   const [isConfirmCreateOpen, setIsConfirmCreateOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-  
-  const [shrineToDelete, setShrineToDelete] = useState<ShrineListDto | null>(null);
+
+  const [shrineToDelete, setShrineToDelete] = useState<ShrineListDto | null>(
+    null,
+  );
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const shrineToDeleteName =
     shrineToDelete?.nameEn || shrineToDelete?.nameJp || "this shrine";
-  const shrineToDeleteTitle = `Delete Shrine ID: ${shrineToDelete?.shrineId}`
+  const shrineToDeleteTitle = `Delete Shrine ID: ${shrineToDelete?.shrineId}`;
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [onUpdate, setOnUpdate] = useState(0);
+
   function openDeleteModal(shrine: ShrineListDto) {
     setShrineToDelete(shrine);
     setIsConfirmDeleteOpen(true);
   }
-  function confirmRemoveShrine() {
-    // call api to delete shrine
+  async function confirmRemoveShrine() {
+    if (shrineToDelete == null) return;
+    try {
+      setIsDeleting(true);
+      await deleteShrine(shrineToDelete.shrineId);
+
+      setIsConfirmDeleteOpen(false);
+      setShrineToDelete(null);
+    } catch (error) {
+      console.error(
+        `Failed to delete shrine ${shrineToDelete.shrineId}:`,
+        error,
+      );
+    } finally {
+      setIsDeleting(false);
+      setOnUpdate((prev) => prev + 1); // refresh list
+    }
   }
   function cancelRemoveShrine() {
     setIsConfirmDeleteOpen(false);
@@ -69,9 +102,7 @@ export default function ShrinesPage() {
 
     const validItems = items.filter(
       (item) =>
-        !!item.importId?.trim() &&
-        item.lat !== null &&
-        item.lon !== null
+        !!item.importId?.trim() && item.lat !== null && item.lon !== null,
     );
 
     setIsImportReady(validItems.length > 0);
@@ -83,9 +114,7 @@ export default function ShrinesPage() {
     const previews = previewList
       .filter(
         (item) =>
-          !!item.importId?.trim() &&
-          item.lat !== null &&
-          item.lon !== null
+          !!item.importId?.trim() && item.lat !== null && item.lon !== null,
       )
       .map((item) => ({
         importId: item.importId,
@@ -111,15 +140,16 @@ export default function ShrinesPage() {
     } finally {
       setIsImporting(false);
       setActiveTab("import");
+      setOnUpdate((prev) => prev + 1); // refresh list
     }
   }
 
   // Creating
-  function openCreateModal(){
+  function openCreateModal() {
     setIsCreateModalOpen(true);
     setPendingContent(null);
   }
-  function closeCreateModal(){
+  function closeCreateModal() {
     setIsCreateModalOpen(false);
     setPendingContent(null);
   }
@@ -135,7 +165,7 @@ export default function ShrinesPage() {
     setRequestPing((prev) => prev + 1);
   }
 
-  async function handleCreate(){
+  async function handleCreate() {
     if (!pendingContent || pendingContent === null) return;
 
     try {
@@ -149,6 +179,7 @@ export default function ShrinesPage() {
     } finally {
       setIsCreating(false);
       setActiveTab("draft");
+      setOnUpdate((prev) => prev + 1); // refresh list
     }
   }
 
@@ -159,7 +190,13 @@ export default function ShrinesPage() {
         <div className="p-xl">
           <StatusTabs activeTab={activeTab} onTabChange={setActiveTab} />
           <Filters onSearch={setFilters} />
-          <ShrineList activeTab={activeTab} filters={filters} onRemove={openDeleteModal} />
+          <ShrineList
+            activeTab={activeTab}
+            filters={filters}
+            onRemove={openDeleteModal}
+            onUpdate={onUpdate}
+            isDeleting={isDeleting}
+          />
         </div>
       </div>
 
@@ -218,7 +255,10 @@ export default function ShrinesPage() {
           </>
         }
       >
-        <CreateShrineForm requestPing={requestPing} onContentRequest={setPendingContent} />
+        <CreateShrineForm
+          requestPing={requestPing}
+          onContentRequest={setPendingContent}
+        />
       </BaseModal>
 
       {/* Confirm Import Modal */}

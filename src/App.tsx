@@ -11,6 +11,7 @@ import KamiPage from "./pages/Kami/KamiPage";
 import ShrineReviewPage from "./pages/ShrineReview/ShrineReview";
 import UsersPage from "./pages/Users/Users";
 import AuditsPage from "./pages/Audits/Audits";
+import TagsPage from "./pages/Tags/TagsPage";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route path="/shrines" element={<ShrinesPage />} />
             <Route path="/etiquette" element={<EtiquettePage />} />
             <Route path="/kami" element={<KamiPage />} />
+            <Route path="/tags" element={<TagsPage />} />
             <Route path="/admin-review" element={<ShrineReviewPage />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/audits" element={<AuditsPage />} />

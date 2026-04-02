@@ -28,9 +28,17 @@ type ShrineListProps = {
   activeTab: StatusTabKey;
   filters: ShrineSearchFilters | null;
   onRemove: (shrine: ShrineListDto) => void;
+  onUpdate: number;
+  isDeleting: boolean;
 };
 
-export default function ShrineList({ activeTab, filters, onRemove }: ShrineListProps) {
+export default function ShrineList({
+  activeTab,
+  filters,
+  onRemove,
+  onUpdate,
+  isDeleting,
+}: ShrineListProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [shrines, setShrines] = useState<ShrineListDto[]>([]);
@@ -65,7 +73,7 @@ export default function ShrineList({ activeTab, filters, onRemove }: ShrineListP
     }
 
     loadShrines();
-  }, [activeTab, filters, pageNumber, pageSize]);
+  }, [activeTab, filters, pageNumber, pageSize, onUpdate]);
 
   function getReadOnly(): boolean {
     const isEditor = user?.role === "Editor";
@@ -101,19 +109,13 @@ export default function ShrineList({ activeTab, filters, onRemove }: ShrineListP
         {/* Rows */}
         {loading ? (
           <div className="rowGroup">
-            <div
-              className="bodyCell"
-              style={{gridColumn: "1 / -1"}}
-            >
+            <div className="bodyCell" style={{ gridColumn: "1 / -1" }}>
               <p className="text-md text-secondary">Loading...</p>
             </div>
           </div>
         ) : !shrines.length ? (
           <div className="rowGroup">
-            <div
-              className="bodyCell"
-              style={{gridColumn: "1 / -1"}}
-            >
+            <div className="bodyCell" style={{ gridColumn: "1 / -1" }}>
               <p className="text-md text-secondary">No shrines found.</p>
             </div>
           </div>
@@ -155,19 +157,19 @@ export default function ShrineList({ activeTab, filters, onRemove }: ShrineListP
 
               <div className={`bodyCell ${styles.readinessCol}`}>
                 {(s.errorCount ?? 0) === 0 ? (
-                    <div className={styles.auditOk}>
-                      <FiCheckCircle className={styles.auditOkIcon} />
-                      <span>No Blockers</span>
-                    </div>
-                  ) : (
-                    <div className={styles.auditStack}>
-                      {s.errorCount > 0 && (
-                        <span className={styles.errorPill}>
-                          {s.errorCount} Blocker{s.errorCount !== 1 ? "s" : ""}
-                        </span>
-                      )}
-                    </div>
-                  )}
+                  <div className={styles.auditOk}>
+                    <FiCheckCircle className={styles.auditOkIcon} />
+                    <span>No Blockers</span>
+                  </div>
+                ) : (
+                  <div className={styles.auditStack}>
+                    {s.errorCount > 0 && (
+                      <span className={styles.errorPill}>
+                        {s.errorCount} Blocker{s.errorCount !== 1 ? "s" : ""}
+                      </span>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div className={`bodyCell ${styles.actionsCol}`}>
@@ -181,7 +183,12 @@ export default function ShrineList({ activeTab, filters, onRemove }: ShrineListP
                   </button>
 
                   {user?.role === "Admin" && (
-                    <button type="button" className="btn btn-outline-danger" onClick={() => onRemove(s)}>
+                    <button
+                      type="button"
+                      disabled={isDeleting}
+                      className="btn btn-outline-danger"
+                      onClick={() => onRemove(s)}
+                    >
                       Remove
                     </button>
                   )}
