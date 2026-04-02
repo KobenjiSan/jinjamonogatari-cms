@@ -11,7 +11,7 @@ export default function ShrineHeader({onImport, onCreate}: ShrineHeaderProps) {
       <div className="page-title">Shrines</div>
       <div className={styles.actionButtons}>
         <button className="btn btn-outline" onClick={onImport}>Import</button>
-        <button className="btn btn-outline" onClick={onCreate}>Create</button>
+        <button className="btn btn-primary" onClick={onCreate}>Create</button>
       </div>
     </div>
   );

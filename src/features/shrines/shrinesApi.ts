@@ -1,9 +1,12 @@
 // Handles api calls for shrines
 
 import { apiFetch } from "../../api/apiClient";
+import type { ShrineSearchFilters } from "./components/Filters/Filters";
+import type { ShrineListPagination } from "./components/shrineList/ShrineList";
 
 export type ShrineListResult = {
   shrines: ShrineListDto[];
+  totalCount: number;
 };
 
 export type ShrineListDto = {
@@ -15,12 +18,19 @@ export type ShrineListDto = {
   lat: number | null;
   lon: number | null;
   updatedAt: string;
+  errorCount: number;
 };
 
 // GET / api/shrines/cms/list?status=...
-export async function getShrineList(status: string): Promise<ShrineListResult> {
-  const query = status ? `?status=${status}` : "";
-  return await apiFetch<ShrineListResult>(`/api/shrines/cms/list${query}`);
+export async function getShrineList(status: string, filters: ShrineSearchFilters | null, pagination: ShrineListPagination): Promise<ShrineListResult> {
+  const statusQuery = status ? `?status=${status}` : "";
+  const prefecture = filters?.prefecture ? `&prefecture=${filters.prefecture}` : "";
+  const searchQuery = filters?.searchValue ? `&searchQuery=${filters.searchValue}` : "";
+  const sort = filters?.sorting ? `&sort=${filters.sorting}` : "";
+  const page = pagination?.pageNumber ? `&page=${pagination.pageNumber}` : "&page=1";
+  const pageSize = pagination?.pageSize ? `&pageSize=${pagination.pageSize}` : "&pageSize=5";
+  
+  return await apiFetch<ShrineListResult>(`/api/shrines/cms/list${statusQuery}${prefecture}${searchQuery}${sort}${page}${pageSize}`);
 }
 
 // POST /api/shrines/cms/import-preview
