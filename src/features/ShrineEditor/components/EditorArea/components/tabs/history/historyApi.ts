@@ -1,14 +1,14 @@
 import { apiFetch } from "../../../../../../../api/apiClient";
-import type { 
+import type {
   CitationCMSDto,
-  CreateCitationRequest,
-  CitationListChangesRequest
- } from "../../../../../../shared/citations/helpers/CitationApi.types";
+  CitationCreateChangesRequest,
+  CitationListChangesRequest,
+} from "../../../../../../shared/citations/helpers/CitationApi.types";
 import type {
   ImageCMSDto,
   CreateImageRequest,
-  ImageChangeRequest
-} from "../../../../../../shared/images/helpers/ImageApi.types"
+  ImageChangeRequest,
+} from "../../../../../../shared/images/helpers/ImageApi.types";
 import type { EntityAuditDto } from "../status/statusApi";
 
 // GET History by shrine
@@ -27,8 +27,10 @@ export type HistoryCMSDto = {
   audit: EntityAuditDto;
 };
 
-export async function getShrineHistoryById(id: number): Promise<HistoryCMSDto[]> {
-    return await apiFetch<HistoryCMSDto[]>(`/api/shrines/cms/${id}/history`);
+export async function getShrineHistoryById(
+  id: number,
+): Promise<HistoryCMSDto[]> {
+  return await apiFetch<HistoryCMSDto[]>(`/api/shrines/cms/${id}/history`);
 }
 
 // CREATE History
@@ -38,7 +40,7 @@ export type CreateHistoryRequest = {
   title: string | null;
   information: string | null;
   image: CreateImageRequest | null;
-  citations: CreateCitationRequest[];
+  citations: CitationCreateChangesRequest;
 };
 
 export async function createHistory(
@@ -80,9 +82,7 @@ export async function updateHistory(
 }
 
 // DELETE History
-export async function deleteHistory(
-  historyId: number,
-): Promise<void> {
+export async function deleteHistory(historyId: number): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/history/${historyId}`, {
     method: "DELETE",
   });

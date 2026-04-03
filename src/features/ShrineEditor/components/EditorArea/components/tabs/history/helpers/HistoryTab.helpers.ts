@@ -4,9 +4,11 @@ import type {
   UpdateHistoryRequest,
 } from "../historyApi";
 import type {
+  CitationCreateChangesRequest,
   CitationListChangesRequest,
   CitationRequest,
   CreateCitationRequest,
+  LinkExistingCitationRequest,
 } from "../../../../../../../shared/citations/helpers/CitationApi.types";
 import type { ImageChangeRequest } from "../../../../../../../shared/images/helpers/ImageApi.types";
 import type { HistoryFormValues } from "../components/HistoryEditForm/helpers/HistoryForm.types";
@@ -74,25 +76,70 @@ function mapImageFormToChange(
   };
 }
 
+function mapCitationFormToLinkExisting(
+  citation: CitationFormValues,
+): LinkExistingCitationRequest {
+  return {
+    citeId: citation.citeId!,
+    title: toNullableString(citation.title),
+    author: toNullableString(citation.author),
+    url: toNullableString(citation.url),
+    year: citation.year ? Number(citation.year) : null,
+  };
+}
+
+function buildCreateCitationChanges(
+  formCitations: CitationFormValues[],
+): CitationCreateChangesRequest {
+  const create: CreateCitationRequest[] = [];
+  const linkExisting: LinkExistingCitationRequest[] = [];
+
+  for (const citation of formCitations) {
+    if (isCitationEmpty(citation)) continue;
+
+    if (citation.citeId) {
+      linkExisting.push(mapCitationFormToLinkExisting(citation));
+    } else {
+      create.push(mapCitationFormToCreate(citation));
+    }
+  }
+
+  return {
+    create,
+    linkExisting,
+  };
+}
+
 function buildCitationChanges(
   formCitations: CitationFormValues[],
   existingCitations: HistoryCMSDto["citations"],
 ): CitationListChangesRequest {
   const create: CreateCitationRequest[] = [];
   const update: CitationRequest[] = [];
+  const linkExisting: LinkExistingCitationRequest[] = [];
+
+  const existingCitationIds = new Set(existingCitations.map((c) => c.citeId));
 
   for (const citation of formCitations) {
     if (isCitationEmpty(citation)) continue;
 
-    if (citation.citeId) {
-      update.push(mapCitationFormToUpdate(citation));
-    } else {
+    if (!citation.citeId) {
       create.push(mapCitationFormToCreate(citation));
+      continue;
     }
+
+    if (!existingCitationIds.has(citation.citeId)) {
+      linkExisting.push(mapCitationFormToLinkExisting(citation));
+      continue;
+    }
+
+    update.push(mapCitationFormToUpdate(citation));
   }
 
   const formCitationIds = new Set(
-    formCitations.filter((c) => c.citeId).map((c) => c.citeId as number),
+    formCitations
+      .filter((c) => c.citeId)
+      .map((c) => c.citeId as number),
   );
 
   const del = existingCitations
@@ -102,6 +149,7 @@ function buildCitationChanges(
   return {
     create,
     update,
+    linkExisting,
     delete: del,
   };
 }
@@ -115,9 +163,7 @@ export function buildCreateHistoryPayload(
     title: toNullableString(form.title),
     information: toNullableString(form.information),
     image: mapImageFormToCreate(form.image),
-    citations: form.citations
-      .filter((citation) => !isCitationEmpty(citation))
-      .map((citation) => mapCitationFormToCreate(citation)),
+    citations: buildCreateCitationChanges(form.citations),
   };
 }
 

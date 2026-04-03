@@ -79,10 +79,13 @@ export default function KamiSearchForm({
         />
       </div>
 
-      <KamiList
-        disabledIds={disabledKamiIds}
-        onSelect={handleSelectKami}
-      />
+      <div className={styles.listWrapper}>
+        <KamiList
+          disabledIds={disabledKamiIds}
+          onSelect={handleSelectKami}
+          searchTerm={searchTerm}
+        />
+      </div>
 
       <div className={styles.selectedBlock}>
         <p className={styles.selectedLabel}>Selected Kami</p>

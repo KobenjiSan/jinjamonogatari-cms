@@ -245,6 +245,7 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
       >
         {/* Optionally: Takes selected Kami */}
         <KamiEditForm
+          shrineId={shrineId}
           kami={selectedKami}
           onChange={setKamiDraft}
           isReadOnly={isReadOnly}

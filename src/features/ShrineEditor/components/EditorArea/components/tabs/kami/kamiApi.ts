@@ -3,7 +3,8 @@ import { apiFetch } from "../../../../../../../api/apiClient";
 import type { 
   CitationCMSDto,
   CreateCitationRequest,
-  CitationListChangesRequest
+  CitationListChangesRequest,
+  LinkExistingCitationRequest
  } from "../../../../../../shared/citations/helpers/CitationApi.types";
 import type {
   ImageCMSDto,
@@ -44,7 +45,10 @@ export type CreateKamiInShrineRequest = {
   nameJp: string | null;
   desc: string | null;
   image: CreateImageRequest | null;
-  citations: CreateCitationRequest[];
+  citations: {
+    create: CreateCitationRequest[];
+    linkExisting: LinkExistingCitationRequest[];
+  };
 };
 
 export async function createKamiInShrine(

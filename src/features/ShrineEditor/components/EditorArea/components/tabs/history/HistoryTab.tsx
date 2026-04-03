@@ -182,6 +182,7 @@ export default function HistoryTab({ shrineId, isReadOnly }: HistoryTabProps) {
         }
       >
         <HistoryEditForm
+          shrineId={shrineId}
           history={selectedHistory}
           onChange={setHistoryDraft}
           isReadOnly={isReadOnly}

@@ -189,6 +189,7 @@ export default function FolkloreTab({
         }
       >
         <FolkloreEditForm
+          shrineId={shrineId}
           folklore={selectedFolklore}
           onChange={setFolkloreDraft}
           isReadOnly={isReadOnly}

@@ -24,5 +24,6 @@ export function mapCitationToForm(citation?: {
     year: citation?.year?.toString() ?? "",
     createdAt: citation?.createdAt,
     updatedAt: citation?.updatedAt,
+    isReused: false,
   };
 }

@@ -12,10 +12,11 @@ type KamiListProps = {
   disabledIds?: number[];
   onEdit?: (kamiItem: KamiCMSDto) => void;
   onSelect?: (kamiItem: KamiCMSDto) => void;
-  onRemove: (kami: KamiCMSDto) => void;
+  onRemove?: (kami: KamiCMSDto) => void;
   onLoaded?: (kami: KamiCMSDto[]) => void;
   reloadKey?: number;
-  isReadOnly: boolean;
+  isReadOnly?: boolean;
+  searchTerm?: string;
 };
 
 export default function KamiList({
@@ -27,6 +28,7 @@ export default function KamiList({
   onLoaded,
   reloadKey,
   isReadOnly,
+  searchTerm,
 }: KamiListProps) {
   const [kami, setKami] = useState<KamiCMSDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -57,6 +59,16 @@ export default function KamiList({
 
     loadKami();
   }, [id, reloadKey]);
+
+  const filteredKami = kami.filter((k) => {
+    const term = searchTerm?.toLowerCase() || "";
+
+    return (
+      k.nameEn?.toLowerCase().includes(term) ||
+      k.nameJp?.toLowerCase().includes(term) ||
+      k.desc?.toLowerCase().includes(term)
+    );
+  });
 
   if (loading) {
     return (
@@ -92,7 +104,7 @@ export default function KamiList({
         {id != null && <div className="headerCell">Issues</div>}
         <div className="headerCell">Actions</div>
 
-        {kami.map((k) => {
+        {filteredKami.map((k) => {
           const isDisabled = disabledIds.includes(k.kamiId);
           const errorCount = k.audit?.errorCount ?? 0;
           const warningCount = k.audit?.warningCount ?? 0;
@@ -173,7 +185,7 @@ export default function KamiList({
                       <button
                         type="button"
                         className="btn btn-outline-danger"
-                        onClick={() => onRemove(k)}
+                        onClick={() => onRemove?.(k)}
                       >
                         Remove
                       </button>

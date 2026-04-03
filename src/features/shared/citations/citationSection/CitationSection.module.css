@@ -49,3 +49,24 @@
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
 }
+
+.citationActions{
+  display: flex;
+  gap: var(--space-lg);
+}
+
+.reuseRow{
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.reuseButton{
+  min-width: 135px;
+}
+
+.citationSelect {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

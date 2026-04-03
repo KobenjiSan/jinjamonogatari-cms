@@ -1,13 +1,8 @@
-import type { TagDto } from "../../../../../ShrineEditorApi";
-
-export type TagFormValues = {
-  titleEn: string;
-  titleJp: string;
-};
+import type { TagDto } from "../../../../../../shared/tags/tagApi";
+import type { TagFormValues } from "../../../../../../shared/tags/TagForm";
 
 export type EditableTag = TagDto & {
-  isNew?: boolean;
-  isEdited?: boolean;
+  isAdded?: boolean;
   isMarkedForRemoval?: boolean;
 };
 
@@ -18,6 +13,7 @@ export type TagsSectionProps = {
 };
 
 export const emptyTagForm: TagFormValues = {
+  tagId: null,
   titleEn: "",
   titleJp: "",
 };

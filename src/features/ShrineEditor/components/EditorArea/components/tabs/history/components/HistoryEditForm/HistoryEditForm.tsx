@@ -15,12 +15,14 @@ import CitationSection from "../../../../../../../../shared/citations/citationSe
 import ImageSection from "../../../../../../../../shared/images/imageSection/ImageSection";
 
 type HistoryEditFormProps = {
+  shrineId?: number;
   history: HistoryCMSDto | null;
   onChange?: (nextForm: HistoryFormValues) => void;
   isReadOnly: boolean;
 };
 
 export default function HistoryEditForm({
+  shrineId,
   history,
   onChange,
   isReadOnly,
@@ -112,6 +114,26 @@ export default function HistoryEditForm({
     });
   }
 
+  function reuseCitation(citation: CitationFormValues) {
+    setFormValues((prev) => {
+      const alreadyExists = prev.citations.some(
+        (c) => c.citeId && c.citeId === citation.citeId,
+      );
+
+      if (alreadyExists) {
+        return prev;
+      }
+
+      const next = {
+        ...prev,
+        citations: [...prev.citations, citation],
+      };
+
+      onChange?.(next);
+      return next;
+    });
+  }
+
   function removeCitation(index: number) {
     setFormValues((prev) => {
       const next = {
@@ -150,9 +172,11 @@ export default function HistoryEditForm({
       <div className={styles.divider} />
 
       <CitationSection
+        shrineId={shrineId}
         citations={formValues.citations}
         onCitationChange={handleCitationChange}
         onAddCitation={addCitation}
+        onReuseCitation={reuseCitation}
         onRemoveCitation={removeCitation}
         isReadOnly={isReadOnly}
       />

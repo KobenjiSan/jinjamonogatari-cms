@@ -17,3 +17,8 @@ export type CitationLinkedItemDto = {
 export async function getShrineCitationsById(id: number): Promise<ShrineCitationCMSDto[]> {
     return await apiFetch<ShrineCitationCMSDto[]>(`/api/shrines/cms/${id}/citations`);
 }
+
+// GET /api/shrines/cms/{id}/citations-dropdown
+export async function getShrineCitationsDropdownById(id: number): Promise<CitationCMSDto[]> {
+    return await apiFetch<CitationCMSDto[]>(`/api/shrines/cms/${id}/citations-dropdown`);
+}

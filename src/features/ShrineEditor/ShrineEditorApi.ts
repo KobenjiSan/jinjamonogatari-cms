@@ -1,14 +1,9 @@
 // Handles api calls for the shrineEditor
 
 import { apiFetch } from "../../api/apiClient";
+import type { TagDto } from "../shared/tags/tagApi";
 
 // Helpers 
-export type TagDto = {
-  tagId: number;
-  titleEn: string;
-  titleJp: string | null;
-};
-
 export type ImageFullDto = {
   imgId: number;
   imageUrl: string | null;
@@ -92,21 +87,9 @@ export type BasicMetaUpdateRequest = {
   website: string | null;
 };
 
-export type CreateTagRequest = {
-  titleEn: string;
-  titleJp: string | null;
-};
-
-export type UpdateTagRequest = {
-  tagId: number;
-  titleEn: string;
-  titleJp: string | null;
-};
-
-export type TagChangesRequest = {
-  create: CreateTagRequest[];
-  update: UpdateTagRequest[];
-  delete: number[];
+export type TagLinkChangesRequest = {
+  link: number[];
+  unlink: number[];
 };
 
 export type HeroImageCitationRequest = {
@@ -126,7 +109,7 @@ export type HeroImageChangeRequest = {
 
 export type UpdateShrineMetaRequest = {
   basic: BasicMetaUpdateRequest;
-  tags: TagChangesRequest;
+  tags: TagLinkChangesRequest;
   heroImage: HeroImageChangeRequest;
 };
 
@@ -135,6 +118,25 @@ export async function updateShrineMeta(
   body: unknown,
 ): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/${id}/meta`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+// GET /api/shrines/cms/{id}/notes
+export async function getShrineNotesById(id: number): Promise<string>{
+    return await apiFetch<string>(`/api/shrines/cms/${id}/notes`);
+}
+
+// PUT /api/shrines/cms/{id}/notes
+export async function updateShrineNotes(
+  id: number,
+  body: unknown,
+): Promise<void> {
+  await apiFetch<void>(`/api/shrines/cms/${id}/notes`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

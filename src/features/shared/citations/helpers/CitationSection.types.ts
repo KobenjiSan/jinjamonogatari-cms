@@ -7,15 +7,6 @@ export type CitationFormValues = {
   citeId?: number;
   createdAt?: string;
   updatedAt?: string;
-};
 
-export type CitationSectionProps = {
-  title?: string;
-  addLabel?: string;
-  emptyMessage?: string;
-  citations: CitationFormValues[];
-  onCitationChange: (index: number, nextCitation: CitationFormValues) => void;
-  onAddCitation: () => void;
-  onRemoveCitation: (index: number) => void;
-  isReadOnly: boolean;
+  isReused?: boolean;
 };

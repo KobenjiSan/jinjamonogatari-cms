@@ -1,4 +1,6 @@
+import { useEffect, useState } from "react";
 import styles from "./EditorNotes.module.css";
+import { getShrineNotesById, updateShrineNotes } from "../../ShrineEditorApi";
 
 type EditorNotesProps = {
   shrineId: number;
@@ -9,14 +11,58 @@ export default function EditorNotes({
   shrineId,
   isReadOnly,
 }: EditorNotesProps) {
+  const [notes, setNotes] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
+  useEffect(() => {
+    async function loadNotes() {
+      setLoading(true);
+
+      try {
+        const result = await getShrineNotesById(shrineId);
+        setNotes(result);
+      } catch (err) {
+        console.error("Failed to retreive shrine notes", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadNotes();
+  }, [shrineId]);
+
+  async function handleSaveNotes() {
+    try {
+      setLoading(true);
+
+      await updateShrineNotes(shrineId, {
+        notes: notes,
+      });
+
+      setHasUnsavedChanges(false);
+    } catch (err) {
+      console.error("Failed to save shrine notes", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleNotesUpdate(updatedValue: string) {
+    setNotes(updatedValue);
+    setHasUnsavedChanges(true);
+  }
+
   return (
     <aside className={styles.editorNotes}>
       <div className={styles.panel}>
         <div className={styles.body}>
           <textarea
             id="editorNotes"
-            className={`textarea ${styles.textarea}`}
+            className={`textarea ${styles.textarea} ${isReadOnly ? styles.disabledPadding : ""}`}
             disabled={isReadOnly}
+            value={notes}
+            onChange={(e) => handleNotesUpdate(e.target.value)}
             placeholder={`Use this area for internal notes only...
 
 - missing English title
@@ -31,8 +77,15 @@ export default function EditorNotes({
         </div>
         {!isReadOnly && (
           <div className={styles.footer}>
-            <span className="text-xs text-secondary">Unsaved changes</span>
-            <button className="btn btn-primary" type="button">
+            <span className="text-xs text-secondary">
+              {hasUnsavedChanges ? <>Unsaved changes</> : <>All changes saved</>}
+            </span>
+            <button
+              className="btn btn-primary"
+              type="button"
+              onClick={handleSaveNotes}
+              disabled={loading}
+            >
               Save Notes
             </button>
           </div>

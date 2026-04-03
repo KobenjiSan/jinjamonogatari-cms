@@ -12,12 +12,14 @@ import CitationSection from "../../../../../../../../shared/citations/citationSe
 import ImageSection from "../../../../../../../../shared/images/imageSection/ImageSection";
 
 type KamiEditFormProps = {
+  shrineId?: number;
   kami: KamiCMSDto | null;
   onChange?: (nextForm: KamiFormValues) => void;
   isReadOnly: boolean;
 };
 
 export default function KamiEditForm({
+  shrineId,
   kami,
   onChange,
   isReadOnly,
@@ -110,6 +112,26 @@ export default function KamiEditForm({
     });
   }
 
+  function reuseCitation(citation: CitationFormValues) {
+    setFormValues((prev) => {
+      const alreadyExists = prev.citations.some(
+        (c) => c.citeId && c.citeId === citation.citeId,
+      );
+
+      if (alreadyExists) {
+        return prev;
+      }
+
+      const next = {
+        ...prev,
+        citations: [...prev.citations, citation],
+      };
+
+      onChange?.(next);
+      return next;
+    });
+  }
+
   function removeCitation(index: number) {
     setFormValues((prev) => {
       const next = {
@@ -151,10 +173,12 @@ export default function KamiEditForm({
       <div className={styles.divider} />
 
       <CitationSection
+        shrineId={shrineId}
         citations={formValues.citations}
         onCitationChange={handleCitationChange}
         onAddCitation={addCitation}
         onRemoveCitation={removeCitation}
+        onReuseCitation={reuseCitation}
         isReadOnly={isReadOnly}
       />
 

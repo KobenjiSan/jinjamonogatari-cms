@@ -1,14 +1,14 @@
 import { apiFetch } from "../../../../../../../api/apiClient";
-import type { 
+import type {
   CitationCMSDto,
-  CreateCitationRequest,
-  CitationListChangesRequest
- } from "../../../../../../shared/citations/helpers/CitationApi.types";
+  CitationCreateChangesRequest,
+  CitationListChangesRequest,
+} from "../../../../../../shared/citations/helpers/CitationApi.types";
 import type {
   ImageCMSDto,
   CreateImageRequest,
-  ImageChangeRequest
-} from "../../../../../../shared/images/helpers/ImageApi.types"
+  ImageChangeRequest,
+} from "../../../../../../shared/images/helpers/ImageApi.types";
 import type { EntityAuditDto } from "../status/statusApi";
 
 // GET Folklore by shrine
@@ -27,7 +27,7 @@ export type FolkloreCMSDto = {
 };
 
 export async function getShrineFolkloreById(id: number): Promise<FolkloreCMSDto[]> {
-    return await apiFetch<FolkloreCMSDto[]>(`/api/shrines/cms/${id}/folklore`);
+  return await apiFetch<FolkloreCMSDto[]>(`/api/shrines/cms/${id}/folklore`);
 }
 
 // CREATE Folklore
@@ -36,7 +36,7 @@ export type CreateFolkloreRequest = {
   title: string | null;
   information: string | null;
   image: CreateImageRequest | null;
-  citations: CreateCitationRequest[];
+  citations: CitationCreateChangesRequest;
 };
 
 export async function createFolklore(
@@ -77,9 +77,7 @@ export async function updateFolklore(
 }
 
 // DELETE Folklore
-export async function deleteFolklore(
-  folkloreId: number,
-): Promise<void> {
+export async function deleteFolklore(folkloreId: number): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/folklore/${folkloreId}`, {
     method: "DELETE",
   });

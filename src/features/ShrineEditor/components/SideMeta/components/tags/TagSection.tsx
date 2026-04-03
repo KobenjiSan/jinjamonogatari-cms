@@ -5,14 +5,11 @@ import styles from "./TagSection.module.css";
 
 import {
   buildNewTag,
-  buildUpdatedTags,
   getTagChipClassName,
-  mapTagToForm,
   toggleRemoveTag,
 } from "./helpers/TagSection.helpers";
 import {
   emptyTagForm,
-  type EditableTag,
   type TagsSectionProps,
 } from "./helpers/TagSection.types";
 import { FiPlus } from "react-icons/fi";
@@ -23,37 +20,41 @@ export default function TagsSection({
   isReadOnly,
 }: TagsSectionProps) {
   const [isTagModalOpen, setIsTagModalOpen] = useState(false);
-  const [editingTagId, setEditingTagId] = useState<number | null>(null);
   const [tagForm, setTagForm] = useState(emptyTagForm);
 
   function openCreateTagModal() {
-    setEditingTagId(null);
     setTagForm(emptyTagForm);
-    setIsTagModalOpen(true);
-  }
-
-  function openEditTagModal(tag: EditableTag) {
-    setEditingTagId(tag.tagId);
-    setTagForm(mapTagToForm(tag));
     setIsTagModalOpen(true);
   }
 
   function closeTagModal() {
     setIsTagModalOpen(false);
-    setEditingTagId(null);
     setTagForm(emptyTagForm);
   }
 
   function handleSaveTag() {
-    if (editingTagId === null) {
-      const newTag = buildNewTag(tagForm);
-      if (!newTag) return;
+    const newTag = buildNewTag(tagForm);
+    if (!newTag) return;
 
-      onChange([...tags, newTag]);
-    } else {
-      onChange(buildUpdatedTags(tags, editingTagId, tagForm));
+    const existingTag = tags.find((tag) => tag.tagId === newTag.tagId);
+
+    if (existingTag) {
+      onChange(
+        tags.map((tag) =>
+          tag.tagId === existingTag.tagId
+            ? {
+                ...tag,
+                isMarkedForRemoval: false,
+              }
+            : tag,
+        ),
+      );
+
+      closeTagModal();
+      return;
     }
 
+    onChange([...tags, newTag]);
     closeTagModal();
   }
 
@@ -78,12 +79,7 @@ export default function TagsSection({
                   styles.changedInput,
                 )}
               >
-                <button
-                  type="button"
-                  className={styles.tagChipButton}
-                  onClick={() => openEditTagModal(tag)}
-                  disabled={isReadOnly}
-                >
+                <div className={styles.tagChipButton}>
                   <span
                     className={`${styles.tagChipText} ${
                       tag.isMarkedForRemoval ? styles.tagChipTextRemoved : ""
@@ -92,7 +88,7 @@ export default function TagsSection({
                     {tag.titleEn}
                     {tag.titleJp ? ` (${tag.titleJp})` : ""}
                   </span>
-                </button>
+                </div>
 
                 {!isReadOnly && (
                   <button
@@ -129,7 +125,7 @@ export default function TagsSection({
 
       <BaseModal
         isOpen={isTagModalOpen}
-        title={editingTagId ? "Edit Tag" : "Add Tag"}
+        title="Add Tag"
         onClose={closeTagModal}
         footer={
           <>
@@ -146,12 +142,12 @@ export default function TagsSection({
               className="btn btn-primary"
               onClick={handleSaveTag}
             >
-              {editingTagId ? "Save Tag" : "Add Tag"}
+              Add Tag
             </button>
           </>
         }
       >
-        <TagForm values={tagForm} onChange={setTagForm} />
+        <TagForm values={tagForm} onChange={setTagForm} editable={false} />
       </BaseModal>
     </>
   );

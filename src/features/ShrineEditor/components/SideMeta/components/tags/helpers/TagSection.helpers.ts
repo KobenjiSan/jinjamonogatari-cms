@@ -1,49 +1,19 @@
-import type { EditableTag, TagFormValues } from "./TagSection.types";
-
-export function mapTagToForm(tag: EditableTag): TagFormValues {
-  return {
-    titleEn: tag.titleEn ?? "",
-    titleJp: tag.titleJp ?? "",
-  };
-}
+import type { EditableTag } from "./TagSection.types";
+import type { TagFormValues } from "../../../../../../shared/tags/TagForm";
 
 export function buildNewTag(tagForm: TagFormValues): EditableTag | null {
   const trimmedTitleEn = tagForm.titleEn.trim();
   const trimmedTitleJp = tagForm.titleJp.trim();
 
-  if (!trimmedTitleEn) return null;
+  if (!tagForm.tagId || !trimmedTitleEn) return null;
 
   return {
-    tagId: Date.now(),
+    tagId: tagForm.tagId,
     titleEn: trimmedTitleEn,
     titleJp: trimmedTitleJp,
-    isNew: true,
-    isEdited: false,
+    isAdded: true,
     isMarkedForRemoval: false,
   };
-}
-
-export function buildUpdatedTags(
-  tags: EditableTag[],
-  editingTagId: number,
-  tagForm: TagFormValues
-): EditableTag[] {
-  const trimmedTitleEn = tagForm.titleEn.trim();
-  const trimmedTitleJp = tagForm.titleJp.trim();
-
-  if (!trimmedTitleEn) return tags;
-
-  return tags.map((tag) =>
-    tag.tagId === editingTagId
-      ? {
-          ...tag,
-          titleEn: trimmedTitleEn,
-          titleJp: trimmedTitleJp,
-          isEdited: !tag.isNew,
-          isMarkedForRemoval: false,
-        }
-      : tag
-  );
 }
 
 export function toggleRemoveTag(
@@ -53,7 +23,7 @@ export function toggleRemoveTag(
   const tagToUpdate = tags.find((tag) => tag.tagId === tagId);
   if (!tagToUpdate) return tags;
 
-  if (tagToUpdate.isNew) {
+  if (tagToUpdate.isAdded) {
     return tags.filter((tag) => tag.tagId !== tagId);
   }
 
@@ -77,7 +47,7 @@ export function getTagChipClassName(
     return `${baseClassName} ${removedClassName}`;
   }
 
-  if (tag.isNew || tag.isEdited) {
+  if (tag.isAdded) {
     return `${baseClassName} ${changedClassName}`;
   }
 

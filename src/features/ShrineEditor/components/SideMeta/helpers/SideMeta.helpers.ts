@@ -1,6 +1,4 @@
-import type {
-  UpdateShrineMetaRequest,
-} from "../../../ShrineEditorApi";
+import type { UpdateShrineMetaRequest } from "../../../ShrineEditorApi";
 import type { EditableShrineMeta } from "./SideMeta.types";
 
 export function cloneShrineMeta<T>(value: T): T {
@@ -30,23 +28,12 @@ export function buildUpdateShrineMetaPayload(
     },
 
     tags: {
-      create: formData.tags
-        .filter((tag) => tag.isNew && !tag.isMarkedForRemoval)
-        .map((tag) => ({
-          titleEn: tag.titleEn,
-          titleJp: tag.titleJp,
-        })),
+      link: formData.tags
+        .filter((tag) => tag.isAdded && !tag.isMarkedForRemoval)
+        .map((tag) => tag.tagId),
 
-      update: formData.tags
-        .filter((tag) => !tag.isNew && tag.isEdited && !tag.isMarkedForRemoval)
-        .map((tag) => ({
-          tagId: tag.tagId,
-          titleEn: tag.titleEn,
-          titleJp: tag.titleJp,
-        })),
-
-      delete: formData.tags
-        .filter((tag) => !tag.isNew && tag.isMarkedForRemoval)
+      unlink: formData.tags
+        .filter((tag) => tag.isMarkedForRemoval)
         .map((tag) => tag.tagId),
     },
 
