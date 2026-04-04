@@ -19,6 +19,7 @@ export type ShrineListDto = {
   lon: number | null;
   updatedAt: string;
   errorCount: number;
+  recentlyRejected: boolean;
 };
 
 // GET / api/shrines/cms/list?status=...

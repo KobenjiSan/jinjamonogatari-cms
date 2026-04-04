@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import styles from "./ConfirmationModal.module.css";
 
 type ConfirmationVariant = "destructive" | "constructive";
@@ -13,8 +13,10 @@ type ConfirmationModalProps = {
   confirmLabel?: string;
   cancelLabel?: string;
   isLoading?: boolean;
+  hasInputOption?: boolean;
   onConfirm: () => void;
   onCancel: () => void;
+  onInputValue?: (inputMessage: string) => void;
 };
 
 export default function ConfirmationModal({
@@ -27,9 +29,13 @@ export default function ConfirmationModal({
   confirmLabel,
   cancelLabel = "Cancel",
   isLoading = false,
+  hasInputOption = false,
   onConfirm,
   onCancel,
+  onInputValue,
 }: ConfirmationModalProps) {
+  const [inputValue, setInputValue] = useState("");
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -60,10 +66,19 @@ export default function ConfirmationModal({
 
   const resolvedConfirmLabel =
     confirmLabel ??
-    (variant === "destructive" ? capitalize(actionLabel) : capitalize(actionLabel));
+    (variant === "destructive"
+      ? capitalize(actionLabel)
+      : capitalize(actionLabel));
 
   const confirmButtonClass =
     variant === "destructive" ? "btn btn-danger" : "btn btn-success";
+
+  function handleConfirm() {
+    if (hasInputOption) {
+      onInputValue!(inputValue);
+      setInputValue("");
+    } else onConfirm();
+  }
 
   return (
     <div className={styles.backdrop} onClick={onCancel}>
@@ -77,7 +92,9 @@ export default function ConfirmationModal({
         <div className={styles.content}>
           <div
             className={`${styles.iconWrapper} ${
-              variant === "destructive" ? styles.iconDanger : styles.iconConstructive
+              variant === "destructive"
+                ? styles.iconDanger
+                : styles.iconConstructive
             }`}
             aria-hidden="true"
           >
@@ -91,6 +108,16 @@ export default function ConfirmationModal({
           </h2>
 
           <p className={styles.message}>{resolvedMessage}</p>
+
+          {hasInputOption && (
+            <textarea
+              className={`textarea ${styles.textArea}`}
+              rows={3}
+              placeholder="Enter message..."
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+            />
+          )}
         </div>
 
         <div className={styles.footer}>
@@ -106,7 +133,7 @@ export default function ConfirmationModal({
           <button
             type="button"
             className={confirmButtonClass}
-            onClick={onConfirm}
+            onClick={handleConfirm}
             disabled={isLoading}
           >
             {isLoading ? "Working..." : resolvedConfirmLabel}

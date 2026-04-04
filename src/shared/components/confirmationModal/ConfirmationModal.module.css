@@ -79,3 +79,8 @@
   border-top: var(--border-width) solid var(--color-border);
   background: var(--color-bg-subtle);
 }
+
+.textArea{
+  max-width: 90%;
+  max-height: 200px;
+}

@@ -15,6 +15,7 @@ export default function ShrineEditorPage() {
   const [shrineStatus, setShrineStatus] = useState("");
   const [shrineName, setShrineName] = useState("");
   const [isReadOnly, setIsReadOnly] = useState(true);
+  const [pageRefresh, setPageRefresh] = useState(0);
 
   useEffect(() => {
     const isEditor = user?.role === "Editor";
@@ -31,8 +32,8 @@ export default function ShrineEditorPage() {
   }
 
   return (
-    <div style={{ minHeight: "100vh" }}>
-      <ShrineEditorHeader shrineName={shrineName} />
+    <div key={pageRefresh} style={{ minHeight: "100vh" }}>
+      <ShrineEditorHeader shrineName={shrineName} shrineId={shrineIdNumber} />
 
       {isReadOnly && (
         <div className={styles.readOnlyWarningCard}>
@@ -56,6 +57,7 @@ export default function ShrineEditorPage() {
               shrineId={shrineIdNumber}
               isReadOnly={isReadOnly}
               shrineStatus={shrineStatus}
+              onRefreshPage={() => setPageRefresh((prev) => prev + 1)}
             />
           </div>
 

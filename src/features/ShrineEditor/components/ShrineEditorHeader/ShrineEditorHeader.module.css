@@ -42,3 +42,13 @@
   color: var(--color-text-muted);
   font-size: 14px;
 }
+
+.actionGroup{
+  display: flex;
+  justify-self: end;
+}
+
+.checkErrorIcon {
+  color: var(--color-white);
+  font-size: 20px;
+}

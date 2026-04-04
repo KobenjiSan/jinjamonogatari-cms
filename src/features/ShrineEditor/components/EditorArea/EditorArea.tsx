@@ -14,12 +14,14 @@ type EditorAreaProps = {
   shrineId: number;
   isReadOnly: boolean;
   shrineStatus: string;
+  onRefreshPage: () => void;
 };
 
 export default function EditorArea({
   shrineId,
   isReadOnly,
   shrineStatus,
+  onRefreshPage
 }: EditorAreaProps) {
   const [activeTab, setActiveTab] = useState<EditorTabKey>("status");
 
@@ -31,6 +33,7 @@ export default function EditorArea({
             shrineId={shrineId}
             isReadOnly={isReadOnly}
             shrineStatus={shrineStatus}
+            onRefreshPage={onRefreshPage}
           />
         );
       case "kami":

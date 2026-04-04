@@ -5,15 +5,20 @@ import {
   getShrineAuditById,
   type ShrineAuditDto,
   type AuditIssueDto,
+  submitShrineForReview,
+  rejectShrineReview,
+  publishShrineReview,
 } from "./statusApi";
 import StatusHero from "./components/StatusHero/StatusHero";
 import StatusSectionCheck from "./components/StatusSectionCheck/StatusSectionCheck";
 import StatusSectionCard from "./components/StatusSectionCard/StatusSectionCard";
+import ConfirmationModal from "../../../../../../../shared/components/confirmationModal/ConfirmationModal";
 
 type StatusTabProps = {
   shrineId: number;
   isReadOnly: boolean;
   shrineStatus: string;
+  onRefreshPage: () => void;
 };
 
 export type GroupedIssues = Record<string, AuditIssueDto[]>;
@@ -35,10 +40,19 @@ export default function StatusTab({
   shrineId,
   isReadOnly,
   shrineStatus,
+  onRefreshPage,
 }: StatusTabProps) {
   const [audit, setAudit] = useState<ShrineAuditDto | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmittingForReview, setIsSubmittingForReview] = useState(false);
+  const [isConfirmSubmitReviewOpen, setIsConfirmSubmitReviewOpen] = useState(false);
+  const [isPublishingShrine, setIsPublishingShrine] = useState(false);
+  const [isConfirmPublishOpen, setIsConfirmPublishOpen] = useState(false);
+  const [isRejectingShrine, setIsRejectingShrine] = useState(false);
+  const [isConfirmRejectOpen, setIsConfirmRejectOpen] = useState(false);
+
+  
 
   useEffect(() => {
     let isMounted = true;
@@ -137,7 +151,80 @@ export default function StatusTab({
     });
   }, [groupedIssues]);
 
+  // SUBMIT FOR REVIEW
+  async function handleSubmitReview(){
+    try {
+        setIsSubmittingForReview(true);
+
+        await submitShrineForReview(shrineId);
+
+        onRefreshPage();
+        setIsConfirmSubmitReviewOpen(false);
+      } catch (error) {
+        console.error("Failed to submit shrine for review:", error);
+      } finally {
+        setIsSubmittingForReview(false);
+      }
+  }
+
+  function openSubmitReview(){
+    setIsConfirmSubmitReviewOpen(true);
+  }
+
+  function cancelSubmitReview(){
+    setIsConfirmSubmitReviewOpen(false);
+  }
+
+  // PUBLISH SHRINE
+  async function handlePublishShrine(){
+    try {
+        setIsPublishingShrine(true);
+
+        await publishShrineReview(shrineId);
+
+        onRefreshPage();
+        setIsConfirmPublishOpen(false);
+      } catch (error) {
+        console.error("Failed to publish shrine:", error);
+      } finally {
+        setIsPublishingShrine(false);
+      }
+  }
+
+  function openPublishShrine(){
+    setIsConfirmPublishOpen(true);
+  }
+
+  function cancelPublishShrine(){
+    setIsConfirmPublishOpen(false);
+  }
+
+  // REJECT SHRINE
+  async function handleRejectShrine(rejectMessage: string){
+    try {
+        setIsRejectingShrine(true);
+
+        await rejectShrineReview(shrineId, {message: rejectMessage});
+
+        onRefreshPage();
+        setIsConfirmRejectOpen(false);
+      } catch (error) {
+        console.error("Failed to Reject shrine:", error);
+      } finally {
+        setIsRejectingShrine(false);
+      }
+  }
+
+  function openRejectShrine(){
+    setIsConfirmRejectOpen(true);
+  }
+
+  function cancelRejectShrine(){
+    setIsConfirmRejectOpen(false);
+  }
+
   return (
+    <>
     <div className={mainStyles.tabShell}>
       <div className={mainStyles.header}>
         <h2 className={mainStyles.title}>Shrine Review</h2>
@@ -149,9 +236,20 @@ export default function StatusTab({
                 <button
                   type="button"
                   className={`${mainStyles.actionButton} btn btn-outline`}
+                  aria-label="reject"
+                  onClick={openRejectShrine}
+                  disabled={isRejectingShrine}
+                  title="Submit Rejection"
+                >
+                  <span>Reject</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`${mainStyles.actionButton} btn btn-outline`}
                   aria-label="Publish"
-                  onClick={() => {}}
-                  disabled={!audit?.isSubmittable}
+                  onClick={openPublishShrine}
+                  disabled={!audit?.isSubmittable || isPublishingShrine}
                   title={
                     audit?.isSubmittable
                       ? "Shrine is ready for publishing"
@@ -160,25 +258,14 @@ export default function StatusTab({
                 >
                   <span>Publish</span>
                 </button>
-
-                <button
-                  type="button"
-                  className={`${mainStyles.actionButton} btn btn-outline`}
-                  aria-label="reject"
-                  onClick={() => {}}
-                  disabled={!audit?.isSubmittable}
-                  title="Submit Rejection"
-                >
-                  <span>Reject</span>
-                </button>
               </>
             ) : (
               <button
                 type="button"
                 className={`${mainStyles.actionButton} btn btn-outline`}
                 aria-label="Submit for Review"
-                onClick={() => {}}
-                disabled={!audit?.isSubmittable}
+                onClick={openSubmitReview}
+                disabled={!audit?.isSubmittable || isSubmittingForReview}
                 title={
                   audit?.isSubmittable
                     ? "Shrine is ready to submit"
@@ -244,5 +331,41 @@ export default function StatusTab({
         </div>
       )}
     </div>
+
+      {/* Confirm Submit Review Modal */}
+      <ConfirmationModal
+        isOpen={isConfirmSubmitReviewOpen}
+        variant="constructive"
+        actionLabel={`Submit Shrine #${String(shrineId)} For Review`}
+        confirmLabel="Submit"
+        onConfirm={handleSubmitReview}
+        onCancel={cancelSubmitReview}
+      />
+
+      {/* Confirm Publish Modal */}
+      <ConfirmationModal
+        isOpen={isConfirmPublishOpen}
+        variant="constructive"
+        actionLabel={`Publish Shrine #${String(shrineId)}`}
+        message={`Are you sure you want to Publish Shrine #${String(shrineId)}. Once published this shrine is viewable on the mobile app.`}
+        confirmLabel="Publish"
+        onConfirm={handlePublishShrine}
+        onCancel={cancelPublishShrine}
+      />
+
+      {/* Confirm Reject Modal */}
+      <ConfirmationModal
+        isOpen={isConfirmRejectOpen}
+        variant="destructive"
+        actionLabel={`Reject Shrine #${String(shrineId)}`}
+        confirmLabel="Reject"
+        message={`You must provide a message with reason(s) for rejection.`}
+        hasInputOption={true}
+        onConfirm={() => {}}
+        onCancel={cancelRejectShrine}
+        onInputValue={(message) => handleRejectShrine(message)}
+      />
+
+    </>
   );
 }

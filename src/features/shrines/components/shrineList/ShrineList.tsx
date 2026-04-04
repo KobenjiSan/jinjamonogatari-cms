@@ -136,7 +136,12 @@ export default function ShrineList({
               </div>
 
               <div className={`bodyCell ${styles.statusCol}`}>
-                <span className="pill">{s.status ?? "-"}</span>
+                <div className={styles.statusArea}>
+                  <span className="pill">{s.status ?? "-"}</span>
+                  {s.recentlyRejected && (
+                    <div className={styles.rejectionPill}>Rejected</div>
+                  )}
+                </div>
               </div>
 
               <div className={`bodyCell ${styles.locationCol}`}>

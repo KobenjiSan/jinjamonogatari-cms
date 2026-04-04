@@ -144,3 +144,20 @@ export async function updateShrineNotes(
     body: JSON.stringify(body),
   });
 }
+
+// GET /api/shrines/cms/{shrineId}/review/history
+export type ShrineReviewDto = {
+  reviewId: number;
+  submittedAt: string;
+  submittedBy: number;
+  submittedByUsername: string;
+  reviewedAt: string;
+  reviewedBy: number;
+  reviewedByUsername: string;
+  reviewerComment: string;
+  decision: string;
+};
+
+export async function getShrineReviewHistory(shrineId: number): Promise<ShrineReviewDto[]>{
+    return await apiFetch<ShrineReviewDto[]>(`/api/shrines/cms/${shrineId}/review/history`);
+}

@@ -133,7 +133,7 @@
   justify-content: center;
   min-height: 22px;
   padding: 0px 10px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   font-size: var(--font-sm);
   font-weight: var(--font-weight-semibold);
   line-height: 1;
@@ -142,4 +142,23 @@
   background: rgba(220, 38, 38, 0.12);
   color: #dc2626;
   border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.statusArea{
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.rejectionPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 2px;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  width: auto;
+  color: #dc2626;
 }
