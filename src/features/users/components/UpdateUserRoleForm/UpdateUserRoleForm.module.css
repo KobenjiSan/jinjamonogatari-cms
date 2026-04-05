@@ -1,0 +1,17 @@
+.wrapper {
+  width: 100%;
+}
+
+.currentRoleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.helperText {
+  margin: 0;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-muted);
+}

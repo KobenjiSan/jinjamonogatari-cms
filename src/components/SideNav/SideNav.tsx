@@ -59,16 +59,6 @@ export default function SideNav() {
         {user!.role == "Admin" && (
           <>
             <hr />
-
-            <NavLink
-              to="/admin-review" // Update later
-              className={({ isActive }) =>
-                `${styles.link} ${isActive ? styles.active : ""}`
-              }
-            >
-              Shrine Review
-            </NavLink>
-
             <NavLink
               to="/users" // Update later
               className={({ isActive }) =>
