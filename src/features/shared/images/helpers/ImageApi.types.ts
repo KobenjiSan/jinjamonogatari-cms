@@ -18,7 +18,7 @@ export type ImageCMSDto = {
 };
 
 export type CreateImageRequest = {
-  imgSource: string | null;
+  imageUrl: string | null;
   title: string | null;
   desc: string | null;
   citation: CreateCitationRequest | null;
@@ -26,7 +26,7 @@ export type CreateImageRequest = {
 
 export type ImageChangeRequest = {
   action: string;
-  imgSource: string | null;
+  imageUrl: string | null;
   title: string | null;
   desc: string | null;
   citation: CitationRequest | CreateCitationRequest | null;
@@ -34,7 +34,7 @@ export type ImageChangeRequest = {
 
 export type UpdateImageRequest = {
   imgId: number;
-  imgUrl: string | null;
+  imageUrl: string | null;
   title: string | null;
   desc: string | null;
   citation: CitationRequest | CreateCitationRequest | null;

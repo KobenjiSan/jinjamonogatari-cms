@@ -34,7 +34,7 @@ function mapImageFormToChange(
   if (!hasExistingImage && formImageIsEmpty) {
     return {
       action: "none",
-      imgSource: null,
+      imageUrl: null,
       title: null,
       desc: null,
       citation: null,
@@ -44,7 +44,7 @@ function mapImageFormToChange(
   if (hasExistingImage && formImageIsEmpty) {
     return {
       action: "delete",
-      imgSource: null,
+      imageUrl: null,
       title: null,
       desc: null,
       citation: null,
@@ -54,7 +54,7 @@ function mapImageFormToChange(
   if (!hasExistingImage && !formImageIsEmpty) {
     return {
       action: "create",
-      imgSource: toNullableString(image.imageUrl),
+      imageUrl: toNullableString(image.imageUrl),
       title: toNullableString(image.title),
       desc: toNullableString(image.desc),
       citation: isCitationEmpty(image.citation)
@@ -65,7 +65,7 @@ function mapImageFormToChange(
 
   return {
     action: "update",
-    imgSource: toNullableString(image.imageUrl),
+    imageUrl: toNullableString(image.imageUrl),
     title: toNullableString(image.title),
     desc: toNullableString(image.desc),
     citation: isCitationEmpty(image.citation)

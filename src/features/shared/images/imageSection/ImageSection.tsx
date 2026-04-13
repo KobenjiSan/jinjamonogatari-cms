@@ -1,6 +1,15 @@
+import type { ImageFormValues } from "../helpers/ImageSection.types";
 import ImageForm from "../ImageForm";
 import styles from "./ImageSection.module.css";
-import type { ImageSectionProps } from "../helpers/ImageSection.types";
+
+type ImageSectionProps = {
+  title?: string;
+  image: ImageFormValues;
+  previewUrl?: string | null;
+  onImageChange: (nextImage: ImageFormValues) => void;
+  onFileChange: (file: File | null) => void;
+  isReadOnly: boolean;
+};
 
 export default function ImageSection({
   title = "Image",

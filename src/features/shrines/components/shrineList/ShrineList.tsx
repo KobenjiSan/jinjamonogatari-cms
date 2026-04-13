@@ -6,6 +6,7 @@ import type { StatusTabKey } from "../statusTab/StatusTabs";
 import { useAuth } from "../../../../auth/AuthProvider";
 import type { ShrineSearchFilters } from "../Filters/Filters";
 import { FiCheckCircle } from "react-icons/fi";
+import { FaCircleInfo } from "react-icons/fa6";
 
 function formatUpdatedAt(dateString?: string | null) {
   if (!dateString) return "-";
@@ -137,10 +138,13 @@ export default function ShrineList({
 
               <div className={`bodyCell ${styles.statusCol}`}>
                 <div className={styles.statusArea}>
-                  <span className="pill">{s.status ?? "-"}</span>
-                  {s.recentlyRejected && (
-                    <div className={styles.rejectionPill}>Rejected</div>
-                  )}
+                  <span
+                    className={`pill status-wrapper ${s.recentlyRejected ? styles.rejectionPill : ""}`}
+                    title={s.recentlyRejected ? "Recently Rejected" : ""}
+                  >
+                    {s.recentlyRejected && <FaCircleInfo />}
+                    {s.status ?? "-"}
+                  </span>
                 </div>
               </div>
 

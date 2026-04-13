@@ -74,7 +74,7 @@ export function mapImageFormToCreate(image: ImageFormValues): CreateImageRequest
   if (isImageEmpty(image)) return null;
 
   return {
-    imgSource: toNullableString(image.imageUrl),
+    imageUrl: toNullableString(image.imageUrl),
     title: toNullableString(image.title),
     desc: toNullableString(image.desc),
     citation: isCitationEmpty(image.citation)

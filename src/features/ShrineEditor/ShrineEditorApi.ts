@@ -101,7 +101,7 @@ export type HeroImageCitationRequest = {
 
 export type HeroImageChangeRequest = {
   action: "none" | "create" | "update" | "delete";
-  imgSource: string | null;
+  imageUrl: string | null;
   title: string | null;
   desc: string | null;
   citation: HeroImageCitationRequest | null;

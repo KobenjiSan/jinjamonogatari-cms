@@ -41,7 +41,7 @@ export function buildUpdateShrineMetaPayload(
       ? formData.image.isRemoved
         ? {
             action: "delete",
-            imgSource: null,
+            imageUrl: null,
             title: null,
             desc: null,
             citation: null,
@@ -49,7 +49,7 @@ export function buildUpdateShrineMetaPayload(
         : formData.image.isNew
           ? {
               action: "create",
-              imgSource: formData.image.imageUrl,
+              imageUrl: formData.image.imageUrl,
               title: formData.image.title,
               desc: formData.image.desc,
               citation: formData.image.citation
@@ -64,7 +64,7 @@ export function buildUpdateShrineMetaPayload(
           : formData.image.isEdited
             ? {
                 action: "update",
-                imgSource: formData.image.imageUrl,
+                imageUrl: formData.image.imageUrl,
                 title: formData.image.title,
                 desc: formData.image.desc,
                 citation: formData.image.citation
@@ -78,14 +78,14 @@ export function buildUpdateShrineMetaPayload(
               }
             : {
                 action: "none",
-                imgSource: null,
+                imageUrl: null,
                 title: null,
                 desc: null,
                 citation: null,
               }
       : {
           action: "none",
-          imgSource: null,
+          imageUrl: null,
           title: null,
           desc: null,
           citation: null,

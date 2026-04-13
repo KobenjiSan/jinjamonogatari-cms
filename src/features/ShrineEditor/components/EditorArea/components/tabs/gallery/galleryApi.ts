@@ -1,8 +1,6 @@
 import { apiFetch } from "../../../../../../../api/apiClient";
 import type {
   ImageCMSDto,
-  CreateImageRequest,
-  UpdateImageRequest
 } from "../../../../../../shared/images/helpers/ImageApi.types";
 
 // GET Gallery by shrine
@@ -13,28 +11,22 @@ export async function getShrineGalleryById(id: number): Promise<ImageCMSDto[]> {
 // CREATE Gallery Image
 export async function createGalleryImage(
   shrineId: number,
-  payload: CreateImageRequest,
+  formData: FormData,
 ): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/${shrineId}/gallery`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+    body: formData,
   });
 }
 
 // UPDATE Gallery Image
 export async function updateGalleryImage(
   imageId: number,
-  payload: UpdateImageRequest,
+  formData: FormData,
 ): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/gallery/${imageId}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+    body: formData,
   });
 }
 

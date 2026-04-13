@@ -17,8 +17,8 @@ import {
   updateGalleryImage,
 } from "./galleryApi";
 import {
-  buildCreateGalleryImagePayload,
-  buildUpdateGalleryImagePayload,
+  buildCreateGalleryImageFormData,
+  buildUpdateGalleryImageFormData,
 } from "./helpers/GalleryTab.helpers";
 
 type GalleryTabProps = {
@@ -111,12 +111,12 @@ export default function GalleryTab({ shrineId, isReadOnly }: GalleryTabProps) {
     try {
       if (selectedImage) {
         // PUT existing image API here
-        const payload = buildUpdateGalleryImagePayload(imageDraft);
-        await updateGalleryImage(selectedImage.imgId, payload);
+        const formData = buildUpdateGalleryImageFormData(imageDraft, selectedFile);
+        await updateGalleryImage(selectedImage.imgId, formData);
       } else {
         // POST/PUT new image API here
-        const payload = buildCreateGalleryImagePayload(imageDraft);
-        await createGalleryImage(shrineId, payload);
+        const formData = buildCreateGalleryImageFormData(imageDraft, selectedFile);
+        await createGalleryImage(shrineId, formData);
       }
 
       reloadImageList();

@@ -10,12 +10,3 @@ export type ImageFormValues = {
   createdAt?: string;
   updatedAt?: string;
 };
-
-export type ImageSectionProps = {
-  title?: string;
-  image: ImageFormValues;
-  previewUrl?: string | null;
-  onImageChange: (nextImage: ImageFormValues) => void;
-  onFileChange: (file: File | null) => void;
-  isReadOnly: boolean;
-};

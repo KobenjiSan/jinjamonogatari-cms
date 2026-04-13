@@ -44,7 +44,7 @@ export default function ImageForm({
 
   return (
     <div className={styles.wrapper}>
-      {!isReadOnly && (
+      {!isReadOnly && values.imgId == undefined && (
         <div className="form-group">
           <label htmlFor="image-upload" className="label">
             Upload Image
