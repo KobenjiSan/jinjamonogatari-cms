@@ -1,0 +1,26 @@
+.header {
+  border-bottom: var(--border-width) solid var(--color-border);
+  padding: var(--space-sm) var(--space-xl);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.actionButtons{
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-md);
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-inline: 12px;
+}
+
+.actionButton span {
+  font-size: var(--font-md);
+  text-align: center;
+}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAllTagsList, type TagDto } from "./tagApi";
+import { getAllTagsDropdown, type TagDto } from "./tagApi";
 
 export type TagFormValues = {
   tagId: number | null;
@@ -26,7 +26,7 @@ export default function TagForm({
   useEffect(() => {
     async function getTags() {
       try {
-        const result = await getAllTagsList();
+        const result = await getAllTagsDropdown();
         setGlobalTags(result);
       } catch (err) {
         console.error("Failed to retreive tags", err);
