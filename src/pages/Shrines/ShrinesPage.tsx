@@ -21,6 +21,7 @@ import {
 } from "../../features/shrines/shrinesApi";
 import ConfirmationModal from "../../shared/components/confirmationModal/ConfirmationModal";
 import CreateShrineForm from "../../features/shrines/components/CreateShrineForm/CreateShrineForm";
+import toast from "react-hot-toast";
 
 export default function ShrinesPage() {
   const [activeTab, setActiveTab] = useState<StatusTabKey>("import");
@@ -60,17 +61,20 @@ export default function ShrinesPage() {
     try {
       setIsDeleting(true);
       await deleteShrine(shrineToDelete.shrineId);
+      toast.success("Shrine deleted successfully!");
 
       setIsConfirmDeleteOpen(false);
       setShrineToDelete(null);
+      setOnUpdate((prev) => prev + 1); // refresh list
     } catch (error) {
       console.error(
         `Failed to delete shrine ${shrineToDelete.shrineId}:`,
         error,
       );
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     } finally {
       setIsDeleting(false);
-      setOnUpdate((prev) => prev + 1); // refresh list
     }
   }
   function cancelRemoveShrine() {
@@ -132,11 +136,14 @@ export default function ShrinesPage() {
     try {
       setIsImporting(true);
       await importShrines(body);
+      toast.success("Imported successfully!");
 
       setIsConfirmImportOpen(false);
       closeImportModal();
     } catch (error) {
       console.error("Failed to import shrines:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     } finally {
       setIsImporting(false);
       setActiveTab("import");
@@ -171,15 +178,18 @@ export default function ShrinesPage() {
     try {
       setIsCreating(true);
       await createShrine(pendingContent);
+      toast.success("Shrine created successfully!");
 
-      setIsConfirmCreateOpen(false);
       closeCreateModal();
-    } catch (error) {
-      console.error("Failed to create shrine:", error);
-    } finally {
-      setIsCreating(false);
       setActiveTab("draft");
       setOnUpdate((prev) => prev + 1); // refresh list
+    } catch (error) {
+      console.error("Failed to create shrine:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
+    } finally {
+      setIsCreating(false);
+      setIsConfirmCreateOpen(false);
     }
   }
 

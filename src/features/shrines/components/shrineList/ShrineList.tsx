@@ -7,6 +7,7 @@ import { useAuth } from "../../../../auth/AuthProvider";
 import type { ShrineSearchFilters } from "../Filters/Filters";
 import { FiCheckCircle } from "react-icons/fi";
 import { FaCircleInfo } from "react-icons/fa6";
+import toast from "react-hot-toast";
 
 function formatUpdatedAt(dateString?: string | null) {
   if (!dateString) return "-";
@@ -66,8 +67,10 @@ export default function ShrineList({
         });
         setShrines(result.shrines);
         setTotalItems(result.totalCount);
-      } catch (err) {
-        console.error("Failed to load shrines", err);
+      } catch (error) {
+        console.error("Failed to load shrines", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       } finally {
         setLoading(false);
       }

@@ -23,6 +23,7 @@ import {
   buildUpdateShrineMetaPayload,
   cloneShrineMeta,
 } from "./helpers/SideMeta.helpers";
+import toast from "react-hot-toast";
 
 type SideMetaProps = {
   shrineId: number;
@@ -37,7 +38,9 @@ export default function SideMeta({
   onShrineNameChange,
   isReadOnly,
 }: SideMetaProps) {
-  const [originalMeta, setOriginalMeta] = useState<EditableShrineMeta | null>(null);
+  const [originalMeta, setOriginalMeta] = useState<EditableShrineMeta | null>(
+    null,
+  );
   const [formData, setFormData] = useState<EditableShrineMeta | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -57,8 +60,10 @@ export default function SideMeta({
         if (result.nameEn) {
           onShrineNameChange?.(result.nameEn);
         }
-      } catch (err) {
-        console.error("Failed to retreive shrine meta", err);
+      } catch (error) {
+        console.error("Failed to retreive shrine meta", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       } finally {
         setLoading(false);
       }
@@ -116,14 +121,28 @@ export default function SideMeta({
   async function handleSaveMeta() {
     if (isReadOnly) return; // block API calls in read-only mode
     if (!formData) return;
-    const payload = buildUpdateShrineMetaPayload(formData);
-    await updateShrineMeta(shrineId, payload);
-    const refreshed = await getShrineMetaById(shrineId);
-    setOriginalMeta(cloneShrineMeta(refreshed));
-    setFormData(cloneShrineMeta(refreshed));
+    try {
+      const payload = buildUpdateShrineMetaPayload(formData);
+      await updateShrineMeta(shrineId, payload);
+      toast.success("Updated successfully!");
+    } catch (error) {
+      console.error("Failed to retreive shrine meta", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
+    }
 
-    if (refreshed.nameEn) {
-      onShrineNameChange?.(refreshed.nameEn);
+    try {
+      const refreshed = await getShrineMetaById(shrineId);
+      setOriginalMeta(cloneShrineMeta(refreshed));
+      setFormData(cloneShrineMeta(refreshed));
+
+      if (refreshed.nameEn) {
+        onShrineNameChange?.(refreshed.nameEn);
+      }
+    } catch (error) {
+      console.error("Failed to retreive shrine meta", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     }
   }
 

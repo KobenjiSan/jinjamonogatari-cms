@@ -9,6 +9,7 @@ import {
   type ShrineReviewDto,
 } from "../../ShrineEditorApi";
 import { BiSolidErrorAlt } from "react-icons/bi";
+import toast from "react-hot-toast";
 
 type ShrineEditorHeaderProps = {
   shrineName: string;
@@ -33,8 +34,10 @@ export default function ShrineEditorHeader({
         setReviewHistory(results);
         var test = results.at(0)?.decision === "Rejected" ? true : false;
         setIsRecentlyRejected(test);
-      } catch (err) {
-        console.error("Failed to retreive shrine review history", err);
+      } catch (error) {
+        console.error("Failed to retreive shrine review history", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       }
     }
 

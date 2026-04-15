@@ -3,6 +3,7 @@ import styles from "./UsersList.module.css";
 import { getUserList, type UserListDto } from "../../usersApi";
 import type { UserSearchFilters } from "../UserFilters/UserFilters";
 import { useAuth } from "../../../../auth/AuthProvider";
+import toast from "react-hot-toast";
 
 function formatDateTime(dateString?: string | null) {
   if (!dateString) return "-";
@@ -60,8 +61,10 @@ export default function UsersList({
         const result = await getUserList(filters, { pageNumber, pageSize });
         setUsers(result.users);
         setTotalItems(result.totalCount);
-      } catch (err) {
-        console.error("Failed to load users", err);
+      } catch (error) {
+        console.error("Failed to load users", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       } finally {
         setLoading(false);
       }

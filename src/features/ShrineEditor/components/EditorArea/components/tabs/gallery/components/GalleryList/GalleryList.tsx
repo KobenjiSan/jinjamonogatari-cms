@@ -3,6 +3,7 @@ import { FiCheckCircle } from "react-icons/fi";
 import { getShrineGalleryById } from "../../galleryApi";
 import type { ImageCMSDto } from "../../../../../../../../shared/images/helpers/ImageApi.types";
 import styles from "./GalleryList.module.css";
+import toast from "react-hot-toast";
 
 type GalleryListProps = {
   shrineId: number;
@@ -32,8 +33,10 @@ export default function GalleryList({
         const result = await getShrineGalleryById(shrineId);
         setImageItems(result);
         onLoaded?.(result);
-      } catch (err) {
-        console.error("Failed to retrieve gallery list", err);
+      } catch (error) {
+        console.error("Failed to retrieve gallery list", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
         setImageItems([]);
         onLoaded?.([]);
       } finally {

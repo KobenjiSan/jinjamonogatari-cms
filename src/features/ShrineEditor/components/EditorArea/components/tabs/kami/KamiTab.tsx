@@ -20,6 +20,7 @@ import {
   buildCreateKamiPayload,
   buildUpdateKamiPayload,
 } from "./helpers/KamiTab.helpers";
+import toast from "react-hot-toast";
 
 type KamiTabProps = {
   shrineId: number;
@@ -101,11 +102,14 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
           linkKamiToShrine(shrineId, kami.kamiId),
         ),
       );
+      toast.success("Kami added successfully!");
 
       reloadKamiList();
       closeKamiSearchModal();
     } catch (error) {
       console.error("Failed to link selected kami to shrine:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     }
   }
 
@@ -123,12 +127,15 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
 
     try {
       await unlinkKamiFromShrine(shrineId, pendingDeleteKami.kamiId);
+      toast.success("Kami removed successfully!");
 
       reloadKamiList();
       setIsConfirmDeleteOpen(false);
       setPendingDeleteKami(null);
     } catch (error) {
       console.error("Failed to unlink kami from shrine:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     }
   }
 
@@ -150,9 +157,11 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
       if (selectedKami) {
         const payload = buildUpdateKamiPayload(kamiDraft, selectedKami);
         await updateKami(selectedKami.kamiId, payload);
+        toast.success("Kami updated successfully!");
       } else {
         const payload = buildCreateKamiPayload(kamiDraft);
         await createKamiInShrine(shrineId, payload);
+        toast.success("Kami created successfully!");
       }
 
       reloadKamiList();
@@ -160,6 +169,8 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
       closeKamiModal();
     } catch (error) {
       console.error("Failed to save kami:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     }
   }
 

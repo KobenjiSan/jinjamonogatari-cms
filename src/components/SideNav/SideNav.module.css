@@ -1,4 +1,7 @@
 .sideNav {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: var(--sidebar-width);
   min-height: 100vh;
   background: var(--color-text-primary);

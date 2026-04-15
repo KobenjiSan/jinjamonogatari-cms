@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAllTagsDropdown, type TagDto } from "./tagApi";
+import toast from "react-hot-toast";
 
 export type TagFormValues = {
   tagId: number | null;
@@ -28,8 +29,10 @@ export default function TagForm({
       try {
         const result = await getAllTagsDropdown();
         setGlobalTags(result);
-      } catch (err) {
-        console.error("Failed to retreive tags", err);
+      } catch (error) {
+        console.error("Failed to retreive tags", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Failed to retreive tags");
       }
     }
 

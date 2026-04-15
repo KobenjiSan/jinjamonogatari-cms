@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./ImportForm.module.css";
 import { getImportPreview, type ImportPreviewItemDto } from "../../shrinesApi";
+import toast from "react-hot-toast";
 
 type ImportFormProps = {
   onHasPreview: (items: ImportPreviewItemDto[]) => void;
@@ -14,6 +15,7 @@ export default function ImportForm({onHasPreview}: ImportFormProps) {
   const [previewItems, setPreviewItems] = useState<ImportPreviewItemDto[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isNoResults, setIsNoResults] = useState(false);
 
   async function handleRunQuery() {
     setError(null);
@@ -40,14 +42,24 @@ export default function ImportForm({onHasPreview}: ImportFormProps) {
     };
 
     try {
+      setIsNoResults(false);
       setIsLoading(true);
 
       const result = await getImportPreview(body);
-
+      toast.success("Preview Request Successful.");
+      
+      if(result.length == 0) setIsNoResults(true);
       setPreviewItems(result);
       onHasPreview(result);
-    } catch (err) {
-      console.error("Failed to load import preview.", err);
+    } catch (error) {
+      // General Error
+      console.error("Failed to import preview:", error);
+
+      // Toast
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
+
+      // UI
       setPreviewItems([]);
       setError("Failed to load import preview.");
     } finally {
@@ -157,8 +169,12 @@ export default function ImportForm({onHasPreview}: ImportFormProps) {
 
         {isLoading && <p>Loading preview...</p>}
 
-        {!isLoading && previewItems.length === 0 && !error && (
+        {!isLoading && previewItems.length === 0 && !isNoResults && !error && (
           <p>Run a query to see preview results.</p>
+        )}
+
+        {!isLoading && previewItems.length === 0 && isNoResults && !error && (
+          <p className={styles.error}>It seems no new results could be found. Increase the max results or enter a different location and try again.</p>
         )}
 
         {!isLoading && previewItems.length > 0 && (

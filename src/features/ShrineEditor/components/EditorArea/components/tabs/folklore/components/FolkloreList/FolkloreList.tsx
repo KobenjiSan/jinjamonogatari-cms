@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
 import { getShrineFolkloreById, type FolkloreCMSDto } from "../../folkloreApi";
 import styles from "./FolkloreList.module.css";
+import toast from "react-hot-toast";
 
 type FolkloreListProps = {
   shrineId: number;
@@ -31,8 +32,10 @@ export default function FolkloreList({
         const result = await getShrineFolkloreById(shrineId);
         setFolkloreItems(result);
         onLoaded?.(result);
-      } catch (err) {
-        console.error("Failed to retrieve folklore list", err);
+      } catch (error) {
+        console.error("Failed to retrieve folklore list", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Failed to retrieve folklore list");
         setFolkloreItems([]);
         onLoaded?.([]);
       } finally {

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./TagsList.module.css";
 import { getAllTagsList , type TagCMSDto } from "../../tagApi";
 import type { TagsSearchFilters } from "../TagsFilters/TagsFilters";
+import toast from "react-hot-toast";
 
 function formatDateTime(dateString?: string | null) {
   if (!dateString) return "-";
@@ -58,8 +59,10 @@ export default function TagsList({
         const result = await getAllTagsList(filters, { pageNumber, pageSize });
         setTags(result.tags);
         setTotalItems(result.totalCount);
-      } catch (err) {
-        console.error("Failed to load tags", err);
+      } catch (error) {
+        console.error("Failed to load tags", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Failed to load tags");
       } finally {
         setLoading(false);
       }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
 import { getShrineHistoryById, type HistoryCMSDto } from "../../historyApi";
 import styles from "./HistoryList.module.css";
+import toast from "react-hot-toast";
 
 type HistoryListProps = {
   shrineId: number;
@@ -31,8 +32,10 @@ export default function HistoryList({
         const result = await getShrineHistoryById(shrineId);
         setHistoryItems(result);
         onLoaded?.(result);
-      } catch (err) {
-        console.error("Failed to retrieve history list", err);
+      } catch (error) {
+        console.error("Failed to retrieve history list", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
         setHistoryItems([]);
         onLoaded?.([]);
       } finally {

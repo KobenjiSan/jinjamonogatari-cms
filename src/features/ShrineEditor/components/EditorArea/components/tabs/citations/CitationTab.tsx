@@ -6,6 +6,7 @@ import {
   getShrineCitationsById,
   type ShrineCitationCMSDto,
 } from "./citationTabApi";
+import toast from "react-hot-toast";
 
 type CitationTabProps = {
   shrineId: number;
@@ -31,6 +32,8 @@ export default function CitationTab({ shrineId }: CitationTabProps) {
       } catch {
         if (!isMounted) return;
         setError("Failed to load shrine citations.");
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       } finally {
         if (!isMounted) return;
         setIsLoading(false);

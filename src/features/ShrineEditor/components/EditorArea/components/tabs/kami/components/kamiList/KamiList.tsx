@@ -6,6 +6,7 @@ import {
 } from "../../kamiApi";
 import styles from "./KamiList.module.css";
 import { FiCheckCircle } from "react-icons/fi";
+import toast from "react-hot-toast";
 
 type KamiListProps = {
   id?: number;
@@ -46,12 +47,14 @@ export default function KamiList({
           const result = await getAllShrineKamiList();
           setKami(result);
         }
-      } catch (err) {
-        console.error("Failed to retrieve kami list", err);
+      } catch (error) {
+        console.error("Failed to retrieve kami list", error);
         setKami([]);
         if (id != null) {
           onLoaded?.([]);
         }
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       } finally {
         setLoading(false);
       }

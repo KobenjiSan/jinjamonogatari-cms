@@ -3,6 +3,7 @@ import CitationForm, { type CitationCMSDto } from "../CitationForm";
 import type { CitationFormValues } from "../helpers/CitationSection.types";
 import styles from "./CitationSection.module.css";
 import { getShrineCitationsDropdownById } from "../../../ShrineEditor/components/EditorArea/components/tabs/citations/citationTabApi";
+import toast from "react-hot-toast";
 
 export type CitationSectionProps = {
   shrineId?: number;
@@ -43,6 +44,8 @@ export default function CitationSection({
         setAvailableReusableCitations(result);
       } catch (error) {
         console.error("Failed to get citations:", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       }
     }
 

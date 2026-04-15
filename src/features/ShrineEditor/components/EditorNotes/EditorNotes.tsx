@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./EditorNotes.module.css";
 import { getShrineNotesById, updateShrineNotes } from "../../ShrineEditorApi";
+import toast from "react-hot-toast";
 
 type EditorNotesProps = {
   shrineId: number;
@@ -22,8 +23,8 @@ export default function EditorNotes({
       try {
         const result = await getShrineNotesById(shrineId);
         setNotes(result);
-      } catch (err) {
-        console.error("Failed to retreive shrine notes", err);
+      } catch (error) {
+        console.error("Failed to retreive shrine notes", error);
       } finally {
         setLoading(false);
       }
@@ -39,10 +40,13 @@ export default function EditorNotes({
       await updateShrineNotes(shrineId, {
         notes: notes,
       });
+      toast.success("Notes updated successfully!");
 
       setHasUnsavedChanges(false);
-    } catch (err) {
-      console.error("Failed to save shrine notes", err);
+    } catch (error) {
+      console.error("Failed to save shrine notes", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     } finally {
       setLoading(false);
     }

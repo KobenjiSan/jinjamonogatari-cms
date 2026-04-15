@@ -4,10 +4,10 @@ import Header from "../components/Header/Header";
 
 export default function AppLayout() {
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
+    <div style={{ minHeight: "100vh" }}>
       <SideNav />
 
-      <main style={{ flex: 1 }}>
+      <main style={{marginLeft: "var(--sidebar-width)", flex: 1 }}>
         <Header />
         <Outlet />
       </main>

@@ -20,6 +20,7 @@ import {
   buildCreateGalleryImageFormData,
   buildUpdateGalleryImageFormData,
 } from "./helpers/GalleryTab.helpers";
+import toast from "react-hot-toast";
 
 type GalleryTabProps = {
   shrineId: number;
@@ -87,12 +88,15 @@ export default function GalleryTab({ shrineId, isReadOnly }: GalleryTabProps) {
     try {
       // DELETE image API here
       await deleteGalleryImage(pendingDeleteImage.imgId);
+      toast.success("Gallery image deleted successfully!");
 
       reloadImageList();
       setIsConfirmDeleteOpen(false);
       setPendingDeleteImage(null);
     } catch (error) {
       console.error("Failed to remove image:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Failed to remove image");
     }
   }
 
@@ -113,10 +117,12 @@ export default function GalleryTab({ shrineId, isReadOnly }: GalleryTabProps) {
         // PUT existing image API here
         const formData = buildUpdateGalleryImageFormData(imageDraft, selectedFile);
         await updateGalleryImage(selectedImage.imgId, formData);
+        toast.success("Gallery image updated successfully!");
       } else {
         // POST/PUT new image API here
         const formData = buildCreateGalleryImageFormData(imageDraft, selectedFile);
         await createGalleryImage(shrineId, formData);
+        toast.success("Gallery image created successfully!");
       }
 
       reloadImageList();
@@ -124,6 +130,8 @@ export default function GalleryTab({ shrineId, isReadOnly }: GalleryTabProps) {
       closeImageModal();
     } catch (error) {
       console.error("Failed to save image:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     }
   }
 

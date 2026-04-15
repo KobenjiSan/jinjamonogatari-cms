@@ -16,6 +16,7 @@ import {
   buildCreateHistoryPayload,
   buildUpdateHistoryPayload,
 } from "./helpers/HistoryTab.helpers";
+import toast from "react-hot-toast";
 
 type HistoryTabProps = {
   shrineId: number;
@@ -74,12 +75,15 @@ export default function HistoryTab({ shrineId, isReadOnly }: HistoryTabProps) {
     try {
       // delete history API
       await deleteHistory(pendingDeleteHistory.historyId);
+      toast.success("History deleted successfully!");
 
       reloadHistoryList();
       setIsConfirmDeleteOpen(false);
       setPendingDeleteHistory(null);
     } catch (error) {
       console.error("Failed to remove history:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     }
   }
 
@@ -102,9 +106,11 @@ export default function HistoryTab({ shrineId, isReadOnly }: HistoryTabProps) {
           selectedHistory,
         );
         await updateHistory(selectedHistory.historyId, payload);
+        toast.success("History updated successfully!");
       } else {
         const payload = buildCreateHistoryPayload(historyDraft);
         await createHistory(shrineId, payload);
+        toast.success("History created successfully!");
       }
 
       reloadHistoryList();
@@ -112,6 +118,8 @@ export default function HistoryTab({ shrineId, isReadOnly }: HistoryTabProps) {
       closeHistoryModal();
     } catch (error) {
       console.error("Failed to save history:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     }
   }
 

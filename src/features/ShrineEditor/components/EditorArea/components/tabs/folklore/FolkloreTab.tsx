@@ -20,6 +20,7 @@ import {
   buildCreateFolklorePayload,
   buildUpdateFolklorePayload,
 } from "./helpers/FolkloreTab.helpers";
+import toast from "react-hot-toast";
 
 type FolkloreTabProps = {
   shrineId: number;
@@ -79,12 +80,15 @@ export default function FolkloreTab({
     try {
       // Delete folklore in API (DELETE)
       await deleteFolklore(pendingDeleteFolklore.folkloreId);
+      toast.success("Folklore deleted successfully!");
 
       reloadFolkloreList();
       setIsConfirmDeleteOpen(false);
       setPendingDeleteFolklore(null);
     } catch (error) {
       console.error("Failed to remove folklore:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Failed to remove folklore");
     }
   }
 
@@ -107,10 +111,12 @@ export default function FolkloreTab({
           selectedFolklore,
         );
         await updateFolklore(selectedFolklore.folkloreId, payload);
+        toast.success("Folklore updated successfully!");
       } else {
         // API for new folklore (POST)
         const payload = buildCreateFolklorePayload(folkloreDraft);
         await createFolklore(shrineId, payload);
+        toast.success("Folklore created successfully!");
       }
 
       reloadFolkloreList();
@@ -118,6 +124,8 @@ export default function FolkloreTab({
       closeFolkloreModal();
     } catch (error) {
       console.error("Failed to save folklore:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Failed to save folklore");
     }
   }
 

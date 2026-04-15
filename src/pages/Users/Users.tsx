@@ -8,6 +8,7 @@ import BaseModal from "../../shared/components/modal/BaseModal";
 import UpdateUserRoleForm from "../../features/users/components/UpdateUserRoleForm/UpdateUserRoleForm";
 import ConfirmationModal from "../../shared/components/confirmationModal/ConfirmationModal";
 import { deleteUser, updateUserRole, type UpdateUserRoleRequest, type UserListDto } from "../../features/users/usersApi";
+import toast from "react-hot-toast";
 
 export default function UsersPage() {
   const [filters, setFilters] = useState<UserSearchFilters | null>(null);
@@ -33,7 +34,7 @@ export default function UsersPage() {
     setSelectedUser(null);
     setIsUpdateModalOpen(false);
   }
-  async function confirmUpdate() {
+  function confirmUpdate() {
     if (isInvalidRole) return;
     setIsConfirmUpdateOpen(true);
   }
@@ -49,15 +50,18 @@ export default function UsersPage() {
       setIsHandlingAction(true);
 
       await updateUserRole(selectedUser?.userId, body);
+      toast.success("Role updated successfully!");
 
       setNewUserRole("");
       setIsConfirmUpdateOpen(false);
       setIsUpdateModalOpen(false);
+      setOnUpdate((prev) => prev + 1); // refresh list
     } catch (error) {
       console.error("Failed to update user role:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     } finally {
       setIsHandlingAction(false);
-      setOnUpdate((prev) => prev + 1); // refresh list
     }
   }
   function cancelUpdate() {
@@ -77,13 +81,16 @@ export default function UsersPage() {
       setIsHandlingAction(true);
 
       await deleteUser(selectedUser?.userId);
+      toast.success("User deleted successfully!");
 
       setIsConfirmDeleteOpen(false);
+      setOnUpdate((prev) => prev + 1); // refresh list
     } catch (error) {
       console.error("Failed to delete user:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
     } finally {
       setIsHandlingAction(false);
-      setOnUpdate((prev) => prev + 1); // refresh list
     }
   }
   function cancelRemove() {

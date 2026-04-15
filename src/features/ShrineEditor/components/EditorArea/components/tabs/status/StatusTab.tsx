@@ -13,6 +13,7 @@ import StatusHero from "./components/StatusHero/StatusHero";
 import StatusSectionCheck from "./components/StatusSectionCheck/StatusSectionCheck";
 import StatusSectionCard from "./components/StatusSectionCard/StatusSectionCard";
 import ConfirmationModal from "../../../../../../../shared/components/confirmationModal/ConfirmationModal";
+import toast from "react-hot-toast";
 
 type StatusTabProps = {
   shrineId: number;
@@ -69,6 +70,8 @@ export default function StatusTab({
       } catch {
         if (!isMounted) return;
         setError("Failed to load shrine review status.");
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       } finally {
         if (!isMounted) return;
         setIsLoading(false);
@@ -157,11 +160,14 @@ export default function StatusTab({
         setIsSubmittingForReview(true);
 
         await submitShrineForReview(shrineId);
+        toast.success("Shrine submitted for review successfully!");
 
         onRefreshPage();
         setIsConfirmSubmitReviewOpen(false);
       } catch (error) {
         console.error("Failed to submit shrine for review:", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       } finally {
         setIsSubmittingForReview(false);
       }
@@ -181,11 +187,14 @@ export default function StatusTab({
         setIsPublishingShrine(true);
 
         await publishShrineReview(shrineId);
+        toast.success("Shrine published successfully!");
 
         onRefreshPage();
         setIsConfirmPublishOpen(false);
       } catch (error) {
         console.error("Failed to publish shrine:", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       } finally {
         setIsPublishingShrine(false);
       }
@@ -205,11 +214,14 @@ export default function StatusTab({
         setIsRejectingShrine(true);
 
         await rejectShrineReview(shrineId, {message: rejectMessage});
+        toast.success("Shrine rejected successfully!");
 
         onRefreshPage();
         setIsConfirmRejectOpen(false);
       } catch (error) {
         console.error("Failed to Reject shrine:", error);
+        const err = error as { message?: string };
+        toast.error(err.message ?? "Something went wrong");
       } finally {
         setIsRejectingShrine(false);
       }
