@@ -15,6 +15,7 @@ type KamiEditFormProps = {
   shrineId?: number;
   kami: KamiCMSDto | null;
   onChange?: (nextForm: KamiFormValues) => void;
+  onFileChange: (file: File | null) => void;
   isReadOnly: boolean;
 };
 
@@ -22,6 +23,7 @@ export default function KamiEditForm({
   shrineId,
   kami,
   onChange,
+  onFileChange,
   isReadOnly,
 }: KamiEditFormProps) {
   const [formValues, setFormValues] = useState<KamiFormValues>(emptyKamiForm);
@@ -74,6 +76,28 @@ export default function KamiEditForm({
       const next = {
         ...prev,
         image: nextImage,
+      };
+
+      onChange?.(next);
+      return next;
+    });
+  }
+
+  function handleRemoveImage() {
+    setImageFile(null);
+    onFileChange(null);
+
+    setFormValues((prev) => {
+      const next = {
+        ...prev,
+        image: {
+          ...prev.image,
+          imgId: undefined,
+          imageUrl: "",
+          title: "",
+          desc: "",
+          citation: { ...emptyCitation },
+        },
       };
 
       onChange?.(next);
@@ -166,7 +190,26 @@ export default function KamiEditForm({
         image={formValues.image}
         previewUrl={previewUrl}
         onImageChange={handleImageChange}
-        onFileChange={setImageFile}
+        onFileChange={(f) => {
+          setImageFile(f);
+          onFileChange(f);
+
+          if (f) {
+            setFormValues((prev) => {
+              const next = {
+                ...prev,
+                image: {
+                  ...prev.image,
+                  imageUrl: prev.image.imageUrl || "pending-upload",
+                },
+              };
+
+              onChange?.(next);
+              return next;
+            });
+          }
+        }}
+        onRemoveImage={handleRemoveImage}
         isReadOnly={isReadOnly}
       />
 

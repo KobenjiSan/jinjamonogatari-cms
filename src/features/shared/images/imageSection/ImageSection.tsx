@@ -8,6 +8,7 @@ type ImageSectionProps = {
   previewUrl?: string | null;
   onImageChange: (nextImage: ImageFormValues) => void;
   onFileChange: (file: File | null) => void;
+  onRemoveImage: () => void;
   isReadOnly: boolean;
 };
 
@@ -17,11 +18,24 @@ export default function ImageSection({
   previewUrl,
   onImageChange,
   onFileChange,
+  onRemoveImage,
   isReadOnly,
 }: ImageSectionProps) {
   return (
     <div className={styles.section}>
-      <p className={styles.sectionTitle}>{title}</p>
+      <div className={styles.sectionHeader}>
+        <p className={styles.sectionTitle}>{title}</p>
+
+        {previewUrl && !isReadOnly && (
+          <button
+            type="button"
+            className="btn btn-outline-danger"
+            onClick={onRemoveImage}
+          >
+            Remove
+          </button>
+        )}
+      </div>
 
       <ImageForm
         values={image}
@@ -29,6 +43,7 @@ export default function ImageSection({
         onChange={onImageChange}
         onFileChange={onFileChange}
         isReadOnly={isReadOnly}
+        showUpload={true}
       />
     </div>
   );

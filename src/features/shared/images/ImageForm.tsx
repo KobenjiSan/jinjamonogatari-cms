@@ -8,6 +8,7 @@ type ImageFormProps = {
   onChange: (next: ImageFormValues) => void;
   onFileChange: (file: File | null) => void;
   isReadOnly: boolean;
+  showUpload?: boolean;
 };
 
 export default function ImageForm({
@@ -16,6 +17,7 @@ export default function ImageForm({
   onChange,
   onFileChange,
   isReadOnly,
+  showUpload
 }: ImageFormProps) {
   function handleFieldChange(
     field: keyof Omit<
@@ -44,7 +46,7 @@ export default function ImageForm({
 
   return (
     <div className={styles.wrapper}>
-      {!isReadOnly && values.imgId == undefined && (
+      {!isReadOnly && ( values.imgId === undefined || showUpload ) && (
         <div className="form-group">
           <label htmlFor="image-upload" className="label">
             Upload Image

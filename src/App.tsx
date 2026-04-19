@@ -8,7 +8,7 @@ import ShrineEditorLayout from "./layouts/ShrineEditorLayout";
 import ShrineEditorPage from "./pages/ShrineEditor/ShrineEditorPage";
 import EtiquettePage from "./pages/Etiquette/EtiquettePage";
 import KamiPage from "./pages/Kami/KamiPage";
-import UsersPage from "./pages/Users/Users";
+import UsersPage from "./pages/Users/UsersPage";
 import AuditsPage from "./pages/Audits/Audits";
 import TagsPage from "./pages/Tags/TagsPage";
 import { Toaster } from "react-hot-toast";

@@ -6,12 +6,6 @@ export type EditableTag = TagDto & {
   isMarkedForRemoval?: boolean;
 };
 
-export type TagsSectionProps = {
-  tags: EditableTag[];
-  onChange: (nextTags: EditableTag[]) => void;
-  isReadOnly: boolean;
-};
-
 export const emptyTagForm: TagFormValues = {
   tagId: null,
   titleEn: "",

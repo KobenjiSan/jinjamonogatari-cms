@@ -1,26 +1,16 @@
 import { useState } from "react";
 import type { KamiCMSDto } from "./kamiApi";
-import {
-  createKamiInShrine,
-  linkKamiToShrine,
-  unlinkKamiFromShrine,
-  updateKami,
-} from "./kamiApi";
+import { linkKamiToShrine, unlinkKamiFromShrine } from "./kamiApi";
 import mainStyles from "../../../EditorArea.module.css";
 import { IoSearchOutline } from "react-icons/io5";
 import { FiPlus } from "react-icons/fi";
 import BaseModal from "../../../../../../../shared/components/modal/BaseModal";
-import KamiEditForm from "./components/kamiEditForm/KamiEditForm";
 import KamiSearchForm from "./components/kamiSearchForm/KamiSearchForm";
 import KamiList from "./components/kamiList/KamiList";
-import type { KamiFormValues } from "./components/kamiEditForm/helpers/KamiForm.types";
-import { emptyKamiForm } from "./components/kamiEditForm/helpers/KamiForm.helper";
-import ConfirmationModal from "../../../../../../../shared/components/confirmationModal/ConfirmationModal";
-import {
-  buildCreateKamiPayload,
-  buildUpdateKamiPayload,
-} from "./helpers/KamiTab.helpers";
 import toast from "react-hot-toast";
+import KamiEditor from "./components/KamiEditor/KamiEditor";
+import { useConfirmationState } from "../../../../../../shared/hooks/useConfirmationState";
+import ConfirmationModal from "../../../../../../../shared/components/confirmationModal/ConfirmationModal";
 
 type KamiTabProps = {
   shrineId: number;
@@ -28,43 +18,22 @@ type KamiTabProps = {
 };
 
 export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
-  const [isKamiModalOpen, setIsKamiModalOpen] = useState(false);
   const [selectedKami, setSelectedKami] = useState<KamiCMSDto | null>(null);
-  const [isKamiSearchModalOpen, setIsKamiSearchModalOpen] = useState(false);
-  const [currentKamiIds, setCurrentKamiIds] = useState<number[]>([]);
+
+  // RELOAD LIST
   const [kamiListReloadKey, setKamiListReloadKey] = useState(0);
-  const [selectedSearchKami, setSelectedSearchKami] = useState<KamiCMSDto[]>(
-    [],
-  );
-  const [kamiDraft, setKamiDraft] = useState<KamiFormValues>(emptyKamiForm);
-
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [isConfirmSaveOpen, setIsConfirmSaveOpen] = useState(false);
-  const [pendingDeleteKami, setPendingDeleteKami] = useState<KamiCMSDto | null>(
-    null,
-  );
-
-  const isDraftEmpty =
-    JSON.stringify(kamiDraft) === JSON.stringify(emptyKamiForm);
-
-  // Initial setting of Kami from KamiList
-  function handleKamiListLoaded(kamiItems: KamiCMSDto[]) {
-    setCurrentKamiIds(kamiItems.map((k) => k.kamiId));
-  }
-
-  // Pings KamiList to refresh data from API
   function reloadKamiList() {
     setKamiListReloadKey((prev) => prev + 1);
   }
 
-  // Add Kami
+  // EDIT/ADD KAMI MODAL
+  const [isKamiModalOpen, setIsKamiModalOpen] = useState(false);
+
   function openAddKamiModal() {
     setSelectedKami(null);
-    setKamiDraft(emptyKamiForm);
     setIsKamiModalOpen(true);
   }
 
-  // Edit selected existing Kami
   function openEditKamiModal(kamiItem: KamiCMSDto) {
     setSelectedKami(kamiItem);
     setIsKamiModalOpen(true);
@@ -73,10 +42,19 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
   function closeKamiModal() {
     setIsKamiModalOpen(false);
     setSelectedKami(null);
-    setKamiDraft(emptyKamiForm);
   }
 
-  // Search for Global Kami
+  // SEARCH GLOBAL KAMI MODAL
+  const [isKamiSearchModalOpen, setIsKamiSearchModalOpen] = useState(false);
+  const [currentKamiIds, setCurrentKamiIds] = useState<number[]>([]);
+  const [selectedSearchKami, setSelectedSearchKami] = useState<KamiCMSDto[]>(
+    [],
+  );
+
+  function handleKamiListLoaded(kamiItems: KamiCMSDto[]) {
+    setCurrentKamiIds(kamiItems.map((k) => k.kamiId));
+  }
+
   function openKamiSearchModal() {
     setSelectedSearchKami([]);
     setIsKamiSearchModalOpen(true);
@@ -84,7 +62,7 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
 
   function closeKamiSearchModal() {
     setIsKamiSearchModalOpen(false);
-    setSelectedSearchKami([]); // Clear list
+    setSelectedSearchKami([]);
   }
 
   // Keep track of Kami selected from Search Modal
@@ -92,9 +70,8 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
     setSelectedSearchKami(nextSelectedKami);
   }
 
-  // Call API to add selected Kami from Search Modal
   async function handleAddSelectedKami() {
-    if (isReadOnly) return; // block API calls in read-only mode
+    if (isReadOnly) return;
 
     try {
       await Promise.all(
@@ -113,16 +90,14 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
     }
   }
 
-  // Opens delete confirmation first
-  function handleRemoveKami(kami: KamiCMSDto) {
-    setPendingDeleteKami(kami);
-    setIsConfirmDeleteOpen(true);
-  }
+  // REMOVE KAMI
+  const removeConfirm = useConfirmationState<string>();
+  const [pendingDeleteKami, setPendingDeleteKami] = useState<KamiCMSDto | null>(
+    null,
+  );
 
-  // Actually delete after confirmation
   async function confirmRemoveKami() {
-    if (isReadOnly) return; // block API calls in read-only mode
-
+    if (isReadOnly) return;
     if (!pendingDeleteKami) return;
 
     try {
@@ -130,7 +105,7 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
       toast.success("Kami removed successfully!");
 
       reloadKamiList();
-      setIsConfirmDeleteOpen(false);
+      removeConfirm.close();
       setPendingDeleteKami(null);
     } catch (error) {
       console.error("Failed to unlink kami from shrine:", error);
@@ -138,51 +113,6 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
       toast.error(err.message ?? "Something went wrong");
     }
   }
-
-  function cancelRemoveKami() {
-    setIsConfirmDeleteOpen(false);
-    setPendingDeleteKami(null);
-  }
-
-  // Opens save confirmation first
-  function handleSaveKami() {
-    setIsConfirmSaveOpen(true);
-  }
-
-  // Actually save after confirmation
-  async function confirmSaveKami() {
-    if (isReadOnly) return; // block API calls in read-only mode
-
-    try {
-      if (selectedKami) {
-        const payload = buildUpdateKamiPayload(kamiDraft, selectedKami);
-        await updateKami(selectedKami.kamiId, payload);
-        toast.success("Kami updated successfully!");
-      } else {
-        const payload = buildCreateKamiPayload(kamiDraft);
-        await createKamiInShrine(shrineId, payload);
-        toast.success("Kami created successfully!");
-      }
-
-      reloadKamiList();
-      setIsConfirmSaveOpen(false);
-      closeKamiModal();
-    } catch (error) {
-      console.error("Failed to save kami:", error);
-      const err = error as { message?: string };
-      toast.error(err.message ?? "Something went wrong");
-    }
-  }
-
-  function cancelSaveKami() {
-    setIsConfirmSaveOpen(false);
-  }
-
-  const saveSubjectName =
-    selectedKami?.nameEn || kamiDraft.nameEn || kamiDraft.nameJp || "this kami";
-
-  const deleteSubjectName =
-    pendingDeleteKami?.nameEn || pendingDeleteKami?.nameJp || "this kami";
 
   return (
     <>
@@ -220,48 +150,23 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
           reloadKey={kamiListReloadKey}
           onLoaded={handleKamiListLoaded}
           onEdit={openEditKamiModal}
-          onRemove={handleRemoveKami}
+          onRemove={(k) => {
+            setPendingDeleteKami(k);
+            removeConfirm.open(k?.nameEn ?? "This Kami");
+          }}
           isReadOnly={isReadOnly}
         />
       </div>
 
       {/* EDIT / ADD Kami Modal */}
-      <BaseModal
+      <KamiEditor
         isOpen={isKamiModalOpen}
-        title={selectedKami ? "Edit Kami" : "Add Kami"}
+        shrineId={shrineId}
+        selectedKami={selectedKami}
+        isReadOnly={isReadOnly}
         onClose={closeKamiModal}
-        footer={
-          <>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={closeKamiModal}
-            >
-              Cancel
-            </button>
-
-            {/* Saves or Adds Kami to be updated / created in DB */}
-            {!isReadOnly && (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleSaveKami}
-                disabled={isDraftEmpty}
-              >
-                {selectedKami ? "Save Kami" : "Add Kami"}
-              </button>
-            )}
-          </>
-        }
-      >
-        {/* Optionally: Takes selected Kami */}
-        <KamiEditForm
-          shrineId={shrineId}
-          kami={selectedKami}
-          onChange={setKamiDraft}
-          isReadOnly={isReadOnly}
-        />
-      </BaseModal>
+        onReload={reloadKamiList}
+      />
 
       {/* Search Global Kami Modal */}
       <BaseModal
@@ -299,24 +204,13 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
 
       {/* Confirm Delete Modal */}
       <ConfirmationModal
-        isOpen={isConfirmDeleteOpen}
+        isOpen={removeConfirm.isOpen}
         variant="destructive"
         actionLabel="remove"
-        subjectName={deleteSubjectName}
+        subjectName={removeConfirm.subject ?? "this kami"}
         confirmLabel="Remove"
         onConfirm={confirmRemoveKami}
-        onCancel={cancelRemoveKami}
-      />
-
-      {/* Confirm Save Modal */}
-      <ConfirmationModal
-        isOpen={isConfirmSaveOpen}
-        variant="constructive"
-        actionLabel={selectedKami ? "save changes to" : "create"}
-        subjectName={saveSubjectName}
-        confirmLabel={selectedKami ? "Save" : "Create"}
-        onConfirm={confirmSaveKami}
-        onCancel={cancelSaveKami}
+        onCancel={removeConfirm.close}
       />
     </>
   );

@@ -57,8 +57,8 @@ export default function ConfirmationModal({
   const resolvedTitle =
     title ??
     (variant === "destructive"
-      ? `${capitalize(actionLabel)} ${subjectName ? "item" : ""}?`.trim()
-      : `${capitalize(actionLabel)}?`);
+      ? `${capitalize(actionLabel)} ${subjectName ? ` "${subjectName}"` : "item"}?`.trim()
+      : `${capitalize(actionLabel)} ${subjectName ? ` "${subjectName}"` : "item"}?`);
 
   const resolvedMessage =
     message ??

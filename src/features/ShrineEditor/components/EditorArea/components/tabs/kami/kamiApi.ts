@@ -11,6 +11,8 @@ import type {
   CreateImageRequest,
   ImageChangeRequest
 } from "../../../../../../shared/images/helpers/ImageApi.types"
+import type { KamiSearchFilters } from "../../../../../../shared/kami/components/KamiFilters/KamiFilters";
+import type { KamiListPagination } from "../../../../../../shared/kami/components/KamiList/KamiList";
 import type { EntityAuditDto } from "../status/statusApi";
 
 // GET Kami by shrine
@@ -25,7 +27,7 @@ export type KamiCMSDto = {
   updatedAt: string;
   image: ImageCMSDto | null;
   citations: CitationCMSDto[];
-  audit: EntityAuditDto;
+  audit: EntityAuditDto | null;
 };
 
 
@@ -37,6 +39,21 @@ export async function getShrineKamiById(id: number): Promise<KamiCMSDto[]> {
 // GET all Kami
 export async function getAllShrineKamiList(): Promise<KamiCMSDto[]> {
   return await apiFetch<KamiCMSDto[]>("/api/shrines/cms/kami");
+}
+
+// GET all Kami
+export type KamiListResult = {
+  kami: KamiCMSDto[];
+  totalCount: number;
+};
+
+export async function getAllKami(filters: KamiSearchFilters | null, pagination: KamiListPagination): Promise<KamiListResult> {
+  const page = pagination?.pageNumber ? `?page=${pagination.pageNumber}` : "?page=1";
+  const pageSize = pagination?.pageSize ? `&pageSize=${pagination.pageSize}` : "&pageSize=5";
+  const searchQuery = filters?.searchValue ? `&searchQuery=${filters.searchValue}` : "";
+  const sort = filters?.sorting ? `&sort=${filters.sorting}` : "";
+
+  return await apiFetch<KamiListResult>(`/api/kami/cms/kami${page}${pageSize}${searchQuery}${sort}`);
 }
 
 // CREATE Kami
@@ -53,14 +70,20 @@ export type CreateKamiInShrineRequest = {
 
 export async function createKamiInShrine(
   shrineId: number,
-  payload: CreateKamiInShrineRequest,
+  formData: FormData
 ): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/${shrineId}/kami`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+    body: formData,
+  });
+}
+
+export async function createKami(
+  formData: FormData
+): Promise<void> {
+  await apiFetch<void>("/api/kami", {
+    method: "POST",
+    body: formData,
   });
 }
 
@@ -77,14 +100,11 @@ export type UpdateKamiRequest = {
 
 export async function updateKami(
   kamiId: number,
-  payload: UpdateKamiRequest,
+  formData: FormData
 ): Promise<void> {
-  await apiFetch<void>(`/api/shrines/cms/kami/${kamiId}`, {
+  await apiFetch<void>(`/api/kami/${kamiId}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+    body: formData,
   });
 }
 
@@ -105,6 +125,13 @@ export async function unlinkKamiFromShrine(
   kamiId: number,
 ): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/${shrineId}/kami/${kamiId}`, {
+    method: "DELETE",
+  });
+}
+
+// DELETE Kami
+export async function deleteKami(kamiId: number): Promise<void> {
+  await apiFetch<void>(`/api/kami/${kamiId}`, {
     method: "DELETE",
   });
 }

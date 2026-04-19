@@ -1,6 +1,4 @@
 import type {
-  CreateKamiInShrineRequest,
-  UpdateKamiRequest,
   KamiCMSDto,
 } from "../kamiApi";
 import type {
@@ -9,8 +7,8 @@ import type {
   CreateCitationRequest,
   LinkExistingCitationRequest,
 } from "../../../../../../../shared/citations/helpers/CitationApi.types";
-import type {
-  ImageChangeRequest,
+import {
+  type ImageChangeRequest,
 } from "../../../../../../../shared/images/helpers/ImageApi.types";
 import type { KamiFormValues } from "../components/kamiEditForm/helpers/KamiForm.types";
 import type { CitationFormValues } from "../../../../../../../shared/citations/helpers/CitationSection.types";
@@ -88,9 +86,7 @@ function mapCitationFormToLinkExisting(
   };
 }
 
-function buildCreateCitationChanges(
-  formCitations: CitationFormValues[],
-): {
+function buildCreateCitationChanges(formCitations: CitationFormValues[]): {
   create: CreateCitationRequest[];
   linkExisting: LinkExistingCitationRequest[];
 } {
@@ -141,9 +137,7 @@ function buildCitationChanges(
   }
 
   const formCitationIds = new Set(
-    formCitations
-      .filter((c) => c.citeId)
-      .map((c) => c.citeId as number),
+    formCitations.filter((c) => c.citeId).map((c) => c.citeId as number),
   );
 
   const del = existingCitations
@@ -158,23 +152,37 @@ function buildCitationChanges(
   };
 }
 
-export function buildCreateKamiPayload(
+export function buildCreateKamiFormData(
   form: KamiFormValues,
-): CreateKamiInShrineRequest {
-  return {
+  file: File | null,
+): FormData {
+  const formData = new FormData();
+
+  const payload = {
     nameEn: toNullableString(form.nameEn),
     nameJp: toNullableString(form.nameJp),
     desc: toNullableString(form.desc),
     image: mapImageFormToCreate(form.image),
     citations: buildCreateCitationChanges(form.citations),
   };
+
+  formData.append("data", JSON.stringify(payload));
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  return formData;
 }
 
-export function buildUpdateKamiPayload(
+export function buildUpdateKamiFormData(
   form: KamiFormValues,
   existingKami: KamiCMSDto,
-): UpdateKamiRequest {
-  return {
+  file: File | null
+): FormData {
+  const formData = new FormData();
+
+  const payload = {
     basic: {
       nameEn: toNullableString(form.nameEn),
       nameJp: toNullableString(form.nameJp),
@@ -183,4 +191,12 @@ export function buildUpdateKamiPayload(
     image: mapImageFormToChange(form.image, existingKami.image),
     citations: buildCitationChanges(form.citations, existingKami.citations),
   };
+
+  formData.append("data", JSON.stringify(payload));
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  return formData;
 }

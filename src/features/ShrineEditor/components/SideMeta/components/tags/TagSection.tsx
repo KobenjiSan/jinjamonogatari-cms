@@ -10,9 +10,15 @@ import {
 } from "./helpers/TagSection.helpers";
 import {
   emptyTagForm,
-  type TagsSectionProps,
+  type EditableTag,
 } from "./helpers/TagSection.types";
 import { FiPlus } from "react-icons/fi";
+
+export type TagsSectionProps = {
+  tags: EditableTag[];
+  onChange: (nextTags: EditableTag[]) => void;
+  isReadOnly: boolean;
+};
 
 export default function TagsSection({
   tags,
