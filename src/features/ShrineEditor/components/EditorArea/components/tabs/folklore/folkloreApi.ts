@@ -41,14 +41,11 @@ export type CreateFolkloreRequest = {
 
 export async function createFolklore(
   shrineId: number,
-  payload: CreateFolkloreRequest,
+  formData: FormData,
 ): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/${shrineId}/folklore`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+    body: formData,
   });
 }
 
@@ -65,14 +62,11 @@ export type UpdateFolkloreRequest = {
 
 export async function updateFolklore(
   folkloreId: number,
-  payload: UpdateFolkloreRequest,
+  formData: FormData
 ): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/folklore/${folkloreId}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+    body: formData,
   });
 }
 

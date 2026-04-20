@@ -1,26 +1,12 @@
 import { useState } from "react";
 import { FiPlus } from "react-icons/fi";
 import mainStyles from "../../../EditorArea.module.css";
-import BaseModal from "../../../../../../../shared/components/modal/BaseModal";
 import ConfirmationModal from "../../../../../../../shared/components/confirmationModal/ConfirmationModal";
-
-import {
-  createFolklore,
-  deleteFolklore,
-  updateFolklore,
-  type FolkloreCMSDto,
-} from "./folkloreApi";
-
+import { deleteFolklore, type FolkloreCMSDto } from "./folkloreApi";
 import FolkloreList from "./components/FolkloreList/FolkloreList";
-import FolkloreEditForm from "./components/FolkloreEditForm/FolkloreEditForm";
-
-import type { FolkloreFormValues } from "./components/FolkloreEditForm/helpers/FolkloreForm.types";
-import { emptyFolkloreForm } from "./components/FolkloreEditForm/helpers/FolkloreForm.helper";
-import {
-  buildCreateFolklorePayload,
-  buildUpdateFolklorePayload,
-} from "./helpers/FolkloreTab.helpers";
 import toast from "react-hot-toast";
+import { useConfirmationState } from "../../../../../../shared/hooks/useConfirmationState";
+import FolkloreEditor from "./components/FolkloreEditor/FolkloreEditor";
 
 type FolkloreTabProps = {
   shrineId: number;
@@ -31,29 +17,20 @@ export default function FolkloreTab({
   shrineId,
   isReadOnly,
 }: FolkloreTabProps) {
-  const [isFolkloreModalOpen, setIsFolkloreModalOpen] = useState(false);
   const [selectedFolklore, setSelectedFolklore] =
     useState<FolkloreCMSDto | null>(null);
 
+  // RELOAD LIST
   const [folkloreListReloadKey, setFolkloreListReloadKey] = useState(0);
-  const [folkloreDraft, setFolkloreDraft] =
-    useState<FolkloreFormValues>(emptyFolkloreForm);
-
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const [isConfirmSaveOpen, setIsConfirmSaveOpen] = useState(false);
-  const [pendingDeleteFolklore, setPendingDeleteFolklore] =
-    useState<FolkloreCMSDto | null>(null);
-
-  const isDraftEmpty =
-    JSON.stringify(folkloreDraft) === JSON.stringify(emptyFolkloreForm);
-
   function reloadFolkloreList() {
     setFolkloreListReloadKey((prev) => prev + 1);
   }
 
+  // EDIT/ADD FOLKLORE MODAL
+  const [isFolkloreModalOpen, setIsFolkloreModalOpen] = useState(false);
+
   function openAddFolkloreModal() {
     setSelectedFolklore(null);
-    setFolkloreDraft(emptyFolkloreForm);
     setIsFolkloreModalOpen(true);
   }
 
@@ -65,25 +42,23 @@ export default function FolkloreTab({
   function closeFolkloreModal() {
     setIsFolkloreModalOpen(false);
     setSelectedFolklore(null);
-    setFolkloreDraft(emptyFolkloreForm);
   }
 
-  function handleRemoveFolklore(folklore: FolkloreCMSDto) {
-    setPendingDeleteFolklore(folklore);
-    setIsConfirmDeleteOpen(true);
-  }
+  // REMOVE FOLKLORE
+  const removeConfirm = useConfirmationState<string>();
+  const [pendingDeleteFolklore, setPendingDeleteFolklore] =
+    useState<FolkloreCMSDto | null>(null);
 
   async function confirmRemoveFolklore() {
-    if (isReadOnly) return; // block API calls in read-only mode
+    if (isReadOnly) return;
     if (!pendingDeleteFolklore) return;
 
     try {
-      // Delete folklore in API (DELETE)
       await deleteFolklore(pendingDeleteFolklore.folkloreId);
       toast.success("Folklore deleted successfully!");
 
       reloadFolkloreList();
-      setIsConfirmDeleteOpen(false);
+      removeConfirm.close();
       setPendingDeleteFolklore(null);
     } catch (error) {
       console.error("Failed to remove folklore:", error);
@@ -91,53 +66,6 @@ export default function FolkloreTab({
       toast.error(err.message ?? "Failed to remove folklore");
     }
   }
-
-  function cancelRemoveFolklore() {
-    setIsConfirmDeleteOpen(false);
-    setPendingDeleteFolklore(null);
-  }
-
-  function handleSaveFolklore() {
-    setIsConfirmSaveOpen(true);
-  }
-
-  async function confirmSaveFolklore() {
-    if (isReadOnly) return; // block API calls in read-only mode
-    try {
-      if (selectedFolklore) {
-        // API for existing folklore (PUT)
-        const payload = buildUpdateFolklorePayload(
-          folkloreDraft,
-          selectedFolklore,
-        );
-        await updateFolklore(selectedFolklore.folkloreId, payload);
-        toast.success("Folklore updated successfully!");
-      } else {
-        // API for new folklore (POST)
-        const payload = buildCreateFolklorePayload(folkloreDraft);
-        await createFolklore(shrineId, payload);
-        toast.success("Folklore created successfully!");
-      }
-
-      reloadFolkloreList();
-      setIsConfirmSaveOpen(false);
-      closeFolkloreModal();
-    } catch (error) {
-      console.error("Failed to save folklore:", error);
-      const err = error as { message?: string };
-      toast.error(err.message ?? "Failed to save folklore");
-    }
-  }
-
-  function cancelSaveFolklore() {
-    setIsConfirmSaveOpen(false);
-  }
-
-  const saveSubjectName =
-    selectedFolklore?.title || folkloreDraft.title || "this folklore entry";
-
-  const deleteSubjectName =
-    pendingDeleteFolklore?.title || "this folklore entry";
 
   return (
     <>
@@ -164,64 +92,31 @@ export default function FolkloreTab({
           shrineId={shrineId}
           reloadKey={folkloreListReloadKey}
           onEdit={openEditFolkloreModal}
-          onRemove={handleRemoveFolklore}
+          onRemove={(f) => {
+            setPendingDeleteFolklore(f);
+            removeConfirm.open(f?.title ?? "This Folklore");
+          }}
           isReadOnly={isReadOnly}
         />
       </div>
 
-      <BaseModal
+      <FolkloreEditor
         isOpen={isFolkloreModalOpen}
-        title={selectedFolklore ? "Edit Folklore" : "Add Folklore"}
+        shrineId={shrineId}
+        selectedFolklore={selectedFolklore}
+        isReadOnly={isReadOnly}
         onClose={closeFolkloreModal}
-        footer={
-          <>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={closeFolkloreModal}
-            >
-              Cancel
-            </button>
-
-            {!isReadOnly && (
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={handleSaveFolklore}
-                disabled={isDraftEmpty}
-              >
-                {selectedFolklore ? "Save Folklore" : "Add Folklore"}
-              </button>
-            )}
-          </>
-        }
-      >
-        <FolkloreEditForm
-          shrineId={shrineId}
-          folklore={selectedFolklore}
-          onChange={setFolkloreDraft}
-          isReadOnly={isReadOnly}
-        />
-      </BaseModal>
-
-      <ConfirmationModal
-        isOpen={isConfirmDeleteOpen}
-        variant="destructive"
-        actionLabel="remove"
-        subjectName={deleteSubjectName}
-        confirmLabel="Remove"
-        onConfirm={confirmRemoveFolklore}
-        onCancel={cancelRemoveFolklore}
+        onReload={reloadFolkloreList}
       />
 
       <ConfirmationModal
-        isOpen={isConfirmSaveOpen}
-        variant="constructive"
-        actionLabel={selectedFolklore ? "save changes to" : "create"}
-        subjectName={saveSubjectName}
-        confirmLabel={selectedFolklore ? "Save" : "Create"}
-        onConfirm={confirmSaveFolklore}
-        onCancel={cancelSaveFolklore}
+        isOpen={removeConfirm.isOpen}
+        variant="destructive"
+        actionLabel="remove"
+        subjectName={removeConfirm.subject ?? "this folklore"}
+        confirmLabel="Remove"
+        onConfirm={confirmRemoveFolklore}
+        onCancel={removeConfirm.close}
       />
     </>
   );

@@ -45,14 +45,11 @@ export type CreateHistoryRequest = {
 
 export async function createHistory(
   shrineId: number,
-  payload: CreateHistoryRequest,
+  formData: FormData,
 ): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/${shrineId}/history`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+    body: formData,
   });
 }
 
@@ -70,14 +67,11 @@ export type UpdateHistoryRequest = {
 
 export async function updateHistory(
   historyId: number,
-  payload: UpdateHistoryRequest,
+  formData: FormData
 ): Promise<void> {
   await apiFetch<void>(`/api/shrines/cms/history/${historyId}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
+    body: formData,
   });
 }
 

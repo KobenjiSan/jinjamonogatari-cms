@@ -18,6 +18,7 @@ type FolkloreEditFormProps = {
   shrineId?: number;
   folklore: FolkloreCMSDto | null;
   onChange?: (nextForm: FolkloreFormValues) => void;
+  onFileChange: (file: File | null) => void;
   isReadOnly: boolean;
 };
 
@@ -25,6 +26,7 @@ export default function FolkloreEditForm({
   shrineId,
   folklore,
   onChange,
+  onFileChange,
   isReadOnly,
 }: FolkloreEditFormProps) {
   const [formValues, setFormValues] =
@@ -77,6 +79,28 @@ export default function FolkloreEditForm({
       const next = {
         ...prev,
         image: nextImage,
+      };
+
+      onChange?.(next);
+      return next;
+    });
+  }
+
+  function handleRemoveImage() {
+    setImageFile(null);
+    onFileChange(null);
+
+    setFormValues((prev) => {
+      const next = {
+        ...prev,
+        image: {
+          ...prev.image,
+          imgId: undefined,
+          imageUrl: "",
+          title: "",
+          desc: "",
+          citation: { ...emptyCitation },
+        },
       };
 
       onChange?.(next);
@@ -164,7 +188,26 @@ export default function FolkloreEditForm({
         image={formValues.image}
         previewUrl={previewUrl}
         onImageChange={handleImageChange}
-        onFileChange={setImageFile}
+        onFileChange={(f) => {
+          setImageFile(f);
+          onFileChange(f);
+
+          if (f) {
+            setFormValues((prev) => {
+              const next = {
+                ...prev,
+                image: {
+                  ...prev.image,
+                  imageUrl: prev.image.imageUrl || "pending-upload",
+                },
+              };
+
+              onChange?.(next);
+              return next;
+            });
+          }
+        }}
+        onRemoveImage={handleRemoveImage}
         isReadOnly={isReadOnly}
       />
 

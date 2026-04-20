@@ -1,7 +1,5 @@
 import type {
-  CreateHistoryRequest,
-  HistoryCMSDto,
-  UpdateHistoryRequest,
+  HistoryCMSDto
 } from "../historyApi";
 import type {
   CitationCreateChangesRequest,
@@ -154,24 +152,38 @@ function buildCitationChanges(
   };
 }
 
-export function buildCreateHistoryPayload(
+export function buildCreateHistoryFormData(
   form: HistoryFormValues,
-): CreateHistoryRequest {
-  return {
+  file: File | null
+): FormData {
+  const formData = new FormData();
+
+  const payload = {
     eventDate: toNullableString(form.eventDate),
     sortOrder: toNullableNumber(form.sortOrder),
     title: toNullableString(form.title),
     information: toNullableString(form.information),
     image: mapImageFormToCreate(form.image),
-    citations: buildCreateCitationChanges(form.citations),
-  };
+    citations: buildCreateCitationChanges(form.citations)
+  }
+
+  formData.append("data", JSON.stringify(payload));
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  return formData;
 }
 
-export function buildUpdateHistoryPayload(
+export function buildUpdateHistoryFormData(
   form: HistoryFormValues,
   existingHistory: HistoryCMSDto,
-): UpdateHistoryRequest {
-  return {
+  file: File | null
+): FormData {
+  const formData = new FormData();
+
+  const payload = {
     basic: {
       eventDate: toNullableString(form.eventDate),
       sortOrder: toNullableNumber(form.sortOrder),
@@ -181,4 +193,12 @@ export function buildUpdateHistoryPayload(
     image: mapImageFormToChange(form.image, existingHistory.image),
     citations: buildCitationChanges(form.citations, existingHistory.citations),
   };
+
+  formData.append("data", JSON.stringify(payload));
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  return formData;
 }

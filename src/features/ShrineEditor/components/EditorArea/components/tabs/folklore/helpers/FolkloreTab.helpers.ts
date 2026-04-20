@@ -1,8 +1,4 @@
-import type {
-  FolkloreCMSDto,
-  CreateFolkloreRequest,
-  UpdateFolkloreRequest,
-} from "../folkloreApi";
+import type { FolkloreCMSDto } from "../folkloreApi";
 import type {
   CitationCreateChangesRequest,
   CitationListChangesRequest,
@@ -137,9 +133,7 @@ function buildCitationChanges(
   }
 
   const formCitationIds = new Set(
-    formCitations
-      .filter((c) => c.citeId)
-      .map((c) => c.citeId as number),
+    formCitations.filter((c) => c.citeId).map((c) => c.citeId as number),
   );
 
   const del = existingCitations
@@ -154,23 +148,37 @@ function buildCitationChanges(
   };
 }
 
-export function buildCreateFolklorePayload(
+export function buildCreateFolkloreFormData(
   form: FolkloreFormValues,
-): CreateFolkloreRequest {
-  return {
+  file: File | null,
+): FormData {
+  const formData = new FormData();
+
+  const payload = {
     sortOrder: toNullableNumber(form.sortOrder),
     title: toNullableString(form.title),
     information: toNullableString(form.information),
     image: mapImageFormToCreate(form.image),
     citations: buildCreateCitationChanges(form.citations),
   };
+
+  formData.append("data", JSON.stringify(payload));
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  return formData;
 }
 
-export function buildUpdateFolklorePayload(
+export function buildUpdateFolkloreFormData(
   form: FolkloreFormValues,
   existingFolklore: FolkloreCMSDto,
-): UpdateFolkloreRequest {
-  return {
+  file: File | null,
+): FormData {
+  const formData = new FormData();
+
+  const payload = {
     basic: {
       sortOrder: toNullableNumber(form.sortOrder),
       title: toNullableString(form.title),
@@ -179,4 +187,12 @@ export function buildUpdateFolklorePayload(
     image: mapImageFormToChange(form.image, existingFolklore.image),
     citations: buildCitationChanges(form.citations, existingFolklore.citations),
   };
+
+  formData.append("data", JSON.stringify(payload));
+
+  if (file) {
+    formData.append("file", file);
+  }
+
+  return formData;
 }
