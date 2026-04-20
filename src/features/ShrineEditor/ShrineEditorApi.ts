@@ -92,25 +92,9 @@ export type TagLinkChangesRequest = {
   unlink: number[];
 };
 
-export type HeroImageCitationRequest = {
-  title: string | null;
-  author: string | null;
-  url: string | null;
-  year: number | null;
-};
-
-export type HeroImageChangeRequest = {
-  action: "none" | "create" | "update" | "delete";
-  imageUrl: string | null;
-  title: string | null;
-  desc: string | null;
-  citation: HeroImageCitationRequest | null;
-};
-
 export type UpdateShrineMetaRequest = {
   basic: BasicMetaUpdateRequest;
   tags: TagLinkChangesRequest;
-  heroImage: HeroImageChangeRequest;
 };
 
 export async function updateShrineMeta(

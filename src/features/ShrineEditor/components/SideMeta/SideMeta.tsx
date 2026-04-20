@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   getShrineMetaById,
   updateShrineMeta,
+  type ImageFullDto,
   type ShrineMetaDto,
 } from "../../ShrineEditorApi";
 
@@ -16,7 +17,6 @@ import PublishingSection from "./components/PublishingSection";
 import TimestampsSection from "./components/TimestampsSection";
 import HeroImageSection from "./components/image/HeroImageSection";
 import type { EditableTag } from "./components/tags/helpers/TagSection.types";
-import type { EditableHeroImage } from "./components/image/helpers/HeroImageSection.types";
 
 import type { EditableShrineMeta } from "./helpers/SideMeta.types";
 import {
@@ -97,8 +97,17 @@ export default function SideMeta({
     });
   }
 
-  function handleImageChange(nextImage: EditableHeroImage | null) {
+  function handleImageChange(nextImage: ImageFullDto | null) {
     setFormData((prev) => {
+      if (!prev) return prev;
+
+      return {
+        ...prev,
+        image: nextImage,
+      };
+    });
+
+    setOriginalMeta((prev) => {
       if (!prev) return prev;
 
       return {
@@ -203,6 +212,7 @@ export default function SideMeta({
             <div className={styles.divider} />
 
             <HeroImageSection
+              shrineId={shrineId}
               image={formData?.image ?? null}
               onChange={handleImageChange}
               isReadOnly={isReadOnly}

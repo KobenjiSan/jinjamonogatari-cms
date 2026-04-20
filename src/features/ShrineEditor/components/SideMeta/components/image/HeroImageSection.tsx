@@ -1,91 +1,43 @@
 import { useEffect, useMemo, useState } from "react";
-
-import BaseModal from "../../../../../../shared/components/modal/BaseModal";
-import ImageForm from "../../../../../shared/images/ImageForm";
-import {
-  emptyImage,
-  mapImageToForm,
-} from "../../../../../shared/images/helpers/ImageSection.helper";
-import type { ImageFormValues } from "../../../../../shared/images/helpers/ImageSection.types";
 import styles from "./HeroImageSection.module.css";
+import HeroImageModal from "./components/HeroImageModal/HeroImageModal";
+import type { ImageFullDto } from "../../../../ShrineEditorApi";
 
-import {
-  buildHeroImagePayload,
-  getImagePreviewClassName,
-} from "./helpers/HeroImageSection.helpers";
-import type { HeroImageSectionProps } from "./helpers/HeroImageSection.types";
+export type HeroImageSectionProps = {
+  shrineId: number;
+  image: ImageFullDto | null;
+  onChange: (nextImage: ImageFullDto | null) => void;
+  isReadOnly: boolean;
+};
 
 export default function HeroImageSection({
+  shrineId,
   image,
   onChange,
   isReadOnly,
 }: HeroImageSectionProps) {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
-  const [imageForm, setImageForm] = useState<ImageFormValues>(emptyImage);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const hasActiveImage = !!image && !image.isRemoved;
+  const hasActiveImage = !!image;
 
-  function openAddImageModal() {
-    setImageForm(emptyImage);
-    setSelectedFile(null);
-    setIsImageModalOpen(true);
-  }
-
-  function openEditImageModal() {
-    setImageForm(mapImageToForm(image));
-    setSelectedFile(null);
+  function openImageModal() {
     setIsImageModalOpen(true);
   }
 
   function closeImageModal() {
     setIsImageModalOpen(false);
-    setImageForm(emptyImage);
-    setSelectedFile(null);
   }
-
+  
   const previewUrl = useMemo(() => {
-    if (selectedFile) {
-      return URL.createObjectURL(selectedFile);
-    }
-
-    return imageForm.imageUrl || null;
-  }, [selectedFile, imageForm.imageUrl]);
+    return image?.imageUrl || null;
+  }, [image?.imageUrl]);
 
   useEffect(() => {
     return () => {
-      if (selectedFile && previewUrl?.startsWith("blob:")) {
+      if (previewUrl?.startsWith("blob:")) {
         URL.revokeObjectURL(previewUrl);
       }
     };
-  }, [selectedFile, previewUrl]);
-
-  function handleSaveImage() {
-    const nextImage = buildHeroImagePayload(image, imageForm, selectedFile);
-    onChange(nextImage);
-    closeImageModal();
-  }
-
-  function handleRemoveImage() {
-    if (!image) {
-      onChange(null);
-      closeImageModal();
-      return;
-    }
-
-    if (image.isNew) {
-      onChange(null);
-      closeImageModal();
-      return;
-    }
-
-    onChange({
-      ...image,
-      isRemoved: true,
-      isEdited: true,
-    });
-
-    closeImageModal();
-  }
+  }, [previewUrl]);
 
   return (
     <>
@@ -93,11 +45,7 @@ export default function HeroImageSection({
         <p className={styles.blockTitle}>Hero Image</p>
 
         <div
-          className={getImagePreviewClassName(
-            image,
-            styles.imagePreview,
-            styles.changedInput,
-          )}
+          className={styles.imagePreview}
         >
           {hasActiveImage && image?.imageUrl ? (
             <img
@@ -107,11 +55,7 @@ export default function HeroImageSection({
             />
           ) : (
             <span
-              className={`text-sm text-secondary ${
-                image?.isNew || image?.isEdited || image?.isRemoved
-                  ? styles.changedInputText
-                  : ""
-              }`}
+              className={`text-sm text-secondary`}
             >
               No hero image selected
             </span>
@@ -121,7 +65,7 @@ export default function HeroImageSection({
         <button
           type="button"
           className="btn btn-outline"
-          onClick={hasActiveImage ? openEditImageModal : openAddImageModal}
+          onClick={openImageModal}
         >
           {hasActiveImage
             ? `${isReadOnly ? "View Hero Image" : "Edit Hero Image"}`
@@ -129,64 +73,14 @@ export default function HeroImageSection({
         </button>
       </div>
 
-      <BaseModal
+      <HeroImageModal 
         isOpen={isImageModalOpen}
-        title={hasActiveImage ? "Edit Hero Image" : "Add Hero Image"}
         onClose={closeImageModal}
-        footer={
-          isReadOnly ? (
-            <>
-              <button
-                type="button"
-                className="btn btn-ghost"
-                onClick={closeImageModal}
-              >
-                Cancel
-              </button>
-            </>
-          ) : (
-            <div className={styles.modalFooterArea}>
-              <div>
-                {hasActiveImage ? (
-                  <button
-                    type="button"
-                    className="btn btn-outline-danger"
-                    onClick={handleRemoveImage}
-                  >
-                    Remove Image
-                  </button>
-                ) : null}
-              </div>
-
-              <div className={styles.modalFooterBasic}>
-                <button
-                  type="button"
-                  className="btn btn-ghost"
-                  onClick={closeImageModal}
-                >
-                  Cancel
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={handleSaveImage}
-                >
-                  {hasActiveImage ? "Save Image" : "Add Image"}
-                </button>
-              </div>
-            </div>
-          )
-        }
-      >
-        <ImageForm
-          values={imageForm}
-          previewUrl={previewUrl}
-          onChange={setImageForm}
-          onFileChange={setSelectedFile}
-          isReadOnly={isReadOnly}
-        />
-      </BaseModal>
+        onChange={onChange}
+        isReadOnly={isReadOnly}
+        image={image}
+        shrineId={shrineId}
+      />
     </>
   );
 }

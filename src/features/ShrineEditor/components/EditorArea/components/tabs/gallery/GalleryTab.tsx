@@ -5,7 +5,7 @@ import GalleryList from "./components/GalleryList/GalleryList";
 import BaseModal from "../../../../../../../shared/components/modal/BaseModal";
 import ImageForm from "../../../../../../shared/images/ImageForm";
 import ConfirmationModal from "../../../../../../../shared/components/confirmationModal/ConfirmationModal";
-import type { ImageCMSDto } from "../../../../../../shared/images/helpers/ImageApi.types";
+import { buildCreateImageFormData, buildUpdateImageFormData, type ImageCMSDto } from "../../../../../../shared/images/helpers/ImageApi.types";
 import type { ImageFormValues } from "../../../../../../shared/images/helpers/ImageSection.types";
 import {
   emptyImage,
@@ -16,10 +16,6 @@ import {
   deleteGalleryImage,
   updateGalleryImage,
 } from "./galleryApi";
-import {
-  buildCreateGalleryImageFormData,
-  buildUpdateGalleryImageFormData,
-} from "./helpers/GalleryTab.helpers";
 import toast from "react-hot-toast";
 
 type GalleryTabProps = {
@@ -115,12 +111,12 @@ export default function GalleryTab({ shrineId, isReadOnly }: GalleryTabProps) {
     try {
       if (selectedImage) {
         // PUT existing image API here
-        const formData = buildUpdateGalleryImageFormData(imageDraft, selectedFile);
+        const formData = buildUpdateImageFormData(imageDraft, selectedFile);
         await updateGalleryImage(selectedImage.imgId, formData);
         toast.success("Gallery image updated successfully!");
       } else {
         // POST/PUT new image API here
-        const formData = buildCreateGalleryImageFormData(imageDraft, selectedFile);
+        const formData = buildCreateImageFormData(imageDraft, selectedFile);
         await createGalleryImage(shrineId, formData);
         toast.success("Gallery image created successfully!");
       }

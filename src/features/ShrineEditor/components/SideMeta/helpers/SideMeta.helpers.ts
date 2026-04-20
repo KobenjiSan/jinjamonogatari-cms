@@ -36,59 +36,5 @@ export function buildUpdateShrineMetaPayload(
         .filter((tag) => tag.isMarkedForRemoval)
         .map((tag) => tag.tagId),
     },
-
-    heroImage: formData.image
-      ? formData.image.isRemoved
-        ? {
-            action: "delete",
-            imageUrl: null,
-            title: null,
-            desc: null,
-            citation: null,
-          }
-        : formData.image.isNew
-          ? {
-              action: "create",
-              imageUrl: formData.image.imageUrl,
-              title: formData.image.title,
-              desc: formData.image.desc,
-              citation: formData.image.citation
-                ? {
-                    title: formData.image.citation.title,
-                    author: formData.image.citation.author,
-                    url: formData.image.citation.url,
-                    year: formData.image.citation.year,
-                  }
-                : null,
-            }
-          : formData.image.isEdited
-            ? {
-                action: "update",
-                imageUrl: formData.image.imageUrl,
-                title: formData.image.title,
-                desc: formData.image.desc,
-                citation: formData.image.citation
-                  ? {
-                      title: formData.image.citation.title,
-                      author: formData.image.citation.author,
-                      url: formData.image.citation.url,
-                      year: formData.image.citation.year,
-                    }
-                  : null,
-              }
-            : {
-                action: "none",
-                imageUrl: null,
-                title: null,
-                desc: null,
-                citation: null,
-              }
-      : {
-          action: "none",
-          imageUrl: null,
-          title: null,
-          desc: null,
-          citation: null,
-        },
   };
 }
