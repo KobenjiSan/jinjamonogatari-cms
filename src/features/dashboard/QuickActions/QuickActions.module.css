@@ -1,0 +1,62 @@
+.frame {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.primary,
+.meta {
+  margin: 0;
+}
+
+.primary {
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.meta {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.section {
+    margin: var(--space-lg);
+    display: flex;
+    align-items: center;
+    display: grid;
+    grid-template-columns: 4fr .25fr;
+    cursor: pointer;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+}
+
+.iconContainer {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--icon-bg);
+  color: var(--icon-color, white); /* default icon color */
+}
+
+.import {
+  --icon-bg: rgba(161, 178, 236, 0.582);
+  --icon-color: rgb(13, 69, 189);
+}
+
+.drafts {
+  --icon-bg: rgba(235, 183, 134, 0.582);
+  --icon-color: rgb(189, 113, 13);
+}
+
+.etiquette {
+  --icon-bg: rgba(170, 236, 161, 0.582);
+  --icon-color: rgb(16, 158, 12);
+}

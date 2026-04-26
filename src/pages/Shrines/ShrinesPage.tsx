@@ -1,5 +1,5 @@
 // import styles from "./ShrinesPage.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Filters, {
   type ShrineSearchFilters,
 } from "../../features/shrines/components/Filters/Filters";
@@ -22,9 +22,28 @@ import {
 import ConfirmationModal from "../../shared/components/confirmationModal/ConfirmationModal";
 import CreateShrineForm from "../../features/shrines/components/CreateShrineForm/CreateShrineForm";
 import toast from "react-hot-toast";
+import { useLocation } from "react-router-dom";
 
 export default function ShrinesPage() {
-  const [activeTab, setActiveTab] = useState<StatusTabKey>("import");
+  // Routing logic
+  const location = useLocation();
+
+  const routeState = location.state as {
+    openImportModal?: boolean;
+    activeTab?: StatusTabKey;
+  } | null;
+
+  useEffect(() => {
+    if (routeState?.openImportModal) {
+      openImportModal();
+    }
+
+    if (routeState) {
+      window.history.replaceState({}, document.title);
+    }
+  }, []);
+
+  const [activeTab, setActiveTab] = useState<StatusTabKey>(routeState?.activeTab ?? "import");
   const [filters, setFilters] = useState<ShrineSearchFilters | null>(null);
 
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);

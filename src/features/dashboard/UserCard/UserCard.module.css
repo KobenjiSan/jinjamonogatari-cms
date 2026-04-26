@@ -1,0 +1,65 @@
+.frameGrid {
+    display: grid;
+    grid-template-columns: .75fr 1.25fr 1.5fr 1.5fr;
+    padding-top: var(--space-2xl) !important;
+    padding-bottom: var(--space-2xl) !important;
+}
+
+.frame {
+    padding-top: var(--space-2xl) !important;
+    padding-bottom: var(--space-2xl) !important;
+}
+
+.primary,
+.meta {
+  margin: 0;
+}
+
+.primary {
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.meta {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.imageSection {
+    display: flex;
+    justify-content: center;
+}
+
+.imageFrame {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  background: rgb(227, 230, 230);
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.imageFrame img {
+  width: 65%;
+  height: 65%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.userSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.emailSection {
+    border-left: var(--border-width) solid var(--color-border);
+    display: flex;
+    align-items: center;
+    padding-left: var(--space-2xl);
+}

@@ -1,0 +1,80 @@
+.frame {
+    display: flex;
+    justify-content: space-between;
+    padding-top: var(--space-xl) !important;
+    padding-bottom: var(--space-lg) !important;
+}
+
+.primary,
+.meta {
+  margin: 0;
+}
+
+.primary {
+  font-size: var(--font-md);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.meta {
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
+.section {
+    padding: var(--space-lg);
+}
+
+.sectionDiv{
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2xl);
+}
+
+.iconContainer {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: var(--icon-bg);
+  color: var(--icon-color, white); /* default icon color */
+}
+
+.total {
+  --icon-bg: rgba(161, 178, 236, 0.582);
+  --icon-color: rgb(13, 69, 189);
+}
+
+.imports {
+  --icon-bg: rgba(215, 175, 233, 0.582);
+  --icon-color: rgba(148, 13, 189, 0.829);
+}
+
+.drafts {
+  --icon-bg: rgba(236, 228, 161, 0.582);
+  --icon-color: rgb(189, 177, 13);
+}
+
+.review {
+  --icon-bg: rgba(235, 183, 134, 0.582);
+  --icon-color: rgb(189, 113, 13);
+}
+
+.published {
+  --icon-bg: rgba(170, 236, 161, 0.582);
+  --icon-color: rgb(16, 158, 12);
+}
+
+.rejected {
+  --icon-bg: rgba(236, 161, 161, 0.582);
+  --icon-color: rgb(189, 13, 13);
+}
+
+.divider {
+    width: 1px;
+    border-left: var(--border-width) solid var(--color-border);
+}
