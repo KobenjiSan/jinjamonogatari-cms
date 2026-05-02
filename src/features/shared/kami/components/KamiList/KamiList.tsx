@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import styles from "./KamiList.module.css";
-import { getAllKami, type KamiCMSDto } from "../../../../ShrineEditor/components/EditorArea/components/tabs/kami/kamiApi";
+import {
+  getAllKami,
+  type KamiCMSDto,
+} from "../../../../ShrineEditor/components/EditorArea/components/tabs/kami/kamiApi";
 import type { KamiSearchFilters } from "../KamiFilters/KamiFilters";
 import toast from "react-hot-toast";
 
@@ -64,15 +67,15 @@ export default function KamiList({
       <div
         className={`listShell ${styles.gridTable}`}
         style={{
-          gridTemplateColumns: ".25fr 1.25fr .5fr 3fr 1fr auto",
+          gridTemplateColumns: ".25fr 1.25fr .5fr 3fr 1.5fr auto",
         }}
       >
-        <div className={`headerCell ${styles.idCol}`}>ID</div>
-        <div className={`headerCell ${styles.titleEn}`}>Kami</div>
-        <div className={`headerCell ${styles.titleJp}`}>Status</div>
-        <div className={`headerCell ${styles.titleJp}`}>Description</div>
-        <div className={`headerCell ${styles.createdCol}`}>Created / Updated</div>
-        <div className={`headerCell ${styles.actionsCol}`}>Actions</div>
+        <div className="headerCell">ID</div>
+        <div className="headerCell">Kami</div>
+        <div className="headerCell">Status</div>
+        <div className="headerCell">Description</div>
+        <div className="headerCell">Created / Updated</div>
+        <div className="headerCell">Actions</div>
 
         {loading ? (
           <div className="rowGroup">
@@ -89,37 +92,32 @@ export default function KamiList({
         ) : (
           kami.map((k) => (
             <div key={k.kamiId} className="rowGroup">
-              <div className={`bodyCell ${styles.idCol}`}>
-                <div className="listStackSm">
-                  <p className="metaText">{k.kamiId}</p>
-                </div>
+              <div className="bodyCell">
+                <p className="metaText">{k.kamiId}</p>
               </div>
 
-              <div className={`bodyCell ${styles.titleEn}`}>
+              <div className="bodyCell">
                 <div className={styles.kamiItem}>
                   <p className="primaryText">{k.nameEn ?? "-"}</p>
                   <p className={styles.secondaryText}>{k.nameJp ?? "-"}</p>
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.titleJp}`}>
-                <div className="listStackSm">
-                  <span className="pill">{k.status ?? "-"}</span>
-                </div>
+              <div className="bodyCell">
+                <span className="pill">{k.status ?? "-"}</span>
               </div>
 
-              <div className={`bodyCell ${styles.titleJp}`}>
-                <div className="listStackSm">
-                  <span className={styles.description}>{k.desc ?? "-"}</span>
-                </div>
+              <div className="bodyCell">
+                <span className={styles.description}>{k.desc ?? "-"}</span>
               </div>
 
-              <div className={`bodyCell ${styles.createdCol}`}>
+              <div className="bodyCell">
                 <div className="listStackSm">
                   <p className={`metaText ${styles.singleLine}`}>
                     Created:{" "}
                     {k.createdAt ? new Date(k.createdAt).toLocaleString() : "-"}
                   </p>
+
                   <p className={`metaText ${styles.singleLine}`}>
                     Updated:{" "}
                     {k.updatedAt ? new Date(k.updatedAt).toLocaleString() : "-"}
@@ -127,15 +125,16 @@ export default function KamiList({
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.actionsCol}`}>
+              <div className="bodyCell">
                 <div className={styles.actionGroup}>
-                <button
+                  <button
                     type="button"
                     className="btn btn-outline"
                     onClick={() => onEdit(k)}
                   >
                     Edit
                   </button>
+
                   <button
                     type="button"
                     disabled={isDeleting}
@@ -151,11 +150,12 @@ export default function KamiList({
         )}
       </div>
 
-      <div className={styles.paginationBar}>
-        <div className={styles.paginationLeft}>
-          <span className={styles.paginationLabel}>Rows per page</span>
+      <div className="paginationBar">
+        <div className="paginationLeft">
+          <span className="paginationLabel">Rows per page</span>
+
           <select
-            className={styles.paginationSelect}
+            className="paginationSelect"
             value={pageSize}
             onChange={(e) => handleRowPerPageChange(Number(e.target.value))}
           >
@@ -166,26 +166,26 @@ export default function KamiList({
           </select>
         </div>
 
-        <div className={styles.paginationRight}>
-          <span className={styles.paginationRange}>
+        <div className="paginationRight">
+          <span className="paginationRange">
             Showing {showingLow}–{showingHigh} of {totalItems}
           </span>
 
-          <div className={styles.pageControls}>
+          <div className="pageControls">
             <button
               type="button"
-              className={styles.pageButton}
+              className="pageButton"
               onClick={() => setPageNumber((p) => p - 1)}
               disabled={pageNumber === 1}
             >
               &lt;
             </button>
 
-            <div className={styles.pageNumber}>{pageNumber}</div>
+            <div className="pageNumber">{pageNumber}</div>
 
             <button
               type="button"
-              className={styles.pageButton}
+              className="pageButton"
               onClick={() => setPageNumber((p) => p + 1)}
               disabled={pageNumber * pageSize >= totalItems}
             >

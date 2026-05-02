@@ -67,13 +67,11 @@ export default function GalleryList({
     <div className="listShell">
       <div className={styles.listGrid}>
         <div className="headerCell">ID</div>
-        <div className={`headerCell ${styles.previewCol}`}>Preview</div>
-        <div className={`headerCell ${styles.infoCol}`}>Information</div>
-        <div className={`headerCell ${styles.timestampsCol}`}>
-          Created / Updated
-        </div>
-        <div className={`headerCell ${styles.issuesCol}`}>Issues</div>
-        <div className={`headerCell ${styles.actionsCol}`}>Actions</div>
+        <div className="headerCell">Preview</div>
+        <div className="headerCell">Information</div>
+        <div className="headerCell">Created / Updated</div>
+        <div className="headerCell">Issues</div>
+        <div className="headerCell">Actions</div>
 
         {imageItems.map((item) => {
           const errorCount = item.audit?.errorCount ?? 0;
@@ -86,7 +84,7 @@ export default function GalleryList({
                 <span className="metaText">{item.imgId}</span>
               </div>
 
-              <div className={`bodyCell ${styles.previewCol}`}>
+              <div className="bodyCell">
                 <div className={styles.previewWrap}>
                   {item.imageUrl ? (
                     <img
@@ -100,7 +98,7 @@ export default function GalleryList({
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.infoCol}`}>
+              <div className="bodyCell">
                 <div className={styles.infoBlock}>
                   <p className="primaryText">{item.title ?? "-"}</p>
                   <p className={styles.descText}>{item.desc ?? "-"}</p>
@@ -110,7 +108,7 @@ export default function GalleryList({
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.timestampsCol}`}>
+              <div className="bodyCell">
                 <div className="listStackSm">
                   <p className="metaText">
                     Created:{" "}
@@ -118,6 +116,7 @@ export default function GalleryList({
                       ? new Date(item.createdAt).toLocaleString()
                       : "-"}
                   </p>
+
                   <p className="metaText">
                     Updated:{" "}
                     {item.updatedAt
@@ -127,7 +126,7 @@ export default function GalleryList({
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.issuesCol}`}>
+              <div className="bodyCell">
                 {isClean ? (
                   <div className={styles.auditOk}>
                     <FiCheckCircle className={styles.auditOkIcon} />
@@ -143,14 +142,15 @@ export default function GalleryList({
 
                     {warningCount > 0 && (
                       <span className={styles.warningPill}>
-                        {warningCount} warning{warningCount !== 1 ? "s" : ""}
+                        {warningCount} warning
+                        {warningCount !== 1 ? "s" : ""}
                       </span>
                     )}
                   </div>
                 )}
               </div>
 
-              <div className={`bodyCell ${styles.actionsCol}`}>
+              <div className="bodyCell">
                 <div className="actionGroup">
                   <button
                     type="button"

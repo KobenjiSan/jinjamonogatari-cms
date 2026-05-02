@@ -72,15 +72,15 @@ export default function AuditList({ filters }: AuditListProps) {
       <div
         className={`listShell ${styles.gridTable}`}
         style={{
-          gridTemplateColumns: ".75fr 1fr 1.5fr 1fr .75fr 1.75fr",
+          gridTemplateColumns: ".75fr 1fr 1.5fr 1fr .5fr .75fr",
         }}
       >
-        <div className={`headerCell ${styles.idCol}`}>Date</div>
-        <div className={`headerCell ${styles.titleEn}`}>Action</div>
-        <div className={`headerCell ${styles.titleEn}`}>Location</div>
-        <div className={`headerCell ${styles.titleJp}`}>User</div>
-        <div className={`headerCell ${styles.titleJp}`}>Success</div>
-        <div className={`headerCell ${styles.titleJp}`}>Message</div>
+        <div className="headerCell">Date</div>
+        <div className="headerCell">Action</div>
+        <div className="headerCell">Location</div>
+        <div className="headerCell">User</div>
+        <div className="headerCell">Success</div>
+        <div className="headerCell">Message</div>
 
         {loading ? (
           <div className="rowGroup">
@@ -91,59 +91,54 @@ export default function AuditList({ filters }: AuditListProps) {
         ) : !auditLog.length ? (
           <div className="rowGroup">
             <div className="bodyCell" style={{ gridColumn: "1 / -1" }}>
-              <p className="text-md text-secondary">No Audits found.</p>
+              <p className="text-md text-secondary">No audits found.</p>
             </div>
           </div>
         ) : (
           auditLog.map((a) => (
             <div key={a.auditId} className="rowGroup">
-              <div className={`bodyCell ${styles.titleJp}`}>
-                <div className="listStackSm">
-                  <p className="metaText">{formatDateTime(a.createdAt)}</p>
-                </div>
-              </div>
-              <div className={`bodyCell ${styles.titleJp}`}>
-                <div className="listStackSm">
-                  <p className="primaryText">{formatAction(a.action)}</p>
-                </div>
-              </div>
-              <div className={`bodyCell ${styles.titleJp}`}>
-                <div className="listStackSm">
-                  <p className="primaryText">{a.target}</p>
-                </div>
-              </div>
-              <div className={`bodyCell ${styles.titleJp}`}>
-                <div className="listStackSm">
-                  <p className="primaryText">{a.username}</p>
-                </div>
-              </div>
-              <div className={`bodyCell ${styles.titleJp}`}>
-                {a.isSuccessful ? (
-                  <div className={styles.auditStack}>
-                    <span className={styles.validPill}>True</span>
-                  </div>
-                ) : (
-                  <div className={styles.auditStack}>
-                    <span className={styles.errorPill}>False</span>
-                  </div>
-                )}
+              <div className="bodyCell">
+                <p className="metaText">{formatDateTime(a.createdAt)}</p>
               </div>
 
-              <div className={`bodyCell ${styles.titleJp}`}>
-                <div className="listStackSm">
-                  <p className={styles.errorText}>{a.message || ""}</p>
+              <div className="bodyCell">
+                <p className="primaryText">{formatAction(a.action)}</p>
+              </div>
+
+              <div className="bodyCell">
+                <p className="primaryText">{a.target}</p>
+              </div>
+
+              <div className="bodyCell">
+                <p className="primaryText">{a.username}</p>
+              </div>
+
+              <div className="bodyCell">
+                <div className={styles.auditStack}>
+                  <span
+                    className={
+                      a.isSuccessful ? styles.validPill : styles.errorPill
+                    }
+                  >
+                    {a.isSuccessful ? "True" : "False"}
+                  </span>
                 </div>
+              </div>
+
+              <div className="bodyCell">
+                <p className={styles.errorText}>{a.message || ""}</p>
               </div>
             </div>
           ))
         )}
       </div>
 
-      <div className={styles.paginationBar}>
-        <div className={styles.paginationLeft}>
-          <span className={styles.paginationLabel}>Rows per page</span>
+      <div className="paginationBar">
+        <div className="paginationLeft">
+          <span className="paginationLabel">Rows per page</span>
+
           <select
-            className={styles.paginationSelect}
+            className="paginationSelect"
             value={pageSize}
             onChange={(e) => handleRowPerPageChange(Number(e.target.value))}
           >
@@ -155,26 +150,26 @@ export default function AuditList({ filters }: AuditListProps) {
           </select>
         </div>
 
-        <div className={styles.paginationRight}>
-          <span className={styles.paginationRange}>
+        <div className="paginationRight">
+          <span className="paginationRange">
             Showing {showingLow}–{showingHigh} of {totalItems}
           </span>
 
-          <div className={styles.pageControls}>
+          <div className="pageControls">
             <button
               type="button"
-              className={styles.pageButton}
+              className="pageButton"
               onClick={() => setPageNumber((p) => p - 1)}
               disabled={pageNumber === 1}
             >
               &lt;
             </button>
 
-            <div className={styles.pageNumber}>{pageNumber}</div>
+            <div className="pageNumber">{pageNumber}</div>
 
             <button
               type="button"
-              className={styles.pageButton}
+              className="pageButton"
               onClick={() => setPageNumber((p) => p + 1)}
               disabled={pageNumber * pageSize >= totalItems}
             >

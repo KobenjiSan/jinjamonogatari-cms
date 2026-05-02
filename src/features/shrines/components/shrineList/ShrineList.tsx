@@ -96,21 +96,19 @@ export default function ShrineList({
         className={`listShell ${styles.gridTable}`}
         style={{
           gridTemplateColumns:
-            user?.role != "Admin"
+            user?.role !== "Admin"
               ? ".25fr 2fr 1fr 1.5fr 1.5fr 1fr 120px"
               : ".25fr 2fr 1fr 1.5fr 1.5fr 1fr 200px",
         }}
       >
-        {/* Header */}
-        <div className={`headerCell ${styles.idCol}`}>ID</div>
-        <div className={`headerCell ${styles.shrineCol}`}>Shrine</div>
-        <div className={`headerCell ${styles.statusCol}`}>Status</div>
-        <div className={`headerCell ${styles.locationCol}`}>Location</div>
-        <div className={`headerCell ${styles.updatedCol}`}>Last Updated</div>
-        <div className={`headerCell ${styles.readinessCol}`}>Blockers</div>
-        <div className={`headerCell ${styles.actionsCol}`}>Actions</div>
+        <div className="headerCell">ID</div>
+        <div className="headerCell">Shrine</div>
+        <div className="headerCell">Status</div>
+        <div className="headerCell">Location</div>
+        <div className="headerCell">Last Updated</div>
+        <div className="headerCell">Blockers</div>
+        <div className="headerCell">Actions</div>
 
-        {/* Rows */}
         {loading ? (
           <div className="rowGroup">
             <div className="bodyCell" style={{ gridColumn: "1 / -1" }}>
@@ -126,23 +124,23 @@ export default function ShrineList({
         ) : (
           shrines.map((s) => (
             <div key={s.shrineId} className="rowGroup">
-              <div className={`bodyCell ${styles.idCol}`}>
-                <div className="listStackSm">
-                  <p className="metaText">{s.shrineId ?? "-"}</p>
-                </div>
+              <div className="bodyCell">
+                <p className="metaText">{s.shrineId ?? "-"}</p>
               </div>
 
-              <div className={`bodyCell ${styles.shrineCol}`}>
+              <div className="bodyCell">
                 <div className="listStackSm">
                   <p className="primaryText">{s.nameEn ?? "-"}</p>
                   <p className="metaText">{s.nameJp ?? "-"}</p>
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.statusCol}`}>
+              <div className="bodyCell">
                 <div className={styles.statusArea}>
                   <span
-                    className={`pill status-wrapper ${s.recentlyRejected ? styles.rejectionPill : ""}`}
+                    className={`pill status-wrapper ${
+                      s.recentlyRejected ? styles.rejectionPill : ""
+                    }`}
                     title={s.recentlyRejected ? "Recently Rejected" : ""}
                   >
                     {s.recentlyRejected && <FaCircleInfo />}
@@ -151,7 +149,7 @@ export default function ShrineList({
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.locationCol}`}>
+              <div className="bodyCell">
                 <div className="listStackSm">
                   <p className="primaryText">{s.city ?? "-"}</p>
                   <div className={styles.coords}>
@@ -161,13 +159,11 @@ export default function ShrineList({
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.updatedCol}`}>
-                <div className="timeBlock">
-                  <p className="primaryText">{formatUpdatedAt(s.updatedAt)}</p>
-                </div>
+              <div className="bodyCell">
+                <p className="primaryText">{formatUpdatedAt(s.updatedAt)}</p>
               </div>
 
-              <div className={`bodyCell ${styles.readinessCol}`}>
+              <div className="bodyCell">
                 {(s.errorCount ?? 0) === 0 ? (
                   <div className={styles.auditOk}>
                     <FiCheckCircle className={styles.auditOkIcon} />
@@ -184,8 +180,8 @@ export default function ShrineList({
                 )}
               </div>
 
-              <div className={`bodyCell ${styles.actionsCol}`}>
-                <div className={`${styles.actionGroup}`}>
+              <div className="bodyCell">
+                <div className={styles.actionGroup}>
                   <button
                     type="button"
                     className="btn btn-outline"
@@ -211,11 +207,12 @@ export default function ShrineList({
         )}
       </div>
 
-      <div className={styles.paginationBar}>
-        <div className={styles.paginationLeft}>
-          <span className={styles.paginationLabel}>Rows per page</span>
+      <div className="paginationBar">
+        <div className="paginationLeft">
+          <span className="paginationLabel">Rows per page</span>
+
           <select
-            className={styles.paginationSelect}
+            className="paginationSelect"
             value={pageSize}
             onChange={(e) => handleRowPerPageChange(Number(e.target.value))}
           >
@@ -226,26 +223,26 @@ export default function ShrineList({
           </select>
         </div>
 
-        <div className={styles.paginationRight}>
-          <span className={styles.paginationRange}>
+        <div className="paginationRight">
+          <span className="paginationRange">
             Showing {showingLow}–{showingHigh} of {totalItems}
           </span>
 
-          <div className={styles.pageControls}>
+          <div className="pageControls">
             <button
               type="button"
-              className={styles.pageButton}
+              className="pageButton"
               onClick={() => setPageNumber((p) => p - 1)}
-              disabled={pageNumber == 1}
+              disabled={pageNumber === 1}
             >
               &lt;
             </button>
 
-            <div className={styles.pageNumber}>{pageNumber}</div>
+            <div className="pageNumber">{pageNumber}</div>
 
             <button
               type="button"
-              className={styles.pageButton}
+              className="pageButton"
               onClick={() => setPageNumber((p) => p + 1)}
               disabled={pageNumber * pageSize >= totalItems}
             >

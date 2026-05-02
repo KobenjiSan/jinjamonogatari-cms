@@ -519,3 +519,82 @@ input:disabled {
   background: var(--color-bg-subtle);
   flex-shrink: 0;
 }
+
+/* ---------- PAGINATION ---------- */
+
+.paginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  min-height: 48px;
+  padding: 0 var(--space-lg);
+  border: var(--border-width) solid var(--color-border);
+  border-top: none;
+  background: var(--color-bg-surface);
+  font-size: var(--font-sm);
+}
+
+.paginationLeft,
+.paginationRight {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.paginationLabel,
+.paginationRange {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.paginationSelect {
+  min-width: 72px;
+  height: 32px;
+  padding: 0 var(--space-sm);
+  border: var(--border-width) solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  color: var(--color-text-primary);
+  font-size: var(--font-sm);
+  outline: none;
+}
+
+.paginationSelect:focus {
+  border-color: var(--color-text-primary);
+}
+
+.pageControls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.pageButton,
+.pageNumber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-surface);
+  font-size: var(--font-sm);
+  color: var(--color-text-primary);
+}
+
+.pageButton {
+  cursor: pointer;
+  transition:
+    background var(--transition-fast),
+    border-color var(--transition-fast);
+}
+
+.pageButton:hover {
+  background: var(--color-gray-100);
+}
+
+.pageNumber {
+  font-weight: var(--font-weight-semibold);
+}

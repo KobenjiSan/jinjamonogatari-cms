@@ -81,13 +81,13 @@ export default function UsersList({
           gridTemplateColumns: ".25fr 1.5fr .5fr 1fr 1fr .5fr auto",
         }}
       >
-        <div className={`headerCell ${styles.idCol}`}>ID</div>
-        <div className={`headerCell ${styles.identityCol}`}>Identity</div>
-        <div className={`headerCell ${styles.roleCol}`}>Role</div>
-        <div className={`headerCell ${styles.createdCol}`}>Created / Updated</div>
-        <div className={`headerCell ${styles.lastLoginCol}`}>Last Login</div>
-        <div className={`headerCell ${styles.numSavedCol}`}># Saved</div>
-        <div className={`headerCell ${styles.actionsCol}`}>Actions</div>
+        <div className="headerCell">ID</div>
+        <div className="headerCell">Identity</div>
+        <div className="headerCell">Role</div>
+        <div className="headerCell">Created / Updated</div>
+        <div className="headerCell">Last Login</div>
+        <div className="headerCell"># Saved</div>
+        <div className="headerCell">Actions</div>
 
         {loading ? (
           <div className="rowGroup">
@@ -104,63 +104,56 @@ export default function UsersList({
         ) : (
           users.map((u) => (
             <div key={u.userId} className="rowGroup">
-              <div className={`bodyCell ${styles.idCol}`}>
-                <div className="listStackSm">
-                  <p className="metaText">{u.userId}</p>
-                </div>
+              <div className="bodyCell">
+                <p className="metaText">{u.userId}</p>
               </div>
 
-              <div className={`bodyCell ${styles.identityCol}`}>
+              <div className="bodyCell">
                 <div className="listStackSm">
                   <p className="primaryText">{u.username || "-"}</p>
                   <p className="metaText">{u.email || "-"}</p>
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.roleCol}`}>
+              <div className="bodyCell">
                 <div className={styles.statusArea}>
                   <span className="pill">{u.roleName || "-"}</span>
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.createdCol}`}>
+              <div className="bodyCell">
                 <div className="listStackSm">
                   <p className="metaText">
-                    Created:{" "}
-                    {formatDateTime(u.createdAt)}
+                    Created: {formatDateTime(u.createdAt)}
                   </p>
                   <p className="metaText">
-                    Updated:{" "}
-                    {formatDateTime(u.updatedAt)}
+                    Updated: {formatDateTime(u.updatedAt)}
                   </p>
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.lastLoginCol}`}>
-                <div className="timeBlock">
-                  <p className="primaryText">{formatDateTime(u.lastLoginAt)}</p>
-                </div>
+              <div className="bodyCell">
+                <p className="primaryText">{formatDateTime(u.lastLoginAt)}</p>
               </div>
 
-              <div className={`bodyCell ${styles.numSavedCol}`}>
-                <div className="listStackSm">
-                  <p className="primaryText">{u.savedShrineCount ?? 0}</p>
-                </div>
+              <div className="bodyCell">
+                <p className="primaryText">{u.savedShrineCount ?? 0}</p>
               </div>
 
-              <div className={`bodyCell ${styles.actionsCol}`}>
+              <div className="bodyCell">
                 <div className={styles.actionGroup}>
-                <button
+                  <button
                     type="button"
-                    disabled={user?.userId == u.userId}
+                    disabled={user?.userId === u.userId}
                     className="btn btn-outline"
                     onClick={() => onEdit(u)}
                   >
                     Edit Role
                   </button>
+
                   <button
                     type="button"
-                    disabled={isDeleting || user?.userId == u.userId}
+                    disabled={isDeleting || user?.userId === u.userId}
                     className="btn btn-outline-danger"
                     onClick={() => onRemove(u)}
                   >
@@ -173,11 +166,12 @@ export default function UsersList({
         )}
       </div>
 
-      <div className={styles.paginationBar}>
-        <div className={styles.paginationLeft}>
-          <span className={styles.paginationLabel}>Rows per page</span>
+      <div className="paginationBar">
+        <div className="paginationLeft">
+          <span className="paginationLabel">Rows per page</span>
+
           <select
-            className={styles.paginationSelect}
+            className="paginationSelect"
             value={pageSize}
             onChange={(e) => handleRowPerPageChange(Number(e.target.value))}
           >
@@ -188,26 +182,26 @@ export default function UsersList({
           </select>
         </div>
 
-        <div className={styles.paginationRight}>
-          <span className={styles.paginationRange}>
+        <div className="paginationRight">
+          <span className="paginationRange">
             Showing {showingLow}–{showingHigh} of {totalItems}
           </span>
 
-          <div className={styles.pageControls}>
+          <div className="pageControls">
             <button
               type="button"
-              className={styles.pageButton}
+              className="pageButton"
               onClick={() => setPageNumber((p) => p - 1)}
               disabled={pageNumber === 1}
             >
               &lt;
             </button>
 
-            <div className={styles.pageNumber}>{pageNumber}</div>
+            <div className="pageNumber">{pageNumber}</div>
 
             <button
               type="button"
-              className={styles.pageButton}
+              className="pageButton"
               onClick={() => setPageNumber((p) => p + 1)}
               disabled={pageNumber * pageSize >= totalItems}
             >

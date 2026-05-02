@@ -2,18 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./EtiquetteList.module.css";
 import toast from "react-hot-toast";
 import { getTopicsList, type EtiquetteTopic } from "../../etiquetteApi";
-
-function formatDateTime(dateString?: string | null) {
-  if (!dateString) return "-";
-
-  return new Date(dateString).toLocaleString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  });
-}
+import { FaStar } from "react-icons/fa6";
 
 type EtiquetteListProps = {
   onEdit: (Etiquette: EtiquetteTopic) => void;
@@ -58,12 +47,12 @@ export default function EtiquetteList({
           gridTemplateColumns: ".25fr 1fr .5fr .5fr .75fr auto",
         }}
       >
-        <div className={`headerCell ${styles.idCol}`}>ID</div>
-        <div className={`headerCell ${styles.titleEn}`}>Title</div>
-        <div className={`headerCell ${styles.titleJp}`}>Status</div>
-        <div className={`headerCell ${styles.createdCol}`}>At a glance</div>
-        <div className={`headerCell ${styles.updatedCol}`}>Created / Updated</div>
-        <div className={`headerCell ${styles.actionsCol}`}>Actions</div>
+        <div className="headerCell">ID</div>
+        <div className="headerCell">Title</div>
+        <div className="headerCell">Status</div>
+        <div className="headerCell">At a glance</div>
+        <div className="headerCell">Created / Updated</div>
+        <div className="headerCell">Actions</div>
 
         {loading ? (
           <div className="rowGroup">
@@ -80,45 +69,49 @@ export default function EtiquetteList({
         ) : (
           topics.map((t) => (
             <div key={t.topicId} className="rowGroup">
-              <div className={`bodyCell ${styles.idCol}`}>
-                <div className="listStackSm">
-                  <p className="metaText">{t.showAsHighlight ? "!!" : ""}</p>
+              <div className="bodyCell">
+                <div className={styles.idStack}>
                   <p className="metaText">{t.topicId}</p>
+                  {t.showAsHighlight && (
+                    <span className={styles.highlightPill} title="Shown as Highlight"><FaStar /></span>
+                  )}
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.titleEn}`}>
-                <div className="listStackSm">
-                  <p className="primaryText">{t.titleLong}</p>
-                </div>
+              <div className="bodyCell">
+                <p className="primaryText">{t.titleLong}</p>
               </div>
 
-              <div className={`bodyCell ${styles.titleJp}`}>
-                <div className="listStackSm">
-                  <p className="primaryText">{t.status || "-"}</p>
-                </div>
+              <div className="bodyCell">
+                <span className="pill">{t.status || "-"}</span>
               </div>
 
-              <div className={`bodyCell ${styles.createdCol}`}>
+              <div className="bodyCell">
+                <span
+                  className={
+                    t.showInGlance ? styles.validPill : styles.errorPill
+                  }
+                >
+                  {t.showInGlance ? "True" : "False"}
+                </span>
+              </div>
+
+              <div className="bodyCell">
                 <div className="listStackSm">
                   <p className="metaText">
-                    <span className="primaryText">{t.showInGlance ? "true" : "false"}</span>
+                    Created:{" "}
+                    {t.createdAt ? new Date(t.createdAt).toLocaleString() : "-"}
+                  </p>
+                  <p className="metaText">
+                    Updated:{" "}
+                    {t.updatedAt ? new Date(t.updatedAt).toLocaleString() : "-"}
                   </p>
                 </div>
               </div>
 
-              <div className={`bodyCell ${styles.createdCol}`}>
-                <div className="listStackSm">
-                  <p className="metaText">
-                    {formatDateTime(t.createdAt)}
-                    {formatDateTime(t.updatedAt)}
-                  </p>
-                </div>
-              </div>
-
-              <div className={`bodyCell ${styles.actionsCol}`}>
+              <div className="bodyCell">
                 <div className={styles.actionGroup}>
-                <button
+                  <button
                     type="button"
                     className="btn btn-outline"
                     onClick={() => onEdit(t)}
