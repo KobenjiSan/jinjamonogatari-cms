@@ -39,9 +39,23 @@ export async function apiFetch<T>(
     const method = options.method?.toUpperCase() ?? "GET";
     const isWriteRequest = ["POST", "PUT", "PATCH", "DELETE"].includes(method);
 
+    const authAllowedPaths = [
+        "/api/users/login/cms",
+        "/api/users/me",
+        "/api/users/logout",
+    ];
+
+    const isAuthAllowedRequest = authAllowedPaths.some(authPath =>
+        path.toLowerCase().startsWith(authPath)
+    );
+
     const role = getRoleFromToken(token);
 
-    if (role?.toLowerCase() === "demo" && isWriteRequest) {
+    if (
+        role?.toLowerCase() === "demo" &&
+        isWriteRequest &&
+        !isAuthAllowedRequest
+    ) {
         throw {
             status: 403,
             message: "Unauthorized: Demo Mode",
