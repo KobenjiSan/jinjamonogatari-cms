@@ -39,6 +39,13 @@ export default function LoginPage() {
 
   return (
     <div className={styles.authPage}>
+      <div className={`${styles.demoCard}`}>
+        <h3>Demo Access</h3>
+        <p className="text-sm">
+          Use <b>Username: demo</b> and <b>Password: demo</b> to explore the CMS as an Editor.<br/>
+          You can test buttons, forms, and workflows, but demo changes are blocked and will not be saved.
+        </p>
+      </div>
       <div className={styles.authContent}>
         <div className={styles.authTitleGroup}>
           <h1 className={styles.authTitle}>JinjaMonogatari</h1>

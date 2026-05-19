@@ -18,7 +18,7 @@ export default function ShrineEditorPage() {
   const [pageRefresh, setPageRefresh] = useState(0);
 
   useEffect(() => {
-    const isEditor = user?.role === "Editor";
+    const isEditor = user?.role === "Editor" || "Demo";
     const isAdmin = user?.role === "Admin";
     if (isEditor) {
       setIsReadOnly(shrineStatus === "review" || shrineStatus === "published");

@@ -5,6 +5,29 @@
   padding: var(--space-xl);
 }
 
+.demoCard{
+  position: fixed;
+  top: var(--space-lg);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  z-index: 10;
+  text-align: center;
+  background: #f8fafc;
+  border: 1px solid #c4c8ccb2;
+  border-radius: var(--radius-xs);
+  padding: var(--space-sm);
+  color: #2f3947;
+  box-shadow: var(--shadow-sm);
+}
+
+@media (max-width: 600px) {
+  .demoCard {
+    top: var(--space-md);
+    width: calc(100vw - var(--space-lg));
+  }
+}
+
 .authContent {
   width: 100%;
   max-width: 420px;

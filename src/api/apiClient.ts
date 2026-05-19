@@ -33,8 +33,20 @@ export async function apiFetch<T>(
     path: string,
     options: RequestInit = {}
 ): Promise<T> {
-    // Build header
     const token = getAccessToken();
+    
+    // Block Demo Users from write requests
+    const method = options.method?.toUpperCase() ?? "GET";
+    const isWriteRequest = ["POST", "PUT", "PATCH", "DELETE"].includes(method);
+
+    const role = getRoleFromToken(token);
+
+    if (role?.toLowerCase() === "demo" && isWriteRequest) {
+        throw {
+            status: 403,
+            message: "Unauthorized: Demo Mode",
+        } as ApiError;
+    }
 
     const headers = new Headers(options.headers);
 
@@ -69,4 +81,20 @@ export async function apiFetch<T>(
 
     // Valid response
     return (await res.json()) as T;
+}
+
+function getRoleFromToken(token: string | null): string | null {
+    if (!token) return null;
+
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+
+        return (
+            payload.role ??
+            payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ??
+            null
+        );
+    } catch {
+        return null;
+    }
 }
