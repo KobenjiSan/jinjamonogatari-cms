@@ -1,5 +1,6 @@
 import styles from "../SideMeta.module.css";
 import type { ShrineMetaDto } from "../../../ShrineEditorApi";
+import MetaMap from "./map/MetaMap";
 
 type LocationSectionProps = {
   formData: ShrineMetaDto | null;
@@ -64,6 +65,9 @@ export default function LocationSection({
           />
         </div>
       </div>
+      <MetaMap
+        location={{lat: Number(formData?.lat) ?? 0, lon: Number(formData?.lon) ?? 0}}
+      />
     </div>
   );
 }

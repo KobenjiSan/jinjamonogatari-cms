@@ -1,10 +1,6 @@
 // import styles from "./ShrinesPage.module.css";
 import { useEffect, useState } from "react";
-import Filters, {
-  type ShrineSearchFilters,
-} from "../../features/shrines/components/Filters/Filters";
 import ShrineHeader from "../../features/shrines/components/header/ShrineHeader";
-import ShrineList from "../../features/shrines/components/shrineList/ShrineList";
 import StatusTabs, {
   type StatusTabKey,
 } from "../../features/shrines/components/statusTab/StatusTabs";
@@ -13,16 +9,14 @@ import ImportForm from "../../features/shrines/components/ImportForm/ImportForm"
 import {
   createShrine,
   importShrines,
-  type ShrineListDto,
   type CreateShrineRequest,
   type ImportPreviewItemDto,
   type ImportShrinesRequest,
-  deleteShrine,
 } from "../../features/shrines/shrinesApi";
 import ConfirmationModal from "../../shared/components/confirmationModal/ConfirmationModal";
 import CreateShrineForm from "../../features/shrines/components/CreateShrineForm/CreateShrineForm";
 import toast from "react-hot-toast";
-import { useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 
 export default function ShrinesPage() {
   // Routing logic
@@ -43,9 +37,6 @@ export default function ShrinesPage() {
     }
   }, []);
 
-  const [activeTab, setActiveTab] = useState<StatusTabKey>(routeState?.activeTab ?? "import");
-  const [filters, setFilters] = useState<ShrineSearchFilters | null>(null);
-
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isImportReady, setIsImportReady] = useState(false);
   const [previewList, setPreviewList] = useState<ImportPreviewItemDto[] | null>(
@@ -60,46 +51,6 @@ export default function ShrinesPage() {
     useState<CreateShrineRequest | null>(null);
   const [isConfirmCreateOpen, setIsConfirmCreateOpen] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
-
-  const [shrineToDelete, setShrineToDelete] = useState<ShrineListDto | null>(
-    null,
-  );
-  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
-  const shrineToDeleteName =
-    shrineToDelete?.nameEn || shrineToDelete?.nameJp || "this shrine";
-  const shrineToDeleteTitle = `Delete Shrine ID: ${shrineToDelete?.shrineId}`;
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [onUpdate, setOnUpdate] = useState(0);
-
-  function openDeleteModal(shrine: ShrineListDto) {
-    setShrineToDelete(shrine);
-    setIsConfirmDeleteOpen(true);
-  }
-  async function confirmRemoveShrine() {
-    if (shrineToDelete == null) return;
-    try {
-      setIsDeleting(true);
-      await deleteShrine(shrineToDelete.shrineId);
-      toast.success("Shrine deleted successfully!");
-
-      setIsConfirmDeleteOpen(false);
-      setShrineToDelete(null);
-      setOnUpdate((prev) => prev + 1); // refresh list
-    } catch (error) {
-      console.error(
-        `Failed to delete shrine ${shrineToDelete.shrineId}:`,
-        error,
-      );
-      const err = error as { message?: string };
-      toast.error(err.message ?? "Something went wrong");
-    } finally {
-      setIsDeleting(false);
-    }
-  }
-  function cancelRemoveShrine() {
-    setIsConfirmDeleteOpen(false);
-    setShrineToDelete(null);
-  }
 
   // Importing
   function openImportModal() {
@@ -165,8 +116,6 @@ export default function ShrinesPage() {
       toast.error(err.message ?? "Something went wrong");
     } finally {
       setIsImporting(false);
-      setActiveTab("import");
-      setOnUpdate((prev) => prev + 1); // refresh list
     }
   }
 
@@ -200,8 +149,6 @@ export default function ShrinesPage() {
       toast.success("Shrine created successfully!");
 
       closeCreateModal();
-      setActiveTab("draft");
-      setOnUpdate((prev) => prev + 1); // refresh list
     } catch (error) {
       console.error("Failed to create shrine:", error);
       const err = error as { message?: string };
@@ -217,15 +164,8 @@ export default function ShrinesPage() {
       <div>
         <ShrineHeader onImport={openImportModal} onCreate={openCreateModal} />
         <div className="p-xl">
-          <StatusTabs activeTab={activeTab} onTabChange={setActiveTab} />
-          <Filters onSearch={setFilters} />
-          <ShrineList
-            activeTab={activeTab}
-            filters={filters}
-            onRemove={openDeleteModal}
-            onUpdate={onUpdate}
-            isDeleting={isDeleting}
-          />
+          <StatusTabs />
+          <Outlet />
         </div>
       </div>
 
@@ -308,18 +248,6 @@ export default function ShrinesPage() {
         confirmLabel={isCreating ? "Creating..." : "Create"}
         onConfirm={handleCreate}
         onCancel={cancelCreate}
-      />
-
-      {/* Confirm Delete Modal */}
-      <ConfirmationModal
-        isOpen={isConfirmDeleteOpen}
-        variant="destructive"
-        actionLabel="remove"
-        title={shrineToDeleteTitle}
-        subjectName={shrineToDeleteName}
-        confirmLabel="Remove"
-        onConfirm={confirmRemoveShrine}
-        onCancel={cancelRemoveShrine}
       />
     </>
   );

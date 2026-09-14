@@ -5,7 +5,7 @@
   padding: var(--space-xl);
 }
 
-.demoCard{
+.demoCard {
   position: fixed;
   top: var(--space-lg);
   left: 50%;
@@ -69,4 +69,28 @@
   background: rgba(217, 48, 37, 0.08);
   color: var(--color-issue);
   font-size: var(--font-sm);
+}
+
+.qrSection {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 12px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+  align-items: center;
+  
+  color: #2f3947;
+}
+
+.imageFrame {
+  width: 150px;
+  height: 150px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -42,8 +42,11 @@ export default function LoginPage() {
       <div className={`${styles.demoCard}`}>
         <h3>Demo Access</h3>
         <p className="text-sm">
-          Use <b>Username: demo</b> and <b>Password: demo</b> to explore the CMS as an Editor.<br/>
-          You can test buttons, forms, and workflows, but demo changes are blocked and will not be saved.
+          Use <b>Username: demo</b> and <b>Password: demo</b> to explore the CMS
+          as an Editor.
+          <br />
+          You can test buttons, forms, and workflows, but demo changes are
+          blocked and will not be saved.
         </p>
       </div>
       <div className={styles.authContent}>
@@ -101,11 +104,27 @@ export default function LoginPage() {
               </div>
             )}
 
-            <button className="btn btn-primary" type="submit" disabled={isLoading}>
+            <button
+              className="btn btn-primary"
+              type="submit"
+              disabled={isLoading}
+            >
               {isLoading ? "Signing in..." : "Sign In"}
             </button>
           </form>
         </div>
+      </div>
+
+      {/* QR CODE */}
+      <div className={styles.qrSection}>
+        <span className="text-sm">Click or scan to view the mobile app</span>
+        <a
+          href="https://jinjamonogatari-app.vercel.app/"
+          target="_blank"
+          className={styles.imageFrame}
+        >
+          <img src="JinjaMonogatari-app-QR.png" alt="QR Code" />
+        </a>
       </div>
     </div>
   );

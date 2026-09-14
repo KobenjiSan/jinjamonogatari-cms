@@ -12,6 +12,11 @@ import UsersPage from "./pages/Users/UsersPage";
 import AuditsPage from "./pages/Audits/AuditsPage";
 import TagsPage from "./pages/Tags/TagsPage";
 import { Toaster } from "react-hot-toast";
+import ShrineMapTab from "./pages/Shrines/tabs/MapTab/ShrineMapTab";
+import ShrineImportTab from "./pages/Shrines/tabs/ImportTab/ShrineImportTab";
+import ShrineDraftTab from "./pages/Shrines/tabs/DraftTab/ShrineDraftTab";
+import ShrineReviewTab from "./pages/Shrines/tabs/ReviewTab/ShrineReviewTab";
+import ShrinePublishTab from "./pages/Shrines/tabs/PublishTab/ShrinePublishTab";
 
 export default function App() {
   return (
@@ -34,11 +39,25 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route path="/" element={<DashboardPage />} />
-              <Route path="/shrines" element={<ShrinesPage />} />
+              
+              <Route path="/shrines" element={<ShrinesPage />}>
+                <Route index element={<Navigate to="map" replace />} />
+
+                <Route path="map" element={<ShrineMapTab />} />
+                <Route path="imported" element={<ShrineImportTab />} />
+                <Route path="drafts" element={<ShrineDraftTab />} />
+                <Route path="review" element={<ShrineReviewTab />} />
+                <Route path="published" element={<ShrinePublishTab />} />
+              </Route>
+
               <Route path="/etiquette" element={<EtiquettePage />} />
+              
               <Route path="/kami" element={<KamiPage />} />
+              
               <Route path="/tags" element={<TagsPage />} />
+              
               <Route path="/users" element={<UsersPage />} />
+              
               <Route path="/audits" element={<AuditsPage />} />
             </Route>
 
