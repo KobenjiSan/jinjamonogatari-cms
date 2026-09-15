@@ -1,14 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./MapContainer.module.css";
-import { GeoJSONSource, Map as MapLibreMap,
+import {
+  GeoJSONSource,
+  Map as MapLibreMap,
   Marker,
   NavigationControl,
   Popup,
   setWorkerUrl,
- } from "maplibre-gl";
+} from "maplibre-gl";
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url";
-import { getShrineMapPoints, type ShrineMapPointsCMSDto } from "../mapApi";
+import {
+  getShrineMapPoints,
+  getShrineMapPopup,
+  type ShrineMapPointsCMSDto,
+} from "../mapApi";
 import toast from "react-hot-toast";
+import { createPortal } from "react-dom";
+import MapPopup from "../MapPopup/MapPopup";
+import type { ShrineListDto } from "../../shrines/shrinesApi";
 
 setWorkerUrl(workerUrl);
 
@@ -31,7 +40,7 @@ function toShrineGeoJson(shrines: ShrineMapPointsCMSDto[]) {
   return {
     type: "FeatureCollection" as const, // FeatureCollection is all shrines, 'as const' stops TypeScript from treating "Feat..." as arbitrary string
     features: shrines.map((shrine) => ({
-      types: "Feature" as const,
+      type: "Feature" as const,
       geometry: {
         type: "Point" as const,
         coordinates: [shrine.lon, shrine.lat],
@@ -44,20 +53,20 @@ function toShrineGeoJson(shrines: ShrineMapPointsCMSDto[]) {
   };
 }
 
+// COMPONENT
 export default function MapContainer() {
-  
   // LOAD POINTS FROM API
   const [shrinePoints, setShrinePoints] = useState<ShrineMapPointsCMSDto[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadShrinePoints(){
+    async function loadShrinePoints() {
       setLoading(true);
-      
+
       try {
         const result = await getShrineMapPoints();
         setShrinePoints(result);
-      } catch (error){
+      } catch (error) {
         console.error("Failed to retrieve shrine points", error);
         const err = error as { message?: string };
         toast.error(err.message ?? "Failed to retrieve shrine points");
@@ -69,7 +78,16 @@ export default function MapContainer() {
 
     loadShrinePoints();
   }, []);
-  
+
+  // POPUP MANAGEMENT
+  const [popupState, setPopupState] = useState<{
+    container: HTMLElement;
+    shrine: ShrineListDto;
+  } | null>(null);
+
+  const popupRef = useRef<Popup | null>(null);
+  const popupRequestRef = useRef(0);
+
   // MAP REFERENCES
   const mapContainerRef = useRef<HTMLDivElement | null>(null); // references the HTML <div> containing the map
   const mapRef = useRef<MapLibreMap | null>(null); // MapLibre map reference so React doesn’t create another during rerenders
@@ -93,18 +111,18 @@ export default function MapContainer() {
 
     return () => {
       map.remove();
-      mapRef.current = null
+      mapRef.current = null;
     };
   }, []);
 
   // ADD POINTS TO MAP
   useEffect(() => {
     const map = mapRef.current;
-    if(!map) return;
+    if (!map) return;
 
     const syncShrines = () => {
       const geoJson = toShrineGeoJson(shrinePoints);
-      const existingSource = map.getSource("shrines") as 
+      const existingSource = map.getSource("shrines") as
         | GeoJSONSource
         | undefined;
 
@@ -130,17 +148,64 @@ export default function MapContainer() {
           },
         });
 
-        map.on("click", "shrine-points", (event) => {
+        // MOUSE HOVER
+        map.on("mouseenter", "shrine-points", () => {
+          map.getCanvas().style.cursor = "pointer";
+        });
+
+        map.on("mouseleave", "shrine-points", () => {
+          map.getCanvas().style.cursor = "";
+        });
+
+        // MAP CLICK
+        map.on("click", "shrine-points", async (event) => {
           const feature = event.features?.[0];
-          if (!feature) return;
+          const shrineId = feature?.properties?.shrineId;
 
-          const content = document.createElement("pre");
-          content.textContent = JSON.stringify(feature.properties ?? {}, null, 2);
+          if (shrineId === undefined || shrineId === null) return;
 
-          new Popup()
-            .setLngLat(event.lngLat)
-            .setDOMContent(content)
-            .addTo(map);
+          const requestId = ++popupRequestRef.current;
+
+          popupRef.current?.remove();
+
+          try {
+            const result = await getShrineMapPopup(shrineId);
+
+            const shrine = result.shrineMapPopup;
+
+            // The user clicked another shrine while this was loading.
+            if (requestId !== popupRequestRef.current) return;
+
+            const container = document.createElement("div");
+
+            const popup = new Popup({
+              className: styles.shrinePopup,
+              maxWidth: "350px",
+            })
+              .setLngLat(event.lngLat)
+              .setDOMContent(container)
+              .addTo(map);
+
+            popupRef.current = popup;
+
+            setPopupState({
+              container,
+              shrine,
+            });
+
+            popup.on("close", () => {
+              if (popupRef.current === popup) {
+                popupRef.current = null;
+                setPopupState(null);
+              }
+            });
+          } catch (error) {
+            if (requestId !== popupRequestRef.current) return;
+
+            console.error("Failed to load shrine", error);
+            const err = error as { message?: string };
+            toast.error(err.message ?? "Something went wrong");
+          }
         });
       }
     };
@@ -156,5 +221,15 @@ export default function MapContainer() {
     };
   }, [shrinePoints]);
 
-  return <div ref={mapContainerRef} className={styles.map} />;
+  return (
+    <>
+      <div ref={mapContainerRef} className={styles.map} />
+
+      {popupState &&
+        createPortal(
+          <MapPopup shrine={popupState.shrine} />,
+          popupState.container,
+        )}
+    </>
+  );
 }
