@@ -1,23 +1,28 @@
 .shrinePopup{
+  padding: var(--space-md);
   display: flex;
   flex-direction: column;
-  gap: var(--space-xs);
+  gap: var(--space-sm);
 }
 
 .auditStack {
   display: flex;
   flex-direction: column;
   gap: var(--space-xs);
-  align-items: flex-start;
+  flex: 1;
 }
 
 .auditOk {
   display: inline-flex;
-  align-items: center;
+  align-items: center !important;
+  justify-content: center;
+  min-height: 22px;
   gap: var(--space-xs);
   font-size: var(--font-sm);
   font-weight: var(--font-weight-medium);
+  line-height: 1;
   color: #15803d;
+  flex: 1;
 }
 
 .auditOkIcon {
@@ -43,6 +48,7 @@
 .statusArea {
   display: flex;
   gap: var(--space-xs);
+  flex: 1;
 }
 
 .rejectionPill {
@@ -58,4 +64,17 @@
   display: flex;
   flex-direction: row;
   gap: var(--space-xs);
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--space-sm);
+  padding-bottom: var(--space-sm);
+}
+
+.idHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.fillArea {
+  width: 100%;
 }

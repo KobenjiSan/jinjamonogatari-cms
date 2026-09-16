@@ -11,8 +11,6 @@ function formatUpdatedAt(dateString?: string | null) {
     year: "numeric",
     month: "short",
     day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
   });
 }
 
@@ -25,19 +23,22 @@ export default function MapPopup({ shrine }: MapPopupProps) {
 
   return (
     <div className={styles.shrinePopup}>
-      <p className="metaText">ID: {shrine.shrineId}</p>
+      <div className={styles.idHeader}>
+        <p className="text-muted text-xs">
+          Updated {formatUpdatedAt(shrine.updatedAt)}
+        </p>
+        <p className="text-muted text-xs">ID: {shrine.shrineId}</p>
+      </div>
 
       <div>
         <p className="primaryText">{shrine.nameEn ?? "Unnamed Shrine"}</p>
         <p className="metaText">{shrine.nameJp ?? "-"}</p>
       </div>
 
-      <p className="primaryText">{shrine.city ?? "-"}</p>
-
       <div className={styles.statusAuditArea}>
         <div className={styles.statusArea}>
           <span
-            className={`pill status-wrapper ${
+            className={`pill status-wrapper ${styles.fillArea} ${
               shrine.recentlyRejected ? styles.rejectionPill : ""
             }`}
             title={shrine.recentlyRejected ? "Recently Rejected" : ""}
@@ -49,10 +50,10 @@ export default function MapPopup({ shrine }: MapPopupProps) {
 
         <div>
           {(shrine.errorCount ?? 0) === 0 ? (
-            <div className={styles.auditOk}>
+            <span className={styles.auditOk}>
               <FiCheckCircle className={styles.auditOkIcon} />
               <span>No Blockers</span>
-            </div>
+            </span>
           ) : (
             <div className={styles.auditStack}>
               {shrine.errorCount > 0 && (
@@ -66,14 +67,12 @@ export default function MapPopup({ shrine }: MapPopupProps) {
         </div>
       </div>
 
-      <p className="metaText">{formatUpdatedAt(shrine.updatedAt)}</p>
-
       <button
         type="button"
         className="btn btn-outline"
         onClick={() => navigate(`/shrines/${shrine.shrineId}`)}
       >
-        Open
+        View shrine
       </button>
     </div>
   );

@@ -18,10 +18,12 @@ import toast from "react-hot-toast";
 import { createPortal } from "react-dom";
 import MapPopup from "../MapPopup/MapPopup";
 import type { ShrineListDto } from "../../shrines/shrinesApi";
+import MapLegend from "../MapLegend/MapLegend";
+import type { ShrineMapSearchFilters } from "../../shrines/components/Filters/MapFilters";
 
 setWorkerUrl(workerUrl);
 
-const DEFAULT_CENTER = { lat: 34.7, lng: 135.5 };
+const DEFAULT_CENTER = { lat: 35.0116, lng: 135.7681 };
 
 // MAP KEY
 const MAPTILER_KEY = import.meta.env.VITE_PUBLIC_MAPTILER_KEY;
@@ -53,8 +55,12 @@ function toShrineGeoJson(shrines: ShrineMapPointsCMSDto[]) {
   };
 }
 
+type MapContainerProps = {
+  searchValues: ShrineMapSearchFilters | null;
+};
+
 // COMPONENT
-export default function MapContainer() {
+export default function MapContainer({ searchValues }: MapContainerProps) {
   // LOAD POINTS FROM API
   const [shrinePoints, setShrinePoints] = useState<ShrineMapPointsCMSDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,7 +106,7 @@ export default function MapContainer() {
       container: mapContainerRef.current,
       style: `${mapTilerStyleUrl()}?key=${mapTilerKey}`,
       center: DEFAULT_CENTER,
-      zoom: 10,
+      zoom: 12,
     });
 
     map.addControl(new NavigationControl(), "top-right");
@@ -142,7 +148,19 @@ export default function MapContainer() {
           source: "shrines",
           paint: {
             "circle-radius": 7,
-            "circle-color": "#c83232",
+            "circle-color": [
+              "match",
+              ["get", "status"],
+              "import",
+              "#64748B",
+              "draft",
+              "#2563EB",
+              "review",
+              "#D97706",
+              "published",
+              "#16A34A",
+              "red",
+            ],
             "circle-stroke-color": "#ffffff",
             "circle-stroke-width": 2,
           },
@@ -181,6 +199,7 @@ export default function MapContainer() {
             const popup = new Popup({
               className: styles.shrinePopup,
               maxWidth: "350px",
+              closeButton: false,
             })
               .setLngLat(event.lngLat)
               .setDOMContent(container)
@@ -221,9 +240,29 @@ export default function MapContainer() {
     };
   }, [shrinePoints]);
 
+  // FILTERING
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !map.getLayer("shrine-points")) return;
+
+    if (searchValues?.status == null || searchValues.status === '') {
+      map.setFilter("shrine-points", null);
+    } else {
+      map.setFilter("shrine-points", [
+        "==",
+        ["get", "status"],
+        `${searchValues?.status}`,
+      ]);
+    }
+  }, [searchValues?.status]);
+
   return (
     <>
-      <div ref={mapContainerRef} className={styles.map} />
+      <div ref={mapContainerRef} className={styles.map}>
+        <div className={`${styles.legend} card-no-padding`}>
+          <MapLegend />
+        </div>
+      </div>
 
       {popupState &&
         createPortal(

@@ -18,11 +18,14 @@ export default function ShrineEditorPage() {
   const [pageRefresh, setPageRefresh] = useState(0);
 
   useEffect(() => {
-    const isEditor = user?.role === "Editor" || "Demo";
+    const isEditor = user?.role === "Editor";
+    const isDemo = user?.role === "Demo"
     const isAdmin = user?.role === "Admin";
-    if (isEditor) {
+    if (isEditor || isDemo) {
+      console.log(`current role ${user!.role}`)
       setIsReadOnly(shrineStatus === "review" || shrineStatus === "published");
     } else if (isAdmin) {
+      console.log(`correct role ${user?.role}`)
       setIsReadOnly(shrineStatus === "published");
     }
   }, [user, shrineStatus]);
