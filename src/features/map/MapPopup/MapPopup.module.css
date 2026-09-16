@@ -1,0 +1,80 @@
+.shrinePopup{
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.auditStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  flex: 1;
+}
+
+.auditOk {
+  display: inline-flex;
+  align-items: center !important;
+  justify-content: center;
+  min-height: 22px;
+  gap: var(--space-xs);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1;
+  color: #15803d;
+  flex: 1;
+}
+
+.auditOkIcon {
+  font-size: 16px;
+}
+
+.errorPill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 0 var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  background: rgba(220, 38, 38, 0.12);
+  color: #dc2626;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+}
+
+.statusArea {
+  display: flex;
+  gap: var(--space-xs);
+  flex: 1;
+}
+
+.rejectionPill {
+  background: rgba(220, 38, 38, 0.12) !important;
+  color: #dc2626 !important;
+  border: 1px solid rgba(220, 38, 38, 0.25) !important;
+  font-weight: var(--font-weight-bold) !important;
+  cursor: default;
+  gap: var(--space-xs);
+}
+
+.statusAuditArea {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-xs);
+  align-items: center;
+  justify-content: center;
+  padding-top: var(--space-sm);
+  padding-bottom: var(--space-sm);
+}
+
+.idHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.fillArea {
+  width: 100%;
+}

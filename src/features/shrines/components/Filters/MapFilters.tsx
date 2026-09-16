@@ -1,44 +1,67 @@
 import { useState } from "react";
 import styles from "./Filters.module.css";
 
-export type ShrineSearchFilters = {
+export type ShrineMapSearchFilters = {
   searchValue: string | null;
+  region: string | null;
   prefecture: string | null;
-  sorting: string | null;
+  status: string | null;
 }
 
-type FiltersProps = {
-  onSearch: (query: ShrineSearchFilters) => void;
+type MapFiltersProps = {
+  onSearch: (query: ShrineMapSearchFilters) => void;
 };
 
-export default function Filters({onSearch}: FiltersProps) {
+export default function MapFilters({onSearch}: MapFiltersProps) {
   const [searchValue, setSearchValue] = useState("");
+  const [region, setRegion] = useState("");
   const [prefecture, setPrefecture] = useState("");
-  const [sorting, setSorting] = useState("");
+  const [status, setStatus] = useState("");
 
   function handleSearch(){
     onSearch({
       searchValue: searchValue.trim(),
+      region: region.trim(),
       prefecture: prefecture.trim(),
-      sorting: sorting.trim(),
+      status: status.trim(),
     });
   }
 
   return (
-    <div className={styles.filters}>
+    <div className={styles.mapFilters}>
       <input 
         type="text" 
         placeholder="Search shrines..." 
         className="input" 
         value={searchValue} 
         onChange={(e) => setSearchValue(e.target.value)}
+        disabled={true}
       />
 
       <select
-        id="location-filter"
+        id="region-filter"
+        className="select"
+        value={region}
+        onChange={(e) => setRegion(e.target.value)}
+        disabled={true}
+      >
+        <option value="">Region</option>
+        <option value="hokkaido">Hokkaido (北海道)</option>
+        <option value="tohoku">Tohoku (東北地方)</option>
+        <option value="kanto">Kanto (関東地方)</option>
+        <option value="chubu">Chubu (中部地方)</option>
+        <option value="kansai">Kansai (関西地方)</option>
+        <option value="chugoku">Chugoku (中国地方)</option>
+        <option value="shikoku">Shikoku (四国地方)</option>
+        <option value="kyushu-okinawa">Kyushu & Okinawa (九州・沖縄地方)</option>
+      </select>
+
+      <select
+        id="prefecture-filter"
         className="select"
         value={prefecture}
         onChange={(e) => setPrefecture(e.target.value)}
+        disabled={true}
       >
         <option value="">Prefecture</option>
         <option value="hokkaido">Hokkaido (北海道)</option>
@@ -91,16 +114,16 @@ export default function Filters({onSearch}: FiltersProps) {
       </select>
 
       <select
-        id="sorting-filter"
+        id="status-filter"
         className="select"
-        value={sorting}
-        onChange={(e) => setSorting(e.target.value)}
+        value={status}
+        onChange={(e) => setStatus(e.target.value)}
       >
-        <option value="">Filters</option>
-        <option value="titleAsc">Title (A → Z)</option>
-        <option value="titleDesc">Title (Z → A)</option>
-        <option value="updatedDesc">Last Updated (Newest First)</option>
-        <option value="updatedAsc">Last Updated (Oldest First)</option>
+        <option value="">Status</option>
+        <option value="import">Imported</option>
+        <option value="draft">Drafts</option>
+        <option value="review">Under Review</option>
+        <option value="published">Published</option>
       </select>
 
       <button className="btn btn-outline" onClick={handleSearch}>Apply</button>

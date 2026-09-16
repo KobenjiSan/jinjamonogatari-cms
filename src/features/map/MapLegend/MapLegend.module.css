@@ -1,0 +1,19 @@
+.container {
+  padding: var(--space-md);
+  width: fit-content;
+  height: fit-content;
+}
+
+.list li{
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.dot{
+  width: 10px;
+  height: 10px;
+  border-radius: 100%;
+  background-color: black;
+}

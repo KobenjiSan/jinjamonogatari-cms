@@ -1,0 +1,16 @@
+.map {
+  width: 100%;
+  height: 600px;
+}
+
+.shrinePopup :global(.maplibregl-popup-content) {
+  padding: 0;
+}
+
+.legend {
+  position: relative;
+  top: var(--space-sm);
+  left: var(--space-sm);
+  width: fit-content;
+  z-index: 1;
+}

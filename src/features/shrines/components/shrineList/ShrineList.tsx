@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { getShrineList, type ShrineListDto } from "../../shrinesApi";
 import styles from "./ShrineList.module.css";
 import { useNavigate } from "react-router-dom";
-import type { StatusTabKey } from "../statusTab/StatusTabs";
 import { useAuth } from "../../../../auth/AuthProvider";
 import type { ShrineSearchFilters } from "../Filters/Filters";
 import { FiCheckCircle } from "react-icons/fi";
 import { FaCircleInfo } from "react-icons/fa6";
 import toast from "react-hot-toast";
+import type { StatusKey } from "../TabPage/TabPage";
 
 function formatUpdatedAt(dateString?: string | null) {
   if (!dateString) return "-";
@@ -27,7 +27,7 @@ export type ShrineListPagination = {
 };
 
 type ShrineListProps = {
-  activeTab: StatusTabKey;
+  activeTab: StatusKey;
   filters: ShrineSearchFilters | null;
   onRemove: (shrine: ShrineListDto) => void;
   onUpdate: number;
