@@ -3,7 +3,6 @@ import styles from "./MapContainer.module.css";
 import {
   GeoJSONSource,
   Map as MapLibreMap,
-  Marker,
   NavigationControl,
   Popup,
   setWorkerUrl,
@@ -63,11 +62,11 @@ type MapContainerProps = {
 export default function MapContainer({ searchValues }: MapContainerProps) {
   // LOAD POINTS FROM API
   const [shrinePoints, setShrinePoints] = useState<ShrineMapPointsCMSDto[]>([]);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadShrinePoints() {
-      setLoading(true);
+      // setLoading(true);
 
       try {
         const result = await getShrineMapPoints();
@@ -78,7 +77,7 @@ export default function MapContainer({ searchValues }: MapContainerProps) {
         toast.error(err.message ?? "Failed to retrieve shrine points");
         setShrinePoints([]);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     }
 
