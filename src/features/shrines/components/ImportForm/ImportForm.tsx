@@ -2,6 +2,7 @@ import { useState } from "react";
 import styles from "./ImportForm.module.css";
 import { getImportPreview, type ImportPreviewItemDto } from "../../shrinesApi";
 import toast from "react-hot-toast";
+import ImportMap from "./map/ImportMap";
 
 type ImportFormProps = {
   onHasPreview: (items: ImportPreviewItemDto[]) => void;
@@ -9,6 +10,7 @@ type ImportFormProps = {
 
 export default function ImportForm({onHasPreview}: ImportFormProps) {
   const [location, setLocation] = useState("");
+  const [centerPoint, setCenterPoint] = useState<{lat: number, lon: number}>();
   const [searchSize, setSearchSize] = useState("");
   const [maxResults, setMaxResults] = useState("");
 
@@ -91,7 +93,9 @@ export default function ImportForm({onHasPreview}: ImportFormProps) {
           </p>
         </div>
 
-        <div className={styles.formGroup}>
+        <ImportMap onHasCenterPoint={setCenterPoint} searchSize={searchSize} />
+
+        {/* <div className={styles.formGroup}>
           <label htmlFor="import-location" className="label">
             Location
           </label>
@@ -103,6 +107,12 @@ export default function ImportForm({onHasPreview}: ImportFormProps) {
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
+        </div> */}
+
+        <div>
+          <p>Center:</p>
+          <p>lat: {centerPoint?.lat}</p>
+          <p>lon: {centerPoint?.lon}</p>
         </div>
 
         <div className={styles.formRow}>
