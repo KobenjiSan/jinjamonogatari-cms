@@ -12,6 +12,7 @@
   "dependencies": {
     "@fontsource/noto-sans": "^5.2.10",
     "@fontsource/noto-sans-jp": "^5.2.9",
+    "@turf/circle": "^7.4.0",
     "maplibre-gl": "^6.9.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

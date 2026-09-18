@@ -171,7 +171,7 @@ export default function ShrinesPage() {
 
       <BaseModal
         isOpen={isImportModalOpen}
-        title={"Import Shrines"}
+        title={"Find and Import Shrines"}
         onClose={closeImportModal}
         footer={
           <>
@@ -190,7 +190,7 @@ export default function ShrinesPage() {
               onClick={confirmImport}
               disabled={!isImportReady || isImporting}
             >
-              Import
+              Import Found Shrines
             </button>
           </>
         }
