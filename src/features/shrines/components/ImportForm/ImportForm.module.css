@@ -101,7 +101,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: var(--space-md);
-  margin-top: var(--space-lg);
 }
 
 .previewCard {
@@ -135,4 +134,20 @@
 .previewCard strong {
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
+}
+
+.searchInstructions {
+  padding: var(--space-xs) var(--space-sm);
+  border-left: 3px solid var(--color-link);
+  background: var(--color-bg-app);
+  /* font-size: var(--font-xs); */
+}
+
+.searchInstructions strong {
+  color: var(--color-text-secondary);
+}
+
+.searchInstructions ol {
+  margin: 4px 0 6px;
+  padding-left: 20px;
 }

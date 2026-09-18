@@ -14,6 +14,7 @@ import {
 } from "../../../../map/mapApi";
 import toast from "react-hot-toast";
 import circle from "@turf/circle";
+import type { ImportPreviewItemDto } from "../../../shrinesApi";
 
 setWorkerUrl(workerUrl);
 
@@ -32,7 +33,7 @@ function mapTilerStyleUrl() {
 // CONVERT SHRINES TO GeoJSON
 function toShrineGeoJson(shrines: ShrineMapPointsCMSDto[]) {
   return {
-    type: "FeatureCollection" as const, // FeatureCollection is all shrines, 'as const' stops TypeScript from treating "Feat..." as arbitrary string
+    type: "FeatureCollection" as const,
     features: shrines.map((shrine) => ({
       type: "Feature" as const,
       geometry: {
@@ -47,17 +48,51 @@ function toShrineGeoJson(shrines: ShrineMapPointsCMSDto[]) {
   };
 }
 
+// CONVERT PREVIEW TO GeoJSON
+function toPreviewGeoJson(previews: ImportPreviewItemDto[]) {
+  return {
+    type: "FeatureCollection" as const,
+    features: previews.flatMap((preview) => {
+      if (preview.lon == null || preview.lat == null) return []; // catch and skip nullable coords
+
+      return [
+        {
+          type: "Feature" as const,
+          geometry: {
+            type: "Point" as const,
+            coordinates: [preview.lon, preview.lat],
+          },
+          properties: {
+            name: preview.name,
+            importId: preview.importId,
+            sourceType: preview.sourceType,
+            osmId: preview.osmId,
+          },
+        },
+      ];
+    }),
+  };
+}
+
 type ImportMapProps = {
   onHasCenterPoint: (center: { lat: number; lon: number }) => void;
   searchSize: string;
+  previewItems: ImportPreviewItemDto[];
 };
 
 export default function ImportMap({
   onHasCenterPoint,
   searchSize,
+  previewItems,
 }: ImportMapProps) {
   // LOAD POINTS FROM API
   const [shrinePoints, setShrinePoints] = useState<ShrineMapPointsCMSDto[]>([]);
+  const [previewPoints, setPreviewPoints] = useState<ImportPreviewItemDto[]>(
+    [],
+  );
+  useEffect(() => {
+    setPreviewPoints(previewItems);
+  }, [previewItems]);
   // const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -206,7 +241,7 @@ export default function ImportMap({
     };
   }, [searchSize, centerPoint]);
 
-  // ADD POINTS TO MAP
+  // ADD OG SHRINES TO MAP
   useEffect(() => {
     const map = mapRef.current;
     if (!map) return;
@@ -233,10 +268,10 @@ export default function ImportMap({
           source: "shrines",
           paint: {
             "circle-radius": 6,
-            "circle-color": "blue",
+            "circle-color": "#6B7280",
             "circle-stroke-color": "#ffffff",
             "circle-stroke-width": 1,
-            "circle-opacity": 0.4,
+            "circle-opacity": 0.5,
           },
         });
       }
@@ -253,5 +288,89 @@ export default function ImportMap({
     };
   }, [shrinePoints]);
 
-  return <div ref={mapContainerRef} className={styles.map} />;
+  // ADD IMPORTED TO MAP
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const syncPreview = () => {
+      const geoJson = toPreviewGeoJson(previewPoints);
+      const existingSource = map.getSource("previews") as
+        | GeoJSONSource
+        | undefined;
+
+      if (existingSource) {
+        existingSource.setData(geoJson);
+      } else {
+        map.addSource("previews", {
+          type: "geojson",
+          data: geoJson,
+        });
+      }
+
+      if (!map.getLayer("preview-points")) {
+        map.addLayer({
+          id: "preview-points",
+          type: "circle",
+          source: "previews",
+          paint: {
+            "circle-radius": 6,
+            "circle-color": "red",
+            "circle-stroke-color": "#ffffff",
+            "circle-stroke-width": 1,
+          },
+        });
+      }
+    };
+
+    if (map.isStyleLoaded()) {
+      syncPreview();
+    } else {
+      map.once("load", syncPreview);
+    }
+
+    return () => {
+      map.off("load", syncPreview);
+    };
+  }, [previewPoints]);
+
+  return (
+    <div ref={mapContainerRef} className={styles.map}>
+      <div className={`${styles.legendCard} card-no-padding`}>
+        <div className={styles.container}>
+          <p className="metaText">Legend</p>
+          <div className={styles.list}>
+            <ul>
+              <li>
+                <div
+                  className={styles.dot}
+                  style={{ backgroundColor: "#6B7280" }}
+                ></div>
+                <p className="primaryText">Existing Shrines</p>
+              </li>
+              <li>
+                <div
+                  className={styles.dot}
+                  style={{ backgroundColor: "red" }}
+                ></div>
+                <p className="primaryText">Found Shrines</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className={`${styles.centerPointCard} card-no-padding`}>
+        <div className={styles.container}>
+          <p className="metaText">Center</p>
+          <p className="primaryText">
+            lat: {centerPoint ? Number(centerPoint.lat.toFixed(5)) : "-"}
+          </p>
+          <p className="primaryText">
+            lon: {centerPoint ? Number(centerPoint?.lng.toFixed(5)) : "-"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
