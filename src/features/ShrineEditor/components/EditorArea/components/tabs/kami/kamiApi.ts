@@ -13,7 +13,29 @@ import type {
 } from "../../../../../../shared/images/helpers/ImageApi.types"
 import type { KamiSearchFilters } from "../../../../../../shared/kami/components/KamiFilters/KamiFilters";
 import type { KamiListPagination } from "../../../../../../shared/kami/components/KamiList/KamiList";
-import type { EntityAuditDto } from "../status/statusApi";
+import type { AuditSeverity, EntityAuditDto } from "../status/statusApi";
+
+// Move to entity file later
+export type EntityAuditCMSDto = {
+  entityAuditId: number;
+  errorCount: number;
+  warningCount: number;
+  canSubmit: boolean;
+  createdAt: string;
+  updatedAt: string;
+  issues: EntityAuditIssueDto[];
+}
+
+export type EntityAuditIssueDto = {
+  entityAuditIssueId: number;
+  entityAuditId: number;
+  severity: AuditSeverity;
+  field: string;
+  message: string;
+  relatedItemType: string | null;
+  relatedItemId: number | null;
+  createdAt: string;
+};
 
 // GET Kami by shrine
 export type KamiCMSDto = {
@@ -28,6 +50,7 @@ export type KamiCMSDto = {
   image: ImageCMSDto | null;
   citations: CitationCMSDto[];
   audit: EntityAuditDto | null;
+  entityAudit: EntityAuditCMSDto | null;
 };
 
 

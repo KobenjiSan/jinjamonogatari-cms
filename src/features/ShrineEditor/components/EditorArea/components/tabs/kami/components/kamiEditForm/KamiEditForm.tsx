@@ -10,6 +10,7 @@ import KamiDetailsSection from "./components/KamiDetailsSection";
 import KamiReadOnlySection from "./components/KamiReadOnlySection";
 import CitationSection from "../../../../../../../../shared/citations/citationSection/CitationSection";
 import ImageSection from "../../../../../../../../shared/images/imageSection/ImageSection";
+import KamiReviewSection from "./components/KamiReviewSection/KamiReviewSection";
 
 type KamiEditFormProps = {
   shrineId?: number;
@@ -174,6 +175,11 @@ export default function KamiEditForm({
         Note: Changes here will update this Kami for all shrines it is linked
         with.
       </p>
+
+      <KamiReviewSection entityAudit={kami?.entityAudit} />
+
+      <div className={styles.divider} />
+
       <KamiDetailsSection
         values={{
           nameEn: formValues.nameEn,
@@ -182,6 +188,7 @@ export default function KamiEditForm({
         }}
         onFieldChange={handleFieldChange}
         isReadOnly={isReadOnly}
+        entityAudit={kami?.entityAudit}
       />
 
       <div className={styles.divider} />
@@ -211,6 +218,7 @@ export default function KamiEditForm({
         }}
         onRemoveImage={handleRemoveImage}
         isReadOnly={isReadOnly}
+        entityAudit={kami?.entityAudit}
       />
 
       <div className={styles.divider} />
@@ -223,6 +231,7 @@ export default function KamiEditForm({
         onRemoveCitation={removeCitation}
         onReuseCitation={reuseCitation}
         isReadOnly={isReadOnly}
+        entityAudit={kami?.entityAudit}
       />
 
       <div className={styles.divider} />

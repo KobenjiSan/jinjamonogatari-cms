@@ -70,3 +70,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}

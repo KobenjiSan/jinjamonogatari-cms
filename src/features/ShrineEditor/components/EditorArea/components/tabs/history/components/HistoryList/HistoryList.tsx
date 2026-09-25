@@ -128,20 +128,20 @@ export default function HistoryList({
 
               <div className="bodyCell">
                 {isClean ? (
-                  <div className={styles.auditOk}>
-                    <FiCheckCircle className={styles.auditOkIcon} />
+                  <div className="auditOk">
+                    <FiCheckCircle className="auditOkIcon" />
                     <span>All good</span>
                   </div>
                 ) : (
-                  <div className={styles.auditStack}>
+                  <div className="auditStack">
                     {errorCount > 0 && (
-                      <span className={styles.errorPill}>
+                      <span className="errorPill">
                         {errorCount} error{errorCount !== 1 ? "s" : ""}
                       </span>
                     )}
 
                     {warningCount > 0 && (
-                      <span className={styles.warningPill}>
+                      <span className="warningPill">
                         {warningCount} warning
                         {warningCount !== 1 ? "s" : ""}
                       </span>

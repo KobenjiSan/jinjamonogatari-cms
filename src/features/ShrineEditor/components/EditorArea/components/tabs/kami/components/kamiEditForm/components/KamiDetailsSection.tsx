@@ -1,3 +1,4 @@
+import type { EntityAuditCMSDto } from "../../../kamiApi";
 import styles from "../KamiEditForm.module.css";
 import type { KamiFormValues } from "../helpers/KamiForm.types";
 
@@ -8,13 +9,27 @@ type KamiDetailsSectionProps = {
     value: string,
   ) => void;
   isReadOnly: boolean;
+  entityAudit: EntityAuditCMSDto | null | undefined;
 };
 
 export default function KamiDetailsSection({
   values,
   onFieldChange,
   isReadOnly,
+  entityAudit,
 }: KamiDetailsSectionProps) {
+  const nameEnError = !values.nameEn.trim()
+    ? entityAudit?.issues?.find(
+        (issue) => issue.field === "NameEn" && issue.severity === "Error"
+      )?.message ?? "English name is required."
+    : null;
+
+  const nameJpError = !values.nameJp.trim()
+    ? entityAudit?.issues?.find(
+        (issue) => issue.field === "NameJp" && issue.severity === "Error"
+      )?.message ?? "Japanese name is required."
+    : null;
+
   return (
     <div className={styles.section}>
       <p className={styles.sectionTitle}>Kami Details</p>
@@ -25,13 +40,20 @@ export default function KamiDetailsSection({
         </label>
         <input
           id="kami-name-en"
-          className="input"
+          className={`input${nameEnError ? " input-error" : ""}`}
           type="text"
           value={values.nameEn}
           onChange={(e) => onFieldChange("nameEn", e.target.value)}
           placeholder="Enter English name"
           disabled={isReadOnly}
+          aria-invalid={Boolean(nameEnError)}
+          aria-describedby={nameEnError ? "kami-name-en-error" : undefined}
         />
+        {nameEnError && (
+          <p id="kami-name-en-error" className="field-error">
+            {nameEnError}
+          </p>
+        )}
       </div>
 
       <div className="form-group">
@@ -40,13 +62,20 @@ export default function KamiDetailsSection({
         </label>
         <input
           id="kami-name-jp"
-          className="input"
+          className={`input${nameJpError ? " input-error" : ""}`}
           type="text"
           value={values.nameJp}
           onChange={(e) => onFieldChange("nameJp", e.target.value)}
           placeholder="Enter Japanese name"
           disabled={isReadOnly}
+          aria-invalid={Boolean(nameJpError)}
+          aria-describedby={nameJpError ? "kami-name-jp-error" : undefined}
         />
+        {nameJpError && (
+          <p id="kami-name-jp-error" className="field-error">
+            {nameJpError}
+          </p>
+        )}
       </div>
 
       <div className="form-group">
