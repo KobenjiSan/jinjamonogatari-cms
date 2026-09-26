@@ -19,6 +19,7 @@ type KamiEditorProps = {
   isReadOnly: boolean;
   onClose: () => void;
   onReload: () => void;
+  onSave: (kami: KamiCMSDto) => void;
 };
 
 export default function KamiEditor({
@@ -28,6 +29,7 @@ export default function KamiEditor({
   isReadOnly,
   onClose,
   onReload,
+  onSave,
 }: KamiEditorProps) {
   const [kamiDraft, setKamiDraft] = useState<KamiFormValues>(emptyKamiForm);
   const isDraftEmpty =
@@ -39,10 +41,12 @@ export default function KamiEditor({
   async function confirmSaveKami() {
     if (isReadOnly) return;
 
+    var updatedKami;
+
     try {
       if (selectedKami) {
         const formData = buildUpdateKamiFormData(kamiDraft, selectedKami, selectedFile);
-        await updateKami(selectedKami.kamiId, formData);
+        updatedKami = await updateKami(selectedKami.kamiId, formData);
         toast.success("Kami updated successfully!");
       } else {
         if (shrineId) {
@@ -58,7 +62,16 @@ export default function KamiEditor({
 
       onReload();
       saveConfirm.close();
-      onClose();
+      if(selectedKami) {
+        if(updatedKami) onSave(updatedKami);
+        else {
+          console.error("Failed to return updatedKami item");
+          toast.error("An issue occured reloading kami after save");
+          onClose();
+        }
+      } else {
+        onClose();
+      }
       setSelectedFile(null);
     } catch (error) {
       console.error("Failed to save kami:", error);

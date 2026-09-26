@@ -124,8 +124,8 @@ export type UpdateKamiRequest = {
 export async function updateKami(
   kamiId: number,
   formData: FormData
-): Promise<void> {
-  await apiFetch<void>(`/api/kami/${kamiId}`, {
+): Promise<KamiCMSDto> {
+  return await apiFetch<KamiCMSDto>(`/api/kami/${kamiId}`, {
     method: "PUT",
     body: formData,
   });

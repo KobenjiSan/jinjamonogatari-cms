@@ -166,6 +166,7 @@ export default function KamiTab({ shrineId, isReadOnly }: KamiTabProps) {
         isReadOnly={isReadOnly}
         onClose={closeKamiModal}
         onReload={reloadKamiList}
+        onSave={openEditKamiModal}
       />
 
       {/* Search Global Kami Modal */}
