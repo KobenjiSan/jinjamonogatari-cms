@@ -19,15 +19,21 @@ export default function KamiDetailsSection({
   entityAudit,
 }: KamiDetailsSectionProps) {
   const nameEnError = !values.nameEn.trim()
-    ? entityAudit?.issues?.find(
-        (issue) => issue.field === "NameEn" && issue.severity === "Error"
-      )?.message ?? "English name is required."
+    ? (entityAudit?.issues?.find(
+        (issue) => issue.field === "NameEn" && issue.severity === "Error",
+      )?.message ?? "English name is required.")
     : null;
 
   const nameJpError = !values.nameJp.trim()
-    ? entityAudit?.issues?.find(
-        (issue) => issue.field === "NameJp" && issue.severity === "Error"
-      )?.message ?? "Japanese name is required."
+    ? (entityAudit?.issues?.find(
+        (issue) => issue.field === "NameJp" && issue.severity === "Error",
+      )?.message ?? "Japanese name is required.")
+    : null;
+
+  const descError = !values.desc.trim()
+    ? (entityAudit?.issues?.find(
+        (issue) => issue.field === "Desc" && issue.severity === "Error",
+      )?.message ?? "Description is required.")
     : null;
 
   return (
@@ -84,13 +90,20 @@ export default function KamiDetailsSection({
         </label>
         <textarea
           id="kami-desc"
-          className={`input ${styles.textarea}`}
+          className={`input ${descError ? " input-error" : ""} ${styles.textarea}`}
           rows={6}
           value={values.desc}
           onChange={(e) => onFieldChange("desc", e.target.value)}
           placeholder="Enter kami description"
           disabled={isReadOnly}
+          aria-invalid={Boolean(descError)}
+          aria-describedby={descError ? "kami-desc-error" : undefined}
         />
+        {descError && (
+          <p id="kami-desc-error" className="field-error">
+            {descError}
+          </p>
+        )}
       </div>
     </div>
   );

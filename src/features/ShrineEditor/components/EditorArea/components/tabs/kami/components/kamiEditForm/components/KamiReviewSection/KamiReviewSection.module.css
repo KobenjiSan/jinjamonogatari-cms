@@ -150,3 +150,19 @@
   font-size: var(--font-xs);
   font-weight: var(--font-weight-semibold);
 }
+
+.rejectionGroup {
+  display: flex;
+  justify-content: end;
+}
+
+.header{
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+}
+
+.checkErrorIcon {
+  color: var(--color-white);
+  font-size: 20px;
+}

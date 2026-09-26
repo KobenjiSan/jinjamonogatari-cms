@@ -171,12 +171,11 @@ export default function KamiEditForm({
 
   return (
     <div className={styles.wrapper}>
-      <p className={styles.note}>
-        Note: Changes here will update this Kami for all shrines it is linked
-        with.
-      </p>
-
-      <KamiReviewSection entityAudit={kami?.entityAudit} />
+      <KamiReviewSection
+        entityAudit={kami?.entityAudit}
+        kamiStatus={kami?.status || "Draft"}
+        kamiId={kami!.kamiId}
+      />
 
       <div className={styles.divider} />
 

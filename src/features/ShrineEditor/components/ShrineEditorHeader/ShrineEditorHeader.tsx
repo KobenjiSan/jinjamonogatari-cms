@@ -6,7 +6,7 @@ import BaseModal from "../../../../shared/components/modal/BaseModal";
 import ReviewHistory from "../ReviewHistory/ReviewHistory";
 import {
   getShrineReviewHistory,
-  type ShrineReviewDto,
+  type ReviewDto,
 } from "../../ShrineEditorApi";
 import { BiSolidErrorAlt } from "react-icons/bi";
 import toast from "react-hot-toast";
@@ -22,7 +22,7 @@ export default function ShrineEditorHeader({
 }: ShrineEditorHeaderProps) {
   const navigate = useNavigate();
 
-  const [reviewHistory, setReviewHistory] = useState<ShrineReviewDto[]>([]);
+  const [reviewHistory, setReviewHistory] = useState<ReviewDto[]>([]);
   const [isReviewHistoryOpen, setIsReviewHistoryOpen] = useState(false);
   const [isRecentlyRejected, setIsRecentlyRejected] = useState(false);
 
@@ -93,7 +93,7 @@ export default function ShrineEditorHeader({
           </>
         }
       >
-        <ReviewHistory reviewHistory={reviewHistory} />
+        <ReviewHistory reviewHistory={reviewHistory} entityType="Shrine" />
       </BaseModal>
     </>
   );

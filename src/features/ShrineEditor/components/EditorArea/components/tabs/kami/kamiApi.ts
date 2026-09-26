@@ -13,6 +13,7 @@ import type {
 } from "../../../../../../shared/images/helpers/ImageApi.types"
 import type { KamiSearchFilters } from "../../../../../../shared/kami/components/KamiFilters/KamiFilters";
 import type { KamiListPagination } from "../../../../../../shared/kami/components/KamiList/KamiList";
+import type { ReviewDto } from "../../../../../ShrineEditorApi";
 import type { AuditSeverity, EntityAuditDto } from "../status/statusApi";
 
 // Move to entity file later
@@ -157,4 +158,38 @@ export async function deleteKami(kamiId: number): Promise<void> {
   await apiFetch<void>(`/api/kami/${kamiId}`, {
     method: "DELETE",
   });
+}
+
+// SUBMIT REVIEW KAMI
+export async function submitKamiForReview(kamiId: number): Promise<void> {
+  await apiFetch<void>(`/api/kami/${kamiId}/review/submit`, {
+    method: "POST"
+  });
+}
+
+// REJECT KAMI
+export type RejectKamiRequest = {
+  message: string;
+};
+
+export async function rejectKamiReview(kamiId: number, body: RejectKamiRequest): Promise<void> {
+  await apiFetch<void>(`/api/kami/${kamiId}/review/reject`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+}
+
+// PUBLISH KAMI
+export async function publishKamiReview(kamiId: number): Promise<void> {
+  await apiFetch<void>(`/api/kami/${kamiId}/review/publish`, {
+    method: "POST"
+  });
+}
+
+// GET KAMI REVIEW HISTORY
+export async function getKamiReviewHistory(kamiId: number): Promise<ReviewDto[]>{
+    return await apiFetch<ReviewDto[]>(`/api/kami/${kamiId}/review/history`);
 }

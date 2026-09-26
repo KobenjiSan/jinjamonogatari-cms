@@ -1,8 +1,9 @@
-import type { ShrineReviewDto } from "../../ShrineEditorApi";
+import type { ReviewDto } from "../../ShrineEditorApi";
 import styles from "./ReviewHistory.module.css";
 
 type ReviewHistoryProps = {
-  reviewHistory: ShrineReviewDto[];
+  reviewHistory: ReviewDto[];
+  entityType: string;
 };
 
 function formatDecision(decision: string) {
@@ -21,13 +22,13 @@ function formatDate(value: string | null | undefined) {
   });
 }
 
-export default function ReviewHistory({ reviewHistory }: ReviewHistoryProps) {
+export default function ReviewHistory({ reviewHistory, entityType }: ReviewHistoryProps) {
   if (!reviewHistory || reviewHistory.length === 0) {
     return (
       <div className="card">
         <p className="primaryText">No review history to show.</p>
         <p className="metaText">
-          This shrine does not have any recorded review actions yet.
+          This {entityType} does not have any recorded review actions yet.
         </p>
       </div>
     );
