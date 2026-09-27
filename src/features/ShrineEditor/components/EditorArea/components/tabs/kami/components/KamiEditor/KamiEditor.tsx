@@ -7,7 +7,9 @@ import {
   publishKamiReview,
   rejectKamiReview,
   submitKamiForReview,
+  unpublishKami,
   updateKami,
+  withdrawDraftKami,
   type KamiCMSDto,
 } from "../../kamiApi";
 import KamiEditForm from "../kamiEditForm/KamiEditForm";
@@ -151,6 +153,7 @@ export default function KamiEditor({
       console.error("Failed to submit Kami for review:", error);
       const err = error as { message?: string };
       toast.error(err.message ?? "Something went wrong");
+      setIsConfirmSubmitReviewOpen(false);
     } finally {
       setIsSubmittingForReview(false);
     }
@@ -184,6 +187,7 @@ export default function KamiEditor({
       console.error("Failed to publish Kami:", error);
       const err = error as { message?: string };
       toast.error(err.message ?? "Something went wrong");
+      setIsConfirmPublishOpen(false);
     } finally {
       setIsPublishingKami(false);
     }
@@ -217,6 +221,7 @@ export default function KamiEditor({
       console.error("Failed to Reject Kami:", error);
       const err = error as { message?: string };
       toast.error(err.message ?? "Something went wrong");
+      setIsConfirmRejectOpen(false);
     } finally {
       setIsRejectingKami(false);
     }
@@ -234,6 +239,74 @@ export default function KamiEditor({
     setIsConfirmRejectOpen(false);
   }
 
+  // WITHDRAW KAMI
+  const [isWithdrawingKami, setIsWithdrawingKami] = useState(false);
+  const [isConfirmWithdrawOpen, setIsConfirmWithdrawOpen] = useState(false);
+
+  async function handleWithdrawKami() {
+    try {
+      setIsWithdrawingKami(true);
+
+      await withdrawDraftKami(selectedKami!.kamiId);
+      toast.success("Kami withdrawn successfully!");
+
+      setIsConfirmWithdrawOpen(false);
+    } catch (error) {
+      console.error("Failed to withdraw Kami:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
+      setIsConfirmWithdrawOpen(false);
+    } finally {
+      setIsWithdrawingKami(false);
+    }
+
+    onReload();
+    onClose();
+    setSelectedFile(null);
+  }
+
+  function openWithdrawKami() {
+    setIsConfirmWithdrawOpen(true);
+  }
+
+  function cancelWithdrawKami() {
+    setIsConfirmWithdrawOpen(false);
+  }
+
+  // UNPUBLISH KAMI
+  const [isUnpublishingKami, setIsUnpublishingKami] = useState(false);
+  const [isConfirmUnpublishOpen, setIsConfirmUnpublishOpen] = useState(false);
+
+  async function handleUnpublishKami(unpublishMessage: string) {
+    try {
+      setIsUnpublishingKami(true);
+
+      await unpublishKami(selectedKami!.kamiId, { message: unpublishMessage });
+      toast.success("Kami Unpublished successfully!");
+
+      setIsConfirmUnpublishOpen(false);
+    } catch (error) {
+      console.error("Failed to unpublish Kami:", error);
+      const err = error as { message?: string };
+      toast.error(err.message ?? "Something went wrong");
+      setIsConfirmUnpublishOpen(false);
+    } finally {
+      setIsUnpublishingKami(false);
+    }
+
+    onReload();
+    onClose();
+    setSelectedFile(null);
+  }
+
+  function openUnpublishKami() {
+    setIsConfirmUnpublishOpen(true);
+  }
+
+  function cancelUnpublishKami() {
+    setIsConfirmUnpublishOpen(false);
+  }
+
   return (
     <>
       <BaseModal
@@ -242,60 +315,96 @@ export default function KamiEditor({
         onClose={close}
         footer={
           <div className={styles.modalFooter}>
-            {selectedKami?.status === "Review" && !isReadOnlyStatus ? (
-              <div className={styles.reviewButtons}>
-                <p className="text-muted">
-                  Review:
-                </p>
-                <button
-                  type="button"
-                  className="btn btn-outline-danger"
-                  aria-label="reject"
-                  onClick={openRejectKami}
-                  disabled={isRejectingKami}
-                  title="Submit Rejection"
-                >
-                  <span>Reject</span>
-                </button>
-
-                <button
-                  type="button"
-                  className="btn btn-outline"
-                  aria-label="Publish"
-                  onClick={openPublishKami}
-                  disabled={
-                    !selectedKami.entityAudit?.canSubmit || isPublishingKami
-                  }
-                  title={
-                    selectedKami.entityAudit?.canSubmit
-                      ? "Kami is ready for publishing"
-                      : "Resolve all errors before publishing"
-                  }
-                >
-                  <span>Publish</span>
-                </button>
-              </div>
-            ) : (
+            {selectedKami?.status === "Review" ? (
               <>
-                {canViewSubmitForReview && (
+                {user?.role === "Admin" ? (
                   <div className={styles.reviewButtons}>
-                    <p className="text-muted">
-                      Audit: 
-                    </p>
+                    <p className="text-muted">Review:</p>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger"
+                      aria-label="reject"
+                      onClick={openRejectKami}
+                      disabled={isRejectingKami}
+                      title="Submit Rejection"
+                    >
+                      <span>Reject</span>
+                    </button>
+
                     <button
                       type="button"
                       className="btn btn-outline"
-                      onClick={openSubmitReview}
-                      disabled={!canSubmitForReview || isSubmittingForReview}
+                      aria-label="Publish"
+                      onClick={openPublishKami}
+                      disabled={
+                        !selectedKami.entityAudit?.canSubmit || isPublishingKami
+                      }
                       title={
                         selectedKami.entityAudit?.canSubmit
-                          ? "Kami is ready to submit"
-                          : "Resolve all errors before submitting"
+                          ? "Kami is ready for publishing"
+                          : "Resolve all errors before publishing"
                       }
                     >
-                      Submit for Review
+                      <span>Publish</span>
                     </button>
                   </div>
+                ) : (
+                  <div className={styles.reviewButtons}>
+                    <p className="text-muted">Review:</p>
+                    <button
+                      type="button"
+                      className="btn btn-outline-danger"
+                      onClick={openWithdrawKami}
+                      disabled={isWithdrawingKami}
+                      title="Withdraw Review"
+                    >
+                      Withdraw
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {selectedKami?.status === "Published" ? (
+                  <>
+                    {user?.role === "Admin" && (
+                      <div className={styles.reviewButtons}>
+                        <p className="text-muted">Audit:</p>
+                        <button
+                          type="button"
+                          className="btn btn-outline-danger"
+                          onClick={openUnpublishKami}
+                          disabled={isUnpublishingKami}
+                          title="Unpublish"
+                        >
+                          Unpublish
+                        </button>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    {canViewSubmitForReview && (
+                      <div className={styles.reviewButtons}>
+                        <p className="text-muted">Audit:</p>
+                        <button
+                          type="button"
+                          className="btn btn-outline"
+                          onClick={openSubmitReview}
+                          disabled={
+                            !canSubmitForReview || isSubmittingForReview
+                          }
+                          title={
+                            selectedKami.entityAudit?.canSubmit
+                              ? "Kami is ready to submit"
+                              : "Resolve all errors before submitting"
+                          }
+                        >
+                          Submit for Review
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </>
             )}
@@ -372,6 +481,30 @@ export default function KamiEditor({
         onConfirm={() => {}}
         onCancel={cancelRejectKami}
         onInputValue={(message) => handleRejectKami(message)}
+      />
+
+      {/* Confirm Withdraw Modal */}
+      <ConfirmationModal
+        isOpen={isConfirmWithdrawOpen}
+        variant="destructive"
+        actionLabel={`Withdraw Kami #${String(selectedKami?.kamiId)}`}
+        message={`Are you sure you want to withdraw Kami #${String(selectedKami?.kamiId)} from review? This will allow you to edit this Kami again, but will require resubmission for review`}
+        confirmLabel="Withdraw"
+        onConfirm={handleWithdrawKami}
+        onCancel={cancelWithdrawKami}
+      />
+
+      {/* Confirm Unpublish Modal */}
+      <ConfirmationModal
+        isOpen={isConfirmUnpublishOpen}
+        variant="destructive"
+        actionLabel={`Unpublish Kami #${String(selectedKami?.kamiId)}`}
+        confirmLabel="Unpublish"
+        message={`You must provide a message with reason(s) for unpublishing.`}
+        hasInputOption={true}
+        onConfirm={() => {}}
+        onCancel={cancelUnpublishKami}
+        onInputValue={(message) => handleUnpublishKami(message)}
       />
     </>
   );

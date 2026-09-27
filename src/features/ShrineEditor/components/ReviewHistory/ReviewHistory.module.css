@@ -33,6 +33,18 @@
   border: var(--border-width) solid var(--color-border);
 }
 
+.decisionWithdrawn {
+  background: rgba(82, 107, 138, 0.12);
+  color: #526b8a;
+  border: var(--border-width) solid rgba(82, 107, 138, 0.25);
+}
+
+.decisionUnpublished {
+  background: rgba(243, 160, 18, 0.134);
+  color: #a36a08;
+  border: var(--border-width) solid rgba(134, 86, 4, 0.25);
+}
+
 .latestPill {
   display: inline-flex;
   align-items: center;
@@ -111,4 +123,23 @@
   line-height: 1.45;
   white-space: pre-wrap;
   word-break: break-word;
+}
+
+.commentBlockUnpublish {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm);
+  background: rgba(243, 160, 18, 0.134);
+  border: var(--border-width) solid rgba(134, 86, 4, 0.25);
+  border-radius: var(--radius-sm);
+}
+
+.commentLabelUnpublish {
+  margin: 0;
+  font-size: var(--font-xs);
+  font-weight: var(--font-weight-semibold);
+  color: #a36a08;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }

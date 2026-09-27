@@ -3,12 +3,12 @@ import styles from "./KamiReviewSection.module.css";
 import {
   getKamiReviewHistory,
   type EntityAuditCMSDto,
+  type EntityReviewDto,
 } from "../../../../kamiApi";
 import { FiCheckCircle, FiXCircle } from "react-icons/fi";
 import { BiSolidErrorAlt } from "react-icons/bi";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
-import type { ReviewDto } from "../../../../../../../../../ShrineEditorApi";
 import BaseModal from "../../../../../../../../../../../shared/components/modal/BaseModal";
 import ReviewHistory from "../../../../../../../../ReviewHistory/ReviewHistory";
 
@@ -23,7 +23,7 @@ export default function KamiReviewSection({
   kamiStatus,
   kamiId,
 }: KamiReviewSectionProps) {
-  const [reviewHistory, setReviewHistory] = useState<ReviewDto[]>([]);
+  const [reviewHistory, setReviewHistory] = useState<EntityReviewDto[]>([]);
   const [isReviewHistoryOpen, setIsReviewHistoryOpen] = useState(false);
   const [isRecentlyRejected, setIsRecentlyRejected] = useState(false);
 

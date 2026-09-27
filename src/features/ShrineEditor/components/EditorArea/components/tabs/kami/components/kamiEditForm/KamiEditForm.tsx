@@ -171,11 +171,13 @@ export default function KamiEditForm({
 
   return (
     <div className={styles.wrapper}>
-      <KamiReviewSection
-        entityAudit={kami?.entityAudit}
-        kamiStatus={kami?.status || "Draft"}
-        kamiId={kami!.kamiId}
-      />
+      {kami && (
+        <KamiReviewSection
+          entityAudit={kami?.entityAudit}
+          kamiStatus={kami?.status || "Draft"}
+          kamiId={kami?.kamiId}
+        />
+      )}
 
       <div className={styles.divider} />
 
