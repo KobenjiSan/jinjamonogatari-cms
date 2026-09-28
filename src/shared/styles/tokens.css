@@ -14,19 +14,19 @@
   /* ---------- THEME COLORS ---------- */
 
   /* === BACKGROUNDS === */
-  --color-bg-app: #eceff1; 
+  --color-bg-app: #f0f0ee;
   --color-bg-surface: #ffffff;
-  --color-bg-subtle: #f4f6f8;
-  --color-bg-hover: #e9edf1;
+  --color-bg-subtle: #f8f8f6;
+  --color-bg-hover: #eeeeeb;
 
   /* === TEXT === */
-  --color-text-primary: #1a1d21;
-  --color-text-secondary: #5f6b76;
-  --color-text-muted: #8a939b;
+  --color-text-primary: #1d1d1c;
+  --color-text-secondary: #666563;
+  --color-text-muted: #8d8c89;
 
   /* === BORDERS === */
-  --color-border: #d2d8de;
-  --color-border-strong: #c3cbd3;
+  --color-border: #d6d6d3;
+  --color-border-strong: #c5c5c1;
 
   /* === ACCENTS === */
   --color-link: #3a7bd5;
@@ -38,20 +38,20 @@
   --color-overlay-dark: rgba(0, 0, 0, 0.45);
 
   /* === BUTTONS === */
-  --color-button-primary-bg: #1a1d21;
+  --color-button-primary-bg: #1d1d1c;
   --color-button-primary-text: #ffffff;
 
   /* === INPUTS === */
   --color-input-editable-bg: #ffffff;
-  --color-input-readonly-bg: #eef1f4;
+  --color-input-readonly-bg: #f1f1ee;
 
   /* === TAGS === */
-  --color-tag-bg: #e1e6eb;
-  --color-tag-text: #1a1d21;
+  --color-tag-bg: #e7e7e3;
+  --color-tag-text: #1d1d1c;
 
   /* === ICONS === */
-  --color-icon: #2c3136;
-  --color-header-actions: #6b737c;
+  --color-icon: #2d2d2c;
+  --color-header-actions: #6e6d6b;
 
   /* ---------- SPACING ---------- */
 
@@ -64,7 +64,6 @@
   --space-3xl: 40px;
 
   /* ---------- RADIUS ---------- */
-  /* tighter than mobile app */
 
   --radius-xs: 2px;
   --radius-sm: 4px;
@@ -107,4 +106,46 @@
 
   --transition-fast: 120ms ease;
   --transition-base: 180ms ease;
+
+  /* ---------- AUDITS ---------- */
+
+  --color-audit-error: #dc2626;
+  --color-audit-error-bg: rgba(220, 38, 38, 0.12);
+  --color-audit-error-border: rgba(220, 38, 38, 0.25);
+
+  --color-audit-warning: #ca8a04;
+  --color-audit-warning-bg: rgba(234, 179, 8, 0.14);
+  --color-audit-warning-border: rgba(234, 179, 8, 0.3);
+
+  --color-audit-ok: #15803d;
+
+  /* ---------- STATUS COLORS ---------- */
+
+  --color-imported: #64748b;
+  --color-imported-bg: rgba(100, 116, 139, 0.12);
+  --color-imported-border: rgba(100, 116, 139, 0.24);
+
+  --color-draft: #2563eb;
+  --color-draft-bg: rgba(37, 99, 235, 0.12);
+  --color-draft-border: rgba(37, 99, 235, 0.24);
+
+  --color-review: #d97706;
+  --color-review-bg: rgba(217, 119, 6, 0.12);
+  --color-review-border: rgba(217, 119, 6, 0.24);
+
+  --color-published: #16a34a;
+  --color-published-bg: rgba(22, 163, 74, 0.12);
+  --color-published-border: rgba(22, 163, 74, 0.24);
+
+  --color-rejected: #c94a4a;
+  --color-rejected-bg: rgba(201, 74, 74, 0.12);
+  --color-rejected-border: rgba(201, 74, 74, 0.24);
+
+  --color-withdrawn: #526b8a;
+  --color-withdrawn-bg: rgba(82, 107, 138, 0.12);
+  --color-withdrawn-border: rgba(82, 107, 138, 0.24);
+
+  --color-unpublished: #8f6929;
+  --color-unpublished-bg: rgba(143, 105, 41, 0.12);
+  --color-unpublished-border: rgba(143, 105, 41, 0.24);
 }

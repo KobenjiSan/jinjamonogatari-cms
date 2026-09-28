@@ -130,7 +130,7 @@ export async function updateShrineNotes(
 }
 
 // GET /api/shrines/cms/{shrineId}/review/history
-export type ShrineReviewDto = {
+export type ReviewDto = {
   reviewId: number;
   submittedAt: string;
   submittedBy: number;
@@ -142,6 +142,6 @@ export type ShrineReviewDto = {
   decision: string;
 };
 
-export async function getShrineReviewHistory(shrineId: number): Promise<ShrineReviewDto[]>{
-    return await apiFetch<ShrineReviewDto[]>(`/api/shrines/cms/${shrineId}/review/history`);
+export async function getShrineReviewHistory(shrineId: number): Promise<ReviewDto[]>{
+    return await apiFetch<ReviewDto[]>(`/api/shrines/cms/${shrineId}/review/history`);
 }

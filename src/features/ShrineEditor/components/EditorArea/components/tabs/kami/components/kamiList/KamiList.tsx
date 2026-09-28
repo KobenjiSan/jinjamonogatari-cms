@@ -5,8 +5,11 @@ import {
   type KamiCMSDto,
 } from "../../kamiApi";
 import styles from "./KamiList.module.css";
-import { FiCheckCircle } from "react-icons/fi";
+import { FiCheckCircle, FiMinusCircle } from "react-icons/fi";
 import toast from "react-hot-toast";
+import { PiWarningBold } from "react-icons/pi";
+import { MdErrorOutline } from "react-icons/md";
+import { FaRegClock } from "react-icons/fa6";
 
 type KamiListProps = {
   id?: number;
@@ -96,15 +99,15 @@ export default function KamiList({
         style={{
           gridTemplateColumns:
             id != null
-              ? "50px 2fr 1fr 2fr 1fr auto"
-              : "50px 2fr 1fr 1.5fr auto",
+              ? "50px 1.25fr 1.25fr 1.5fr 1fr auto"
+              : "50px 2fr 1.25fr 1.5fr auto",
         }}
       >
         <div className="headerCell">ID</div>
         <div className="headerCell">Kami</div>
         <div className="headerCell">Status</div>
-        <div className="headerCell">Created / Updated</div>
-        {id != null && <div className="headerCell">Issues</div>}
+        {id != null && <div className="headerCell">Entity Audit</div>}
+        <div className="headerCell">Last Updated</div>
         <div className="headerCell">Actions</div>
 
         {filteredKami.map((k) => {
@@ -112,6 +115,7 @@ export default function KamiList({
           const errorCount = k.audit?.errorCount ?? 0;
           const warningCount = k.audit?.warningCount ?? 0;
           const isClean = errorCount === 0 && warningCount === 0;
+          const firstIssue = k.entityAudit?.issues?.[0];
 
           return (
             <div
@@ -130,48 +134,93 @@ export default function KamiList({
               </div>
 
               <div className="bodyCell">
-                <div className="listStackSm">
-                  <span className="pill">{k.status ?? "-"}</span>
-                </div>
-              </div>
-
-              <div className="bodyCell">
-                <div className="listStackSm">
-                  <p className="metaText">
-                    Created:{" "}
-                    {k.createdAt ? new Date(k.createdAt).toLocaleString() : "-"}
-                  </p>
-                  <p className="metaText">
-                    Updated:{" "}
-                    {k.updatedAt ? new Date(k.updatedAt).toLocaleString() : "-"}
-                  </p>
+                <div className="auditRow">
+                  <span
+                    className="pill"
+                    style={
+                      k.status
+                        ? {
+                            color: `var(--color-${k.status.toLowerCase()})`,
+                            backgroundColor: `var(--color-${k.status.toLowerCase()}-bg)`,
+                            border: `var(--border-width) solid var(--color-${k.status.toLowerCase()}-border)`,
+                          }
+                        : undefined
+                    }
+                  >
+                    {k.status ?? "-"}
+                  </span>
+                  {k.lastReviewDecision && (
+                    <>
+                      {k.lastReviewDecision == "Rejected" && (
+                        <span className="rejectedPill gap-xs">
+                          <FaRegClock className="reviewIcon" />
+                          Rejected
+                        </span>
+                      )}
+                      {k.lastReviewDecision == "Withdrawn" && (
+                        <span className="withdrawnPill gap-xs">
+                          <FaRegClock className="reviewIcon" />
+                          Withdrawn
+                        </span>
+                      )}
+                      {k.lastReviewDecision == "Unpublished" && (
+                        <span className="unpublishedPill gap-xs">
+                          <FaRegClock className="reviewIcon" />
+                          Unpublished
+                        </span>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
 
               {id != null && (
                 <div className="bodyCell">
-                  {isClean ? (
-                    <div className={styles.auditOk}>
-                      <FiCheckCircle className={styles.auditOkIcon} />
-                      <span>All good</span>
-                    </div>
-                  ) : (
-                    <div className={styles.auditStack}>
-                      {errorCount > 0 && (
-                        <span className={styles.errorPill}>
-                          {errorCount} error{errorCount !== 1 ? "s" : ""}
-                        </span>
-                      )}
+                  {k.entityAudit != null ? (
+                    isClean ? (
+                      <div className="auditOk">
+                        <FiCheckCircle className="auditOkIcon" />
+                        <span>No Issues</span>
+                      </div>
+                    ) : (
+                      <div className="auditStack">
+                        <div className="auditRow">
+                          {errorCount > 0 && (
+                            <span className="auditError">
+                              <MdErrorOutline className="auditOkIcon" />
+                              {errorCount} error{errorCount !== 1 ? "s" : ""}
+                            </span>
+                          )}
 
-                      {warningCount > 0 && (
-                        <span className={styles.warningPill}>
-                          {warningCount} warning{warningCount !== 1 ? "s" : ""}
-                        </span>
-                      )}
-                    </div>
+                          {warningCount > 0 && (
+                            <span className="auditWarning">
+                              <PiWarningBold className="auditOkIcon" />
+                              {warningCount} warning
+                              {warningCount !== 1 ? "s" : ""}
+                            </span>
+                          )}
+                        </div>
+                        {firstIssue && (
+                          <span className="text-muted text-sm">
+                            {firstIssue.message}
+                          </span>
+                        )}
+                      </div>
+                    )
+                  ) : (
+                    <span className="auditNone">
+                      <FiMinusCircle className="auditOkIcon" />
+                      Audit Unavailable
+                    </span>
                   )}
                 </div>
               )}
+
+              <div className="bodyCell">
+                <p className={`metaText ${styles.singleLine}`}>
+                  {k.updatedAt ? new Date(k.updatedAt).toLocaleString() : "-"}
+                </p>
+              </div>
 
               <div className="bodyCell">
                 {id != null ? (

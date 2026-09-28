@@ -63,9 +63,11 @@
 
 .sectionTitle {
   margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
 }
 
 @media (max-width: 900px) {
@@ -76,4 +78,10 @@
   .previewBox {
     height: 220px;
   }
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
 }

@@ -4,6 +4,7 @@ import type { CitationFormValues } from "../helpers/CitationSection.types";
 import styles from "./CitationSection.module.css";
 import { getShrineCitationsDropdownById } from "../../../ShrineEditor/components/EditorArea/components/tabs/citations/citationTabApi";
 import toast from "react-hot-toast";
+import type { EntityAuditCMSDto } from "../../../ShrineEditor/components/EditorArea/components/tabs/kami/kamiApi";
 
 export type CitationSectionProps = {
   shrineId?: number;
@@ -14,6 +15,7 @@ export type CitationSectionProps = {
   onReuseCitation: (citation: CitationFormValues) => void;
   onRemoveCitation: (index: number) => void;
   isReadOnly: boolean;
+  entityAudit?: EntityAuditCMSDto | null | undefined;
 };
 
 export default function CitationSection({
@@ -25,6 +27,7 @@ export default function CitationSection({
   onReuseCitation,
   onRemoveCitation,
   isReadOnly,
+  entityAudit,
 }: CitationSectionProps) {
   const [selectedCitationId, setSelectedCitationId] = useState("");
   const [availableReusableCitations, setAvailableReusableCitations] = useState<
@@ -51,7 +54,7 @@ export default function CitationSection({
 
     getDropdownItems();
   }, [shrineId]);
-  
+
   function truncate(text: string | undefined, max = 45) {
     if (!text) return "";
     return text.length > max ? text.slice(0, max) + "…" : text;
@@ -85,11 +88,24 @@ export default function CitationSection({
 
   const showReuseControls = !isReadOnly && !!shrineId;
 
+  const missingCitationsError =
+    entityAudit?.issues?.find(
+      (issue) =>
+        issue.field === "Citations" &&
+        issue.severity === "Error" &&
+        issue.relatedItemType == null &&
+        issue.relatedItemId == null,
+    )?.message ?? null;
+
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>
-        <p className={styles.sectionTitle}>Citations</p>
-
+        <div className={styles.titleArea}>
+          <p className={styles.sectionTitle}>Citations</p>
+          {missingCitationsError && (
+            <p className="errorPill">{missingCitationsError}</p>
+          )}
+        </div>
         {!isReadOnly && (
           <div className={styles.citationActions}>
             <button
@@ -153,6 +169,7 @@ export default function CitationSection({
                 values={citation}
                 onChange={(next) => onCitationChange(index, next)}
                 isReadOnly={isReadOnly}
+                entityAudit={entityAudit}
               />
             </div>
           ))}
