@@ -118,4 +118,34 @@
   --color-audit-warning-border: rgba(234, 179, 8, 0.3);
 
   --color-audit-ok: #15803d;
+
+  /* ---------- STATUS COLORS ---------- */
+
+  --color-imported: #64748b;
+  --color-imported-bg: rgba(100, 116, 139, 0.12);
+  --color-imported-border: rgba(100, 116, 139, 0.24);
+
+  --color-draft: #2563eb;
+  --color-draft-bg: rgba(37, 99, 235, 0.12);
+  --color-draft-border: rgba(37, 99, 235, 0.24);
+
+  --color-review: #d97706;
+  --color-review-bg: rgba(217, 119, 6, 0.12);
+  --color-review-border: rgba(217, 119, 6, 0.24);
+
+  --color-published: #16a34a;
+  --color-published-bg: rgba(22, 163, 74, 0.12);
+  --color-published-border: rgba(22, 163, 74, 0.24);
+
+  --color-rejected: #c94a4a;
+  --color-rejected-bg: rgba(201, 74, 74, 0.12);
+  --color-rejected-border: rgba(201, 74, 74, 0.24);
+
+  --color-withdrawn: #526b8a;
+  --color-withdrawn-bg: rgba(82, 107, 138, 0.12);
+  --color-withdrawn-border: rgba(82, 107, 138, 0.24);
+
+  --color-unpublished: #8f6929;
+  --color-unpublished-bg: rgba(143, 105, 41, 0.12);
+  --color-unpublished-border: rgba(143, 105, 41, 0.24);
 }

@@ -643,9 +643,17 @@ input:disabled {
   min-width: 0;
 }
 
+.auditRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  min-width: 0;
+}
+
+
 .auditOk {
   display: inline-flex;
-  align-items: center;
+  align-content: center;
   gap: 6px;
   color: var(--color-audit-ok);
   font-size: var(--font-sm);
@@ -656,13 +664,47 @@ input:disabled {
   font-size: var(--font-lg);
 }
 
+.reviewIcon {
+  font-size: var(--font-md);
+}
+
+.auditWarning {
+  display: inline-flex;
+  align-content: center;
+  gap: 6px;
+  color: var(--color-audit-warning);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.auditError {
+  display: inline-flex;
+  align-content: center;
+  gap: 6px;
+  color: var(--color-audit-error);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.auditNone {
+  display: inline-flex;
+  align-content: center;
+  gap: 6px;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+}
+
 .auditNotRun {
   color: var(--color-text-muted);
   font-size: var(--font-sm);
 }
 
 .errorPill,
-.warningPill {
+.warningPill,
+.rejectedPill,
+.withdrawnPill,
+.unpublishedPill {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -686,4 +728,49 @@ input:disabled {
   background: var(--color-audit-warning-bg);
   border-color: var(--color-audit-warning-border);
   color: var(--color-audit-warning);
+}
+
+.rejectedPill {
+  background: var(--color-rejected-bg);
+  border-color: var(--color-rejected-border);
+  color: var(--color-rejected);
+}
+
+.withdrawnPill {
+  background: var(--color-withdrawn-bg);
+  border-color: var(--color-withdrawn-border);
+  color: var(--color-withdrawn);
+}
+
+.unpublishedPill {
+  background: var(--color-unpublished-bg);
+  border-color: var(--color-unpublished-border);
+  color: var(--color-unpublished);
+}
+
+.reviewRejection {
+  display: inline-flex;
+  align-content: center;
+  gap: var(--space-xs);
+  color: var(--color-rejected);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.reviewWithdrawn {
+  display: inline-flex;
+  align-content: center;
+  gap: var(--space-xs);
+  color: var(--color-withdrawn);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.reviewUnpublished {
+  display: inline-flex;
+  align-content: center;
+  gap: var(--space-xs);
+  color: var(--color-unpublished);
+  font-size: var(--font-sm);
+  font-weight: var(--font-weight-bold);
 }

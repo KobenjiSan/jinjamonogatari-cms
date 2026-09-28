@@ -32,7 +32,12 @@ export default function KamiReviewSection({
       try {
         var results = await getKamiReviewHistory(kamiId);
         setReviewHistory(results);
-        var test = results.at(0)?.decision === "Rejected" ? true : false;
+        var test =
+          results.at(0)?.decision === "Rejected" ||
+          results.at(0)?.decision === "Withdrawn" ||
+          results.at(0)?.decision === "Unpublished"
+            ? true
+            : false;
         setIsRecentlyRejected(test);
       } catch (error) {
         console.error("Failed to retreive Kami review history", error);

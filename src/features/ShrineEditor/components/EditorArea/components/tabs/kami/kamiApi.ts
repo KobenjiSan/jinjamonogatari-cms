@@ -51,6 +51,7 @@ export type KamiCMSDto = {
   citations: CitationCMSDto[];
   audit: EntityAuditDto | null;
   entityAudit: EntityAuditCMSDto | null;
+  lastReviewDecision: string | null;
 };
 
 

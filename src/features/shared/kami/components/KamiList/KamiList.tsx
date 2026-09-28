@@ -6,7 +6,10 @@ import {
 } from "../../../../ShrineEditor/components/EditorArea/components/tabs/kami/kamiApi";
 import type { KamiSearchFilters } from "../KamiFilters/KamiFilters";
 import toast from "react-hot-toast";
-import { FiCheckCircle } from "react-icons/fi";
+import { FiCheckCircle, FiMinusCircle } from "react-icons/fi";
+import { MdErrorOutline } from "react-icons/md";
+import { PiWarningBold } from "react-icons/pi";
+import { FaRegClock } from "react-icons/fa6";
 
 export type KamiListPagination = {
   pageNumber: number;
@@ -32,7 +35,7 @@ export default function KamiList({
   const [loading, setLoading] = useState(true);
 
   const [pageNumber, setPageNumber] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
   const [totalItems, setTotalItems] = useState(0);
 
   const showingLow = totalItems === 0 ? 0 : (pageNumber - 1) * pageSize + 1;
@@ -70,14 +73,14 @@ export default function KamiList({
       <div
         className={`listShell ${styles.gridTable}`}
         style={{
-          gridTemplateColumns: ".25fr 2.75fr .75fr .75fr 1fr auto",
+          gridTemplateColumns: ".25fr 2.25fr 1fr 1.5fr 1fr auto",
         }}
       >
         <div className="headerCell">ID</div>
         <div className="headerCell">Kami</div>
         <div className="headerCell">Status</div>
-        <div className="headerCell">Issues</div>
-        <div className="headerCell">Created / Updated</div>
+        <div className="headerCell">Entity Audit</div>
+        <div className="headerCell">Last Updated</div>
         <div className="headerCell">Actions</div>
 
         {loading ? (
@@ -97,6 +100,7 @@ export default function KamiList({
             const errorCount = k.entityAudit?.errorCount ?? 0;
             const warningCount = k.entityAudit?.warningCount ?? 0;
             const isClean = errorCount === 0 && warningCount === 0;
+            const firstIssue = k.entityAudit?.issues?.[0];
 
             return (
               <div key={k.kamiId} className="rowGroup">
@@ -112,7 +116,44 @@ export default function KamiList({
                 </div>
 
                 <div className="bodyCell">
-                  <span className="pill">{k.status ?? "-"}</span>
+                  <div className="auditRow">
+                    <span
+                      className="pill"
+                      style={
+                        k.status
+                          ? {
+                              color: `var(--color-${k.status.toLowerCase()})`,
+                              backgroundColor: `var(--color-${k.status.toLowerCase()}-bg)`,
+                              border: `var(--border-width) solid var(--color-${k.status.toLowerCase()}-border)`,
+                            }
+                          : undefined
+                      }
+                    >
+                      {k.status ?? "-"}
+                    </span>
+                    {k.lastReviewDecision && (
+                      <>
+                        {k.lastReviewDecision == "Rejected" && (
+                          <span className="rejectedPill gap-xs">
+                            <FaRegClock className="reviewIcon" />
+                            Rejected
+                          </span>
+                        )}
+                        {k.lastReviewDecision == "Withdrawn" && (
+                          <span className="withdrawnPill gap-xs">
+                            <FaRegClock className="reviewIcon" />
+                            Withdrawn
+                          </span>
+                        )}
+                        {k.lastReviewDecision == "Unpublished" && (
+                          <span className="unpublishedPill gap-xs">
+                            <FaRegClock className="reviewIcon" />
+                            Unpublished
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 <div className="bodyCell">
@@ -120,45 +161,45 @@ export default function KamiList({
                     isClean ? (
                       <div className="auditOk">
                         <FiCheckCircle className="auditOkIcon" />
-                        <span>All good</span>
+                        <span>No Issues</span>
                       </div>
                     ) : (
                       <div className="auditStack">
-                        {errorCount > 0 && (
-                          <span className="errorPill">
-                            {errorCount} error{errorCount !== 1 ? "s" : ""}
-                          </span>
-                        )}
+                        <div className="auditRow">
+                          {errorCount > 0 && (
+                            <span className="auditError">
+                              <MdErrorOutline className="auditOkIcon" />
+                              {errorCount} error{errorCount !== 1 ? "s" : ""}
+                            </span>
+                          )}
 
-                        {warningCount > 0 && (
-                          <span className="warningPill">
-                            {warningCount} warning
-                            {warningCount !== 1 ? "s" : ""}
+                          {warningCount > 0 && (
+                            <span className="auditWarning">
+                              <PiWarningBold className="auditOkIcon" />
+                              {warningCount} warning
+                              {warningCount !== 1 ? "s" : ""}
+                            </span>
+                          )}
+                        </div>
+                        {firstIssue && (
+                          <span className="text-muted text-sm">
+                            {firstIssue.message}
                           </span>
                         )}
                       </div>
                     )
                   ) : (
-                    <span className="text-muted text-sm">Issues Unavailable</span>
+                    <span className="auditNone">
+                      <FiMinusCircle className="auditOkIcon" />
+                      Audit Unavailable
+                    </span>
                   )}
                 </div>
 
                 <div className="bodyCell">
-                  <div className="listStackSm">
-                    <p className={`metaText ${styles.singleLine}`}>
-                      Created:{" "}
-                      {k.createdAt
-                        ? new Date(k.createdAt).toLocaleString()
-                        : "-"}
-                    </p>
-
-                    <p className={`metaText ${styles.singleLine}`}>
-                      Updated:{" "}
-                      {k.updatedAt
-                        ? new Date(k.updatedAt).toLocaleString()
-                        : "-"}
-                    </p>
-                  </div>
+                  <p className={`metaText ${styles.singleLine}`}>
+                    {k.updatedAt ? new Date(k.updatedAt).toLocaleString() : "-"}
+                  </p>
                 </div>
 
                 <div className="bodyCell">
@@ -168,7 +209,7 @@ export default function KamiList({
                       className="btn btn-outline"
                       onClick={() => onEdit(k)}
                     >
-                      Edit
+                      Open
                     </button>
 
                     <button

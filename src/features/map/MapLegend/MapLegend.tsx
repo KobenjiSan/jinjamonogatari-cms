@@ -10,28 +10,28 @@ export default function MapLegend() {
             <li>
               <div
                 className={styles.dot}
-                style={{ backgroundColor: "#64748B" }}
+                style={{ backgroundColor: "var(--color-imported)" }}
               ></div>
               <p className="primaryText">Import</p>
             </li>
             <li>
               <div
                 className={styles.dot}
-                style={{ backgroundColor: "#2563EB" }}
+                style={{ backgroundColor: "var(--color-draft)" }}
               ></div>
               <p className="primaryText">Draft</p>
             </li>
             <li>
               <div
                 className={styles.dot}
-                style={{ backgroundColor: "#D97706" }}
+                style={{ backgroundColor: "var(--color-review)" }}
               ></div>
               <p className="primaryText">Under Review</p>
             </li>
             <li>
               <div
                 className={styles.dot}
-                style={{ backgroundColor: "#16A34A" }}
+                style={{ backgroundColor: "var(--color-published)" }}
               ></div>
               <p className="primaryText">Published</p>
             </li>
