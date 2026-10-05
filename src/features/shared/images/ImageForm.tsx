@@ -1,3 +1,4 @@
+import type { EntityAuditCMSDto } from "../../ShrineEditor/components/EditorArea/components/tabs/kami/kamiApi";
 import CitationForm from "../citations/CitationForm";
 import styles from "./ImageForm.module.css";
 import type { ImageFormValues } from "./helpers/ImageSection.types";
@@ -9,6 +10,7 @@ type ImageFormProps = {
   onFileChange: (file: File | null) => void;
   isReadOnly: boolean;
   showUpload?: boolean;
+  entityAudit?: EntityAuditCMSDto | null | undefined;
 };
 
 export default function ImageForm({
@@ -17,7 +19,8 @@ export default function ImageForm({
   onChange,
   onFileChange,
   isReadOnly,
-  showUpload
+  showUpload,
+  entityAudit,
 }: ImageFormProps) {
   function handleFieldChange(
     field: keyof Omit<
@@ -44,9 +47,31 @@ export default function ImageForm({
     onFileChange(file);
   }
 
+  const titleError = previewUrl
+    ? !values.title.trim()
+      ? (entityAudit?.issues?.find(
+          (issue) =>
+            issue.field === "Title" &&
+            issue.severity === "Error" &&
+            issue.relatedItemType === "Image" &&
+            issue.relatedItemId === values.imgId,
+        )?.message ?? "Image is missing title.")
+      : null
+    : null;
+
+  const missingImageCitationError = previewUrl
+    ? (entityAudit?.issues?.find(
+        (issue) =>
+          issue.field === "Citation" &&
+          issue.severity === "Error" &&
+          issue.relatedItemType === "Image" &&
+          issue.relatedItemId === values.imgId,
+      )?.message ?? null)
+    : null;
+
   return (
     <div className={styles.wrapper}>
-      {!isReadOnly && ( values.imgId === undefined || showUpload ) && (
+      {!isReadOnly && (values.imgId === undefined || showUpload) && (
         <div className="form-group">
           <label htmlFor="image-upload" className="label">
             Upload Image
@@ -105,13 +130,20 @@ export default function ImageForm({
             </label>
             <input
               id="image-title"
-              className="input"
+              className={`input${titleError ? " input-error" : ""}`}
               type="text"
               value={values.title}
               onChange={(e) => handleFieldChange("title", e.target.value)}
               placeholder={isReadOnly ? "null" : "Enter image title"}
               disabled={isReadOnly}
+              aria-invalid={Boolean(titleError)}
+              aria-describedby={titleError ? "image-title-error" : undefined}
             />
+            {titleError && (
+              <p id="image-title-error" className="field-error">
+                {titleError}
+              </p>
+            )}
           </div>
 
           <div className="form-group">
@@ -132,11 +164,18 @@ export default function ImageForm({
       </div>
 
       <div className={styles.citationSection}>
-        <p className={styles.sectionTitle}>Image Citation</p>
+        <div className={styles.titleArea}>
+          <p className={styles.sectionTitle}>Image Citation</p>
+          {missingImageCitationError && (
+            <p className="errorPill">{missingImageCitationError}</p>
+          )}
+        </div>
         <CitationForm
           values={values.citation}
           onChange={handleCitationChange}
           isReadOnly={isReadOnly}
+          entityAudit={entityAudit}
+          needsAuditDisplay={previewUrl ? true : false}
         />
       </div>
     </div>

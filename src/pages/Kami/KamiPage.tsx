@@ -85,6 +85,7 @@ export default function KamiPage() {
         isReadOnly={false}
         onClose={closeKamiModal}
         onReload={reloadKamiList}
+        onSave={openEditKamiModal}
       />
 
       {/* Confirm Delete Modal */}
